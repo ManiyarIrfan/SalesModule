@@ -1,0 +1,406 @@
+<form #paymentScheduleForm="ngForm">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body TotalAmountborder">
+                    <h4 class="card-title boldtitletext"> Agreed Amount (without Govt.Fee/Tax)</h4>
+                    <div class="row leftalign">
+                        <div class="col-sm-7">
+                            <strong for="TotalValue"> &#x25BA; Agreed Amt </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.DiscountSubTotal}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-7"> <strong for="TotalAfterBookingPaid"> &#x25BA; Agreed Amt -
+                                Infra Amt </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{TotalAfterBookingAmount}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-7">
+                            <strong for="TotalDemandRaised"> &#x25BA; Demand Raised </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalDemandRaised}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-7">
+                            <strong for="TotalAmountPaid"> &#x25BA; Paid Amt</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalAmountPaid}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-7">
+                            <strong for="TotalAmountRemaining"> &#x25BA; Remaining Amt </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalAmountRemaining | number:'1.2-2'}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body TotalAmountborder">
+                    <h4 class="card-title boldtitletext"> GST Details</h4>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="Discount"> &#x25BA; Total GST </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.GST}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="TotalDemandRaised"> &#x25BA; Demand Raised :</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalGSTRaised}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="TotalAmountPaid"> &#x25BA; Amount Paid :</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalGSTPaid}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="TotalAmountPaid"> &#x25BA; Remaining :</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalGSTRemaining| number:'1.2-2'}}</span>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body TotalAmountborder">
+                    <h4 class="card-title boldtitletext"> Infra Details</h4>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="Discount"> &#x25BA; Total Infra </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.InfraCharge}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="TotalDemandRaised"> &#x25BA; Demand Raised </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalInfraRaised}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="TotalAmountPaid"> &#x25BA; Amount Paid </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalInfraPaid}}</span>
+                        </div>
+                    </div>
+                    <div class="row leftalign">
+                        <div class="col-sm-8">
+                            <strong for="TotalAmountPaid"> &#x25BA; Remaining </strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="boldtext">: &nbsp;{{orderModel.TotalInfraRemaining| number:'1.2-2'}}</span>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row ">
+        <button type="button" id="show" name="show" class="btn btn-default " (click)="OnClickAddInstallment()"
+            ngDefaultControl *ngIf="showAddInstallmentBtn">
+            <span class="border border-warning pull-right exportBtn">
+                <i class="fa fa-plus"></i> Add Installments
+            </span>
+        </button>
+        <button type="button" class="btn btn-default" (click)="OnCancelBtnClick()" *ngIf="!showAddInstallmentBtn">
+            <span class="border border-warning pull-right exportBtn">
+                <i class="fa fa-close"></i> Cancel
+            </span>
+        </button>
+        <button type="button" class="btn btn-default" (click)="OnClickselect()" *ngIf="!showAddInstallmentBtn">
+            <span class="border border-warning pull-right exportBtn">
+                <i class="fa fa-info-circle"></i> Select Milestone
+            </span>
+        </button>
+    </div>
+    <br />
+    <div class="table-responsive" *ngIf="!showAddInstallmentBtn">
+        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+            <thead class="thead-light" *ngIf="!hideHeader">
+                <tr>
+                    <th> <span class="required">*</span>Sr.No.</th>
+                    <th> <span class="required">*</span>Pay Against</th>
+                    <th> <span class="required">*</span>Percentage</th>
+                    <th> <span class="required">*</span>Total Demand Raised</th>
+                    <th> <span class="required">*</span>Tax Due</th>
+                    <th> <span class="required">*</span>Infra Due</th>
+                    <th *ngIf="updateBtn"> Status</th>
+                    <th> <span class="required">*</span>Estimated Billing Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>{{paymentScheduleModel.InstallmentNo}}</strong>
+                    </td>
+                    <td>
+                        <select type="text" [(ngModel)]="paymentScheduleModel.MilestoneId" id="MilestoneId"
+                            name="MilestoneId" class="form-control" required #MilestoneId="ngModel"
+                            [class.error]="MilestoneId.invalid && MilestoneId.touched" [disabled]="updateBtn"
+                            [class.has-success]="MilestoneId.valid" *ngIf="!isShow">
+                            <option value="">---Select---</option>
+                            <option class='option' *ngFor='let payAgainstType of PayAgainstInfo'
+                                [hidden]="gridKey.indexOf(payAgainstType.value)!==-1"
+                                [value]="payAgainstType.MilestoneId">
+                                {{payAgainstType.value}}</option>
+                        </select>
+                        <select type="text" [(ngModel)]="paymentScheduleModel.MilestoneId" id="MilestoneId"
+                            name="MilestoneId" class="form-control" required #MilestoneId="ngModel"
+                            [class.error]="MilestoneId.invalid && MilestoneId.touched" [disabled]="updateBtn"
+                            [class.has-success]="MilestoneId.valid" *ngIf="isShow"
+                            (change)="findPercentage($event.target.value)">
+                            <option value="">---Select---</option>
+                            <option class='option' *ngFor='let payAgainstType of showmilestone'
+                                [hidden]="gridKey.indexOf(payAgainstType.value)!==-1"
+                                [value]="payAgainstType.MilestoneId">
+                                {{payAgainstType.stages}}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" min="0" max="100"
+                            (blur)="onTotalPercentChange(paymentScheduleModel.Percentage)" class="form-control"
+                            id="Percentage" name="Percentage" value="Percentage" [disabled]="updateBtn"
+                            [(ngModel)]="paymentScheduleModel.Percentage" required #percentage="ngModel"
+                            [class.error]="percentage.invalid && percentage.touched"
+                            [class.has-success]="percentage.valid">
+                    </td>
+
+                    <td>
+                        <span id="var1" name="var1" [(ngModel)]="paymentScheduleModel.TotalDemandRaised"
+                            ngDefaultControl>{{TotalDemandRaised | number:'1.2-2'}}</span>
+                    </td>
+
+                    <td>
+                        <span id="var2" name="var2" [(ngModel)]="paymentScheduleModel.TaxReceived"
+                            ngDefaultControl>{{paymentScheduleModel.TaxReceived | number:'1.2-2'}}</span>
+                    </td>
+                    <td>
+                        <span id="infradue" name="infradue" [(ngModel)]="paymentScheduleModel.InfraReceived"
+                            ngDefaultControl>{{paymentScheduleModel.InfraReceived | number:'1.2-2'}}</span>
+                    </td>
+                    <td>
+                        <input type="date" dateFormatPipe class="form-control" id="EstimatedBillingDate1"
+                            max="3000-31-12" name="EstimatedBillingDate" required [disabled]="updateBtn"
+                            [(ngModel)]="paymentScheduleModel.EstimatedBillingDate" #estimatedBillingDate="ngModel"
+                            pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                            [class.error]="estimatedBillingDate.invalid && estimatedBillingDate.touched"
+                            [class.has-success]="estimatedBillingDate.valid">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" *ngIf="!updateBtn"
+                            (click)="OnInsertPaymentScheduleBtnClick(paymentScheduleModel,'INSERT')"
+                            [disabled]="showSubmitBtn || !paymentScheduleForm.form.valid">Submit</button>
+                        <button type="button" class="btn btn-primary" *ngIf="updateBtn"
+                            (click)="OnInsertPaymentScheduleBtnClick(paymentScheduleModel,'UPDATE')">Update</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="alert alert-success" *ngIf="showSuccessfullMessage!==''" role="alert">
+            <h4> <i class="fa fa-check"></i> {{showSuccessfullMessage}}</h4>
+        </div>
+        <div class="alert alert-warning" *ngIf="showUnsuccessfullMessage!==''" role="alert">
+            <h4> <i class="fa fa-times-circle"></i> {{showUnsuccessfullMessage}}</h4>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <strong class="required" *ngIf="paymentScheduleFields.length===0"> {{NoDataFoundMessage}} </strong>
+        <table class="table table-bordered text-nowrap" *ngIf="paymentScheduleFields.length>0">
+            <thead class="thead-light">
+                <tr>
+                    <th>Sr.No.</th>
+                    <th>Invoice No.</th>
+                    <th>Pay Against</th>
+                    <th>Percentage</th>
+                    <th>Milestone Due</th>
+                    <th>Infra Due</th>
+                    <th>Tax Due</th>
+                    <th>Amount Paid </th>
+                    <th>Remaining </th>
+                    <th>Advanced Paid</th>
+                    <th>Advanced Used</th>
+                    <th>Advanced Remaining</th>
+                    <th>Estimated Billing Date</th>
+                    <th>Customer Status</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let payment of paymentScheduleFields;trackBy:trackByFn;let i = index">
+                    <td>{{payment.InstallmentNo}}</td>
+                    <td>{{payment.InvoiceNo}}</td>
+                    <td class="text-left pl-2">{{payment.PayAgainst}}</td>
+                    <td>{{payment.Percentage}}</td>
+                    <td>{{payment.TotalDemandRaised | number:'1.2-2'}}</td>
+                    <td>{{payment.Infra | number:'1.2-2'}}</td>
+                    <td>{{payment.TaxReceived | number:'1.2-2'}}</td>
+                    <td>{{payment.TotalReceiptAmount | number:'1.2-2'}}</td>
+                    <td>{{payment.TotalDemandRemaning | number:'1.2-2'}}</td>
+                    <td>{{payment.AdvancePayment| number:'1.2-2'}}</td>
+                    <td>{{payment.AdvancePaymentUsed|number:'1.2-2'}}</td>
+                    <td>{{payment.AdvanceRemaining|number:'1.2-2'}}</td>
+                    <td>{{payment.EstimatedBillingDate | date:"d MMM y"}}</td>
+                    <td><span
+                            [ngClass]="{'badge-danger': payment.CustomerStatus==='Unpaid', 'badge-success': payment.CustomerStatus==='Totally Paid',   'badge-primary': payment.CustomerStatus==='Partially Paid','badge-info':payment.CustomerStatus==='New' }">{{payment.CustomerStatus}}</span>
+                    </td>
+                    <td *ngIf="payment.Status ==='Sent To Customer'">
+                        <i class="fa fa-file-pdf-o text-danger" aria-hidden="true"
+                            ngbTooltip="Click To View Demand Letter" (click)="download(payment,discountAndGstModel)">
+                        </i> &nbsp;&nbsp; {{payment.Status}}
+                    </td>
+                    <td *ngIf="payment.Status !=='Sent To Customer'">
+                        <span class="text-danger" (click)="download(payment,discountAndGstModel)">
+                            <i class="fa fa-file-pdf-o" aria-hidden="true" ngbTooltip="Click To View Demand Letter">
+                                &nbsp;&nbsp;</i>
+                        </span>
+                        <span *ngIf="payment.Status ==='Invoice Generated' && !payment.VerificationStatus"
+                            ngbTooltip="Click To Verify Demand Letter" Class="badge-success"
+                            (click)="openVerifyPopup(payment, true)">Verify Demand Letter
+                        </span>
+                        <span *ngIf="payment.VerificationStatus === 'Verified' && payment.Status !=='Sent To Customer'">
+                            <i class="fa fa-check selectPS" (click)="openVerifyPopup(payment, false)"
+                                ngbTooltip="Click To Send Demand Letter To Customer" aria-hidden="true"> </i>
+                            Send
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <tru-emp-financial-status (lengthEvent)="receiveInstallmentNo($event)"></tru-emp-financial-status> -->
+</form>
+
+<div bsModal #popupPaymentModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body" style="text-align: center;">
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="popupPaymentModel.hide()" />
+                <i class="fa fa-warning" style="font-size:30px;color:red"></i>
+                <h5>{{showTotalDemandRaisedExceed}}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal cdkDrag #ConfirmationModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-notify modal-info modal-md" role="document">
+        <div class="modal-content">
+            <div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
+                        <br>
+                        <strong>Do you want to proceed?</strong>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button class="btn btn-primary btn-sm" (click)="confirmation('yes')"
+                        [disabled]="disableBtn">Yes</button>
+                    <button class="btn btn-danger btn-sm" (click)="confirmation('no')" [disabled]="disableBtn">No
+                        Thanks</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div bsModal #popupMilestoneModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Milestone Details</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Name</th>
+                                <th>Percentage(%)</th>
+                                <th>Details</th>
+                                <th>Select</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input class="name-width" type="text" name="MilestonName"
+                                        [(ngModel)]="filterDataModel.stages" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width w-30" type="text" name="Percentage"
+                                        [(ngModel)]="filterDataModel.Percentage" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="Details"
+                                        [(ngModel)]="filterDataModel.Details" (keyup)="filterLeadData()">
+                                </td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let details of showmilestone | paginate: { itemsPerPage: 5, currentPage: p1};trackBy: trackByFn;let i = index;">
+                                <td>{{i+1}}</td>
+                                <td class="text-left pl-2">
+                                    <pre>{{details.stages}}</pre>
+                                </td>
+                                <td>{{details.Percentage}}</td>
+                                <td class="text-left pl-2"><pre>{{details.Details}}</pre></td>
+                                <td>
+                                    <button type="button" class="btn btn-link btn-sm" (click)="checkedState(details)">
+                                        <i class="fa-select"></i>
+                                        select
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot class="pull-right" *ngIf="showmilestone.length >5">
+                        <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                    </tfoot>
+                </div>
+                <span *ngIf="showmilestone.length===0" class="text-danger">No Data Found</span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="card mb-3">
+    <div class="card-header heder" (click)="toggle()">
+        <div class="col-sm-12">
+            <strong class="pull-left ">{{index +1}}) Property Detail</strong>
+        </div>
+    </div>
+    <div class="card-body" [hidden]="!opened && index !== 0">
+        <div class="row">
+            <div class="col-sm-8">
+                <strong for="custProject">
+                    <b> Project: </b>
+                </strong>
+                <input type="text" class="form-control" [id]="'custProject'" [disabled]="true" required [(ngModel)]="custModel.custProject"
+                    name="custProject" #custId="ngModel">
+            </div>
+            <div class="col-sm-4">
+                <strong for="custBHK">
+                    <b>BHK:</b>
+                </strong>
+                <input type="text" class="form-control" [id]="'custBHK'" [disabled]="true" required [(ngModel)]="custModel.custBHK" name="custBHK"
+                    #custId="ngModel">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                <strong for="custTower">
+                    <b>Building/Sector No:</b>
+                </strong>
+                <input type="text" class="form-control" [id]="'custTower'" [disabled]="true" required [(ngModel)]="custModel.custTower" name="custTower"
+                    #custId="ngModel">
+            </div>
+            <div class="col-sm-4">
+                <strong for="custFlat">
+                    <b>Flat/Plot No:</b>
+                </strong>
+                <input type="text" class="form-control" [id]="'custFlat'" [disabled]="true" required [(ngModel)]="custModel.custFlat" name="custFlat"
+                    #custId="ngModel">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div *ngIf="Latitude && Longitude">
+                    <strong>
+                        <b>Project Site location</b>
+                    </strong>
+                    <app-google-map #temp [Latitude]="Latitude" [Longitude]="Longitude"></app-google-map>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

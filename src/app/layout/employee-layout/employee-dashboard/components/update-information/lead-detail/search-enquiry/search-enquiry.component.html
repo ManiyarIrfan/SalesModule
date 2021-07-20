@@ -1,0 +1,33 @@
+<br>
+<form #searchForm="ngForm">
+  <div class="col-sm-6">
+    <div class="row">
+      <div class="col-sm-9">
+        <div class="icon-addon addon-md ">
+          <input class="form-control" name="searchTerm" id="searchTerm"
+            placeholder="Search By Name Or Email Or Mobile Number... " #searchTerm="ngModel" [(ngModel)]="searchText"
+            [class.error]="searchTerm.invalid && searchTerm.touched" [class.has-success]="searchTerm.valid"
+            autocomplete="off"> <i class="fa fa-search"></i>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <button class="btn btn-primary" (click)="searchEnquiry(searchText)" [disabled]="!searchForm.valid"> <i
+            class="fa fa-search"></i> Search</button>
+      </div>
+    </div>
+    <div class="search-result scrollbar searchstyle" id="style-2" [hidden]="!flag">
+      <ul>
+        <li *ngFor="let enquiry of Enquiries ">
+          <a (click)="onselectEnquiry(enquiry)">{{enquiry.FirstName}} - {{enquiry.LastName}} - {{enquiry.MobileNo}} -
+            {{enquiry.TEnquiryId}}</a>
+        </li>
+        <span *ngIf='noDataFound' class="required">No data Found</span>
+      </ul>
+      <div class="col-sm-3" [hidden]="!spinner">
+        <p class="loading">
+          <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+        </p>
+      </div>
+    </div>
+  </div>
+</form>

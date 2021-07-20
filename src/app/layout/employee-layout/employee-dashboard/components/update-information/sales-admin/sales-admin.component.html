@@ -1,0 +1,836 @@
+<div class="container-fluid">
+    <mat-tab-group dynamicHeight>
+        <mat-tab label="Stakeholder Credentials">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <strong for="Stakeholder">
+                                <span class="required">*</span>Select Stakeholder</strong>
+                            <select class="form-control" name="Stakeholder" id="Stakeholder" required
+                                [(ngModel)]="searchModel.Stakeholder" #Stakeholder="ngModel">
+                                <option *ngFor="let item of UserTypeList" [value]="item.key">{{item.value}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4" style="padding: 1.4rem;">
+                            <button type="button" class="btn btn-primary center-block" (click)="getAllUsersData()">
+                                Show </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-12 mt-4">
+                        <div class="card cardfortable">
+                            <div class="title">
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <span class="text textweight">Update/Send Stakeholder Credentials
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="Loading">
+                                <p class="loading">
+                                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                </p>
+                            </div>
+                            <div class="table-responsive" *ngIf="!Loading">
+                                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>EntityId</th>
+                                            <th>Name</th>
+                                            <th>UserId</th>
+                                            <th>CreatedOn</th>
+                                            <th colspan="2">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input class="name-width" type="text" name="searchEntityid"
+                                                    [(ngModel)]="filterDataModel.Entityid" (keyup)="filterData()">
+                                            </td>
+                                            <td>
+                                                <input class="name-width" type="text" name="searchName"
+                                                    [(ngModel)]="filterDataModel.Name" (keyup)="filterData()">
+                                            </td>
+                                            <td>
+                                                <input class="name-width" type="text" name="searchEmail"
+                                                    [(ngModel)]="filterDataModel.Email" (keyup)="filterData()">
+                                            </td>
+                                            <td></td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr
+                                            *ngFor="let details of UsersData | paginate: { id:'CRO-Details-pagination',itemsPerPage: 12, currentPage: p1 };trackBy: trackByFn; ">
+                                            <td>
+                                                {{details.Entityid}}
+                                            </td>
+                                            <td>
+                                                {{details.Name}}
+                                            </td>
+                                            <td>{{details.Email}}</td>
+                                            <td>{{details.CreatedOn |date:"d MMM y"}}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-link btn-sm"
+                                                    ngbTooltip="Update New UserId"
+                                                    (click)="getDetails(details,'CRO',SetCredentials)">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-link btn-sm"
+                                                    ngbTooltip="Send Password On Registered Email"
+                                                    (click)="openConfirmation(details,'SendPassword',null)">
+                                                    <i class="fa fa-paper-plane"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <tfoot class="pull-right" *ngIf="UsersData.length>12">
+                                    <pagination-controls id="CRO-Details-pagination" (pageChange)="p1= $event">
+                                    </pagination-controls>
+                                </tfoot>
+                                <div class="text-center mt-2" *ngIf="UsersData.length === 0">
+                                    <strong>
+                                        <span class="required">No Data Found</span>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="CP Referral Verification">
+            <div class="col-sm-12 mt-4">
+                <div class="card cardfortable mt-4">
+                    <div class="title">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <span class="text textweight">Verify CP Referral
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="referralloading">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                    <div *ngIf="!referralloading">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <!-- <th>BrokerId</th> -->
+                                        <th>Name</th>
+                                        <th>MobileNo</th>
+                                        <th>Email</th>
+                                        <th>CreatedOn</th>
+                                        <th>Referral Status</th>
+                                        <th>Verification Status</th>
+                                        <th>Remark</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchName"
+                                                [(ngModel)]="filterReferralDataModel.Name"
+                                                (keyup)="filterReferralData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="number" name="searchMobileNo"
+                                                [(ngModel)]="filterReferralDataModel.MobileNo"
+                                                (keyup)="filterReferralData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchEmail"
+                                                [(ngModel)]="filterReferralDataModel.Email"
+                                                (keyup)="filterReferralData()">
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchStatus"
+                                                [(ngModel)]="filterReferralDataModel.Status"
+                                                (keyup)="filterReferralData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchVerificationStatus"
+                                                [(ngModel)]="filterReferralDataModel.VerificationStatus"
+                                                (keyup)="filterReferralData()">
+                                        </td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr
+                                        *ngFor="let referredCp of listreferredChannelPartner| paginate: {id:'varification-pagination', itemsPerPage: 12, currentPage: p2};trackBy: trackByFn;">
+                                        <td>{{referredCp.Name}}</td>
+                                        <td>{{referredCp.MobileNo}}</td>
+                                        <td>{{referredCp.Email}}</td>
+                                        <td>{{referredCp.CreatedOn |date:"d MMM y"}}</td>
+                                        <td>{{referredCp.Status?referredCp.Status:'NA'}}</td>
+                                        <td>
+                                            <span
+                                                [ngClass]="{'badge-danger': referredCp.VerificationStatus==='Rejected', 'badge-success':referredCp.VerificationStatus==='Approved','badge-warning': referredCp.VerificationStatus==='Verification pending'}">{{referredCp.VerificationStatus?referredCp.VerificationStatus:'NA'}}</span>
+                                        </td>
+                                        <td>
+                                            <span data-toggle="tooltip"
+                                                title="{{referredCp.VerificationReason?referredCp.VerificationReason:''}}">{{referredCp.VerificationReason
+                                                ? ((referredCp.VerificationReason.length>40)
+                                                ? (referredCp.VerificationReason | slice:0:40)+'...' :
+                                                referredCp.VerificationReason)
+                                                :''}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span ngbTooltip="Approve"
+                                                (click)="openConfirmation(referredCp,'ApproveRejectReferral','Approved')"
+                                                *ngIf="referredCp.VerificationStatus!=='Approved' && referredCp.VerificationStatus!=='Rejected'">
+                                                <i class="fa fa-check-circle text-success"></i>
+                                            </span>
+                                            <span ngbTooltip="Reject"
+                                                (click)="openConfirmation(referredCp,'ApproveRejectReferral','Rejected')"
+                                                *ngIf="referredCp.VerificationStatus!=='Approved' && referredCp.VerificationStatus!=='Rejected'">&nbsp;&nbsp;
+                                                <i class="fa fa-trash-o text-danger"></i>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-2" *ngIf="listreferredChannelPartner.length === 0">
+                                <strong>
+                                    <span class="required">No Data Found</span>
+                                </strong>
+                            </div>
+                            <tfoot class="pull-right" *ngIf="listreferredChannelPartner.length>12">
+                                <pagination-controls id="varification-pagination" (pageChange)="p2= $event">
+                                </pagination-controls>
+                            </tfoot>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="CP Invoice Verification">
+            <div class="col-sm-12 mt-4">
+                <div class="card cardfortable mt-4">
+                    <div class="title">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <span class="text textweight">Verify CP Invoice
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="Isloading">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                    <div *ngIf="!Isloading">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <!-- <th>BrokerId</th> -->
+                                        <th>OrderId</th>
+                                        <th>Customer Name</th>
+                                        <th>Name</th>
+                                        <th>Mobile</th>
+                                        <th>Invoice</th>
+                                        <th>Agreement Status</th>
+                                        <th>Varification Status</th>
+                                        <th>Remark</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngIf="CPInvoice && CPInvoice.length > 0">
+                                        <td>
+                                            <input class="name-width" type="number" name="searchOrderId"
+                                                [(ngModel)]="filterInvoiceDataModel.OrderId"
+                                                (keyup)="filterInvoiceData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchCustomerName"
+                                                [(ngModel)]="filterInvoiceDataModel.CustomerName"
+                                                (keyup)="filterInvoiceData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchBrokerName"
+                                                [(ngModel)]="filterInvoiceDataModel.BrokerName"
+                                                (keyup)="filterInvoiceData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="number" name="searchBrokerMobileNo"
+                                                [(ngModel)]="filterInvoiceDataModel.BrokerMobileNo"
+                                                (keyup)="filterInvoiceData()">
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchVerificationStatus"
+                                                [(ngModel)]="filterInvoiceDataModel.VerificationStatus"
+                                                (keyup)="filterInvoiceData()">
+                                        </td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                    <tr
+                                        *ngFor="let data of CPInvoice| paginate: {id:'invoice-pagination', itemsPerPage: 12, currentPage: p3};trackBy: trackByFn;">
+                                        <td>{{data.OrderId}}</td>
+                                        <td>{{data.CustomerName}}</td>
+                                        <td>{{data.BrokerName}}</td>
+                                        <td>{{data.BrokerMobileNo}}</td>
+                                        <td>
+                                            <span *ngIf="data.ImageUrl !== null">
+                                                <a href={{data.ImageUrl}} target="_blank" ngbTooltip="Open Invoice">
+                                                    <i class="fa fa-picture-o"
+                                                        *ngIf="data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'png' || data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'PNG' || data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'jpeg' || data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'jpg' || data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'JPG' || data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'JPEG'"
+                                                        aria-hidden="true"></i>
+
+                                                    <i class="fa fa-file-pdf-o"
+                                                        *ngIf="data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'pdf' || data.ImageUrl.substr(data.ImageUrl.lastIndexOf('.') + 1) === 'PDF'"
+                                                        aria-hidden="true"></i>
+                                                </a>
+                                            </span>
+
+                                        </td>
+                                        <td>{{data.AgreementStatus?data.AgreementStatus:'NA'}}</td>
+                                        <td>
+                                            <span
+                                                [ngClass]="{'badge-danger': data.VerificationStatus==='Rejected', 'badge-success':data.VerificationStatus==='Approved','badge-warning': data.VerificationStatus==='Verification pending'}">{{data.VerificationStatus?data.VerificationStatus:'NA'}}</span>
+                                        </td>
+                                        <td>
+                                            <span data-toggle="tooltip"
+                                                title="{{data.VerificationReason?data.VerificationReason:''}}">{{data.VerificationReason
+                                                ? ((data.VerificationReason.length>40) ? (data.VerificationReason
+                                                | slice:0:40)+'...' : data.VerificationReason) :''}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span ngbTooltip="Approve"
+                                                (click)="openConfirmation(data,'ApproveRejectInvoice','Approved')"
+                                                *ngIf="data.VerificationStatus!=='Approved' && data.ImageUrl !== null">
+                                                <i class="fa fa-check-circle text-success"></i>
+                                            </span>
+                                            <span ngbTooltip="Reject"
+                                                (click)="openConfirmation(data,'ApproveRejectInvoice','Rejected')"
+                                                *ngIf="data.VerificationStatus!=='Approved' && data.ImageUrl !== null">&nbsp;&nbsp;
+                                                <i class="fa fa-trash-o text-danger"></i>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-2" *ngIf="CPInvoice.length === 0">
+                                <strong>
+                                    <span class="required">No Data Found</span>
+                                </strong>
+                            </div>
+                            <tfoot class="pull-right" *ngIf="CPInvoice.length>12">
+                                <pagination-controls id="invoice-pagination" (pageChange)="p3= $event">
+                                </pagination-controls>
+                            </tfoot>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Accounts Rejected Invoice">
+            <div class="col-sm-12 mt-4">
+                <div class="card cardfortable mt-4">
+                    <div class="title">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <span class="text textweight">Rejected Invoice From Accounts
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="Isloading">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                    <div *ngIf="!Isloading">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Cp Name</th>
+                                        <th>TRUPayVirtualId</th>
+                                        <th>Cp Mobile</th>
+                                        <th>CPReferral/Customer</th>
+                                        <th>RejectionReason</th>
+                                        <th>Accounting Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let data of rejectedInvoices| paginate: {id:'invoice-pagination', itemsPerPage: 12, currentPage: p3};trackBy: trackByFn;">
+                                        <td>{{data.CpName}}</td>
+                                        <td>{{data.TRUPayVirtualId}}</td>
+                                        <td>{{data.CpMobile}}</td>
+                                        <td>{{data.CPRName}}</td>
+                                        <td>{{data.RejectionReason?data.RejectionReason:'NA'}}</td>
+                                        <td>
+                                            <span
+                                                [ngClass]="{'badge-danger': data.AccountingStatus==='Reject', 'badge-success':data.AccountingStatus==='Approve'}">{{data.AccountingStatus?data.AccountingStatus:'NA'}}</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm">ReSubmit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-2" *ngIf="rejectedInvoices.length === 0">
+                                <strong>
+                                    <span class="required">No Data Found</span>
+                                </strong>
+                            </div>
+                            <tfoot class="pull-right" *ngIf="rejectedInvoices.length>12">
+                                <pagination-controls id="invoice-pagination" (pageChange)="p3= $event">
+                                </pagination-controls>
+                            </tfoot>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <!-- ****** Disqualified EOI payment approve for payment  ******* -->
+        <mat-tab label="Unqualified EOI Details">
+            <div class="col-sm-12 mt-4">
+                <div class="card cardfortable mt-4">
+                    <div class="title">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <span class="text textweight">Unqualified EOI Details </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Lead Name</th>
+                                    <th>Lead Mobile</th>
+                                    <th>TRUPay VirtualId</th>
+                                    <th>Transaction Type</th>
+                                    <th>Amount</th>
+                                    <th>Rejection Reason</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let data of EOIDisqualifiedList| paginate: {id:'invoice-pagination', itemsPerPage: 12, currentPage: p3};trackBy: trackByFn;">
+                                    <td>{{data.Name}}</td>
+                                    <td>{{data.MobileNo}}</td>
+                                    <td>{{data.TRUPayVirtualId}}</td>
+                                    <td>{{data.TransactionType}}</td>
+                                    <td>{{data.amount?data.amount:0}}</td>
+                                    <td>
+                                        {{data.StatusChangeReason}}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm"
+                                            (click)="openApproveEOI(data)">Approve</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center mt-2" *ngIf="EOIDisqualifiedList.length === 0">
+                            <strong>
+                                <span class="required">No Data Found</span>
+                            </strong>
+                        </div>
+                        <tfoot class="pull-right" *ngIf="EOIDisqualifiedList.length>12">
+                            <pagination-controls id="invoice-pagination" (pageChange)="p3= $event">
+                            </pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <!-- ****** Change the referral Details  ******* -->
+        <mat-tab label="Change Referred By">
+            <div class="col-sm-12 mt-4">
+                <div class="card cardfortable mt-4">
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-3"> </div>
+                        <div class="col-sm-6">
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-sm btn-success pull-right" (click)="newCancelrequest('new')"
+                                *ngIf="showCreate === false && loggedInuserDetails.Level ==='L2'"> <i
+                                    class="fa fa-plus"></i> New Request</button>
+                            <button class="btn btn-sm btn-danger pull-right" (click)="newCancelrequest('cancel')"
+                                *ngIf="showCreate === true"> Cancel</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border"> <strong> Request History </strong></legend>
+                                <div class="table-responsive scrollbar">
+                                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Lead Id</th>
+                                                <th>Lead Name</th>
+                                                <th>Old Referred By Name </th>
+                                                <th>New Referred By Name </th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let data of AllReferalRequestList;trackBy: trackByFn;let i=index">
+                                                <td *ngIf="data.Status ==='Submitted'"> <button type="button"
+                                                        class="btn btn-sm btn-link" id="btnlink{{i}}"
+                                                        (click)="selectReferalRequest(data)" name="button"><i
+                                                            class="fa fa-pencil-square-o"></i>
+                                                        {{data.TReferralId}}</button>
+                                                </td>
+                                                <td *ngIf="data.Status ==='Approved'">{{data.TReferralId}}</td>
+                                                <td>{{data.Leadname}}</td>
+                                                <td>{{data.OldReferralName}} - ({{data.OldReferralType}})</td>
+                                                <td>{{data.NewReferredbyName}} - ({{data.NewReferralType}})</td>
+                                                <td><span
+                                                        [ngClass]="{'badge-danger': data.Status==='Submitted', 'badge-success':data.Status==='Approved'}">{{data.Status}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center mt-2" *ngIf="EOIDisqualifiedList.length === 0">
+                                        <strong>
+                                            <span class="required">No Data Found</span>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-4">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border">
+                                    <strong>Create Request</strong>
+                                </legend>
+                                <div [hidden]="loggedInuserDetails.Level === 'L1'">
+                                    <tru-search-opportunity (messageEvent)="receiveData($event)">
+                                    </tru-search-opportunity>
+                                </div>
+                                <form #referralRequestForm="ngForm">
+                                    <div class="form-group row">
+                                        <div class="col-sm-6">
+                                            <strong for="leadid">Lead Id :</strong>
+                                            <input type="text" class="form-control" id="leadid" [disabled]="true"
+                                                name="leadid" [(ngModel)]="refModel.TReferralId" #leadid="ngModel">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <strong for="leadname">Lead Name :</strong>
+                                            <input type="text" class="form-control" id="leadname" [disabled]="true"
+                                                name="leadname" [(ngModel)]="refModel.Name" #leadname="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6">
+                                            <strong for="oldreferaltype">Old Referred By Type :</strong>
+                                            <input type="text" class="form-control" id="oldreferaltype"
+                                                [disabled]="true" name="oldreferaltype"
+                                                [(ngModel)]="refModel.ReferredByType" #oldreferaltype="ngModel">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <strong for="oldreferalName">Old Referred By Name :</strong>
+                                            <input type="text" class="form-control" id="oldreferalName"
+                                                [disabled]="true" name="oldreferalName"
+                                                [(ngModel)]="refModel.ReferredBy" #oldreferalName="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6">
+                                            <strong for="referredType">
+                                                <span class="required">*</span>New Referred By Type :</strong>
+                                            <select class="form-control" id="referredType" name="referredType"
+                                                [class.error]="referredType.invalid && referredType.touched"
+                                                [class.has-success]="referredType.valid"
+                                                [disabled]="refModel.Status ==='Submitted'"
+                                                [(ngModel)]="refModel.ReferredType" required #referredType="ngModel">
+                                                <option value="">--select--</option>
+                                                <option *ngFor="let item of TypeList" [value]="item.key">
+                                                    {{item.value}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-6" *ngIf="refModel.ReferredType ==='ChannelPartner'">
+                                            <strong for="cpdetail">
+                                                <span class="required">*</span>Channel Partner :</strong>
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-select placeholder="ChannelPartner" required name="referredType"
+                                                    #referredType="ngModel" [disabled]="refModel.Status ==='Submitted'"
+                                                    [(ngModel)]="refModel.newReferral">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search name="newReferral" id="newReferral"
+                                                            [(ngModel)]="NewReferral" placeholderLabel="Find..."
+                                                            noEntriesFoundLabel="'no matching found'"
+                                                            (ngModelChange)="filterSearch($event,'CP')">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of AllCpDetails; trackBy: trackByFn"
+                                                        [value]="item.BrokerId">
+                                                        {{item.Name !=='' ? item.Name : 'NA'}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-6" *ngIf="refModel.ReferredType ==='CRO'">
+                                            <strong for="crodetail">
+                                                <span class="required">*</span>CRO :</strong>
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-select placeholder="CRO" required name="crodetail"
+                                                    #crodetail="ngModel" [disabled]="refModel.Status ==='Submitted'"
+                                                    [(ngModel)]="refModel.newReferral">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search name="newReferral" id="newReferral"
+                                                            [(ngModel)]="NewReferral" placeholderLabel="Find..."
+                                                            noEntriesFoundLabel="'no matching found'"
+                                                            (ngModelChange)="filterSearch($event,'CRO')">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of AllCroDetails; trackBy: trackByFn"
+                                                        [value]="item.CROId">
+                                                        {{item.CROName}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-6" *ngIf="refModel.ReferredType ==='Employee'">
+                                            <strong for="referralname">
+                                                <span class="required">*</span>Employee :</strong>
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-select placeholder="Employee" required name="referralname"
+                                                    #referralname="ngModel" [disabled]="refModel.Status ==='Submitted'"
+                                                    [(ngModel)]="refModel.newReferral">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search name="newReferral" id="newReferral"
+                                                            [(ngModel)]="NewReferral" placeholderLabel="Find..."
+                                                            noEntriesFoundLabel="'no matching found'"
+                                                            (ngModelChange)="filterSearch($event,'EMP')">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of AllEmpDetails; trackBy: trackByFn"
+                                                        [value]="item.EmployeeId">
+                                                        {{item.Name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <strong for="remark">Remark :</strong>
+                                            <textarea type="text" class="form-control" id="remark" name="remark"
+                                                [(ngModel)]="refModel.Remark" #remark="ngModel"> </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <button type="button" class="btn btn-md btn-primary"
+                                            [disabled]="referralRequestForm.invalid || !refModel.TReferralId"
+                                            *ngIf="loggedInuserDetails.Level ==='L2' && refModel.Status !=='Submitted'"
+                                            (click)="InsertRequest(refModel,'Submitted','INSERT')">Submit</button>
+                                        <button type="button" class="btn btn-md btn-primary"
+                                            [disabled]="referralRequestForm.invalid || !refModel.TReferralId"
+                                            *ngIf="loggedInuserDetails.Level ==='L1'"
+                                            (click)="InsertRequest(refModel,'Approved','UPDATE')">Approve</button>
+                                    </div>
+                                </form>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
+</div>
+<!-- POPUP FOR passwordConfirmation UPDATE -->
+<div bsModal cdkDrag #passwordConfirmationModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-notify modal-info modal-md" role="document">
+        <div class="modal-content">
+            <div *ngIf="title==='SendPassword'">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
+                        <br>
+                        <strong>Password will be sent to
+                            <code>{{store.Email}}</code>.
+                            <br> Do you want to proceed?</strong>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button class="btn btn-primary btn-sm" (click)="confirmation('yes')">Yes</button>
+                    <button class="btn btn-danger btn-sm" (click)="confirmation('no')">No Thanks</button>
+                </div>
+            </div>
+            <div *ngIf="title==='ApproveRejectReferral'">
+                <form #Referralreject="ngForm">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="fa fa-check fa-4x mb-3 animated rotateIn text-success"
+                                *ngIf="showButton==='Do you want to approve referral?'"></i>
+                            <i class="fa fa-times fa-4x mb-3 animated rotateIn text-danger"
+                                *ngIf="showButton==='Do you want to reject referral?'"></i>
+                            <br>
+                            <strong>{{showButton}}</strong>
+                            <textarea rows="4" *ngIf="showButton==='Do you want to reject referral?'"
+                                class="form-control mt-3" placeholder="Remark*" name="Remark"
+                                [(ngModel)]="UpdateCredentials.Remark" required #Remark="ngModel"
+                                [class.error]="Remark.invalid && Remark.touched"
+                                [class.has-success]="Remark.valid"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button class="btn btn-primary btn-sm" *ngIf="showButton==='Do you want to approve referral?'"
+                            (click)="ApproveReject(Referralreject,'Referral')">Yes</button>
+                        <button class="btn btn-primary btn-sm" *ngIf="showButton==='Do you want to reject referral?'"
+                            [disabled]="!UpdateCredentials.Remark"
+                            (click)="ApproveReject(Referralreject,'Referral')">Yes</button>
+                        <button class="btn btn-danger btn-sm" (click)="passwordConfirmationModal.hide()">No
+                            Thanks</button>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="title==='ApproveRejectInvoice'">
+                <form #Referralreject="ngForm">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="fa fa-check fa-4x mb-3 animated rotateIn text-success"
+                                *ngIf="showButton==='Do you want to approve invoice?'"></i>
+                            <i class="fa fa-times fa-4x mb-3 animated rotateIn text-danger"
+                                *ngIf="showButton==='Do you want to reject invoice?'"></i>
+                            <br>
+                            <strong>{{showButton}}</strong>
+                            <textarea rows="4" *ngIf="showButton === 'Do you want to reject invoice?'"
+                                class="form-control mt-3" placeholder="InvoiceRemark*" name="InvoiceRemark"
+                                [(ngModel)]="UpdateCredentials.InvoiceRemark" required #InvoiceRemark="ngModel"
+                                [class.error]="InvoiceRemark.invalid && InvoiceRemark.touched"
+                                [class.has-success]="InvoiceRemark.valid"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button class="btn btn-primary btn-sm" *ngIf="showButton==='Do you want to approve invoice?'"
+                            (click)="ApproveReject(Referralreject,'Invoice')">Yes</button>
+                        <button class="btn btn-primary btn-sm" *ngIf="showButton==='Do you want to reject invoice?'"
+                            [disabled]="!UpdateCredentials.InvoiceRemark"
+                            (click)="ApproveReject(Referralreject,'Invoice')">Yes</button>
+                        <button class="btn btn-danger btn-sm" (click)="passwordConfirmationModal.hide()">No
+                            Thanks</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- POPUP FOR EmailChangeModal UPDATE -->
+<div bsModal cdkDrag #EmailChangeModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-info modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">
+                    <strong>Update New UserId</strong>
+                </h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="EmailChangeModal.hide()" />
+            </div>
+            <form #SetCredentials="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" name="UserId" [disabled]=true
+                                placeholder="Current UserId" [(ngModel)]="UpdateCredentials.OldUserId" required>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-sm-12">
+                            <input type="NewUserId" name="NewUserId" (keyup)="check(UpdateCredentials)"
+                                (blur)="getEmailValidation(UpdateCredentials.NewUserId)"
+                                [class.error]="NewUserId.invalid && NewUserId.touched"
+                                [class.has-success]="NewUserId.valid"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$"
+                                class="form-control input-underline" [ngClass]="isEmailAvailable ?'textBox':''"
+                                id="NewUserId" name="NewUserId" required [(ngModel)]="UpdateCredentials.NewUserId"
+                                placeholder="New UserId" [disabled]="!UpdateCredentials.OldUserId" #NewUserId="ngModel"
+                                required autocomplete="off">
+                            <div *ngIf="NewUserId.errors && (NewUserId.dirty || NewUserId.touched)"
+                                class="alert alert-danger">
+                                <div [hidden]="!NewUserId.errors.required">
+                                    UserId is required!
+                                </div>
+                                <div [hidden]="!NewUserId.errors.pattern">
+                                    Enter Valid Email!
+                                </div>
+                            </div>
+                            <span [hidden]="isEmailAvailable" class="text-danger">{{showemail}}</span>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-sm-12">
+                            <input type="email" class="form-control input-underline" required
+                                [(ngModel)]="UpdateCredentials.confirmNewId" name="confirmNewId" #confirmNewId="ngModel"
+                                [class.has-success]="confirmNewId.valid" (keyup)="check(UpdateCredentials)"
+                                [class.error]="confirmNewId.invalid && confirmNewId.touched"
+                                placeholder="Confirm New UserId">
+                            <span [ngClass]="correct==='Match' ?'text-success':'text-danger'"
+                                name="result">{{correct}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button class="btn btn-primary btn-sm"
+                        [disabled]="SetCredentials.invalid || correct!=='Match' || !isEmailAvailable"
+                        (click)="UpdateDetails(SetCredentials)">Save</button>
+                    <button class="btn btn-danger btn-sm" (click)="EmailChangeModal.hide()">No Thanks
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- POPUP FOR EOI Disqualified confirmation -->
+<div bsModal cdkDrag #EOIDisqualifiedModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-info modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">
+                    <strong>Alert</strong>
+                </h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="EOIDisqualifiedModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <h4>
+                    <b>
+                        If you click on Confirm Button.It means you have returned all Token amount to lead.
+                    </b>
+                    <b> {{leadData.amount}} &#8377; released for Lead (
+                        {{leadData.Name}} ).
+                    </b>
+                </h4>
+                <div class="row justify-content-center">
+                    <button class="btn btn-success btn-md" (click)="ReturnEOI(leadData.amount)"> Confirm</button>
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <button class="btn btn-danger btn-md" (click)="EOIDisqualifiedModal.hide()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

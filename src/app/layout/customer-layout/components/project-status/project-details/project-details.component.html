@@ -1,0 +1,42 @@
+<div class="card bg-light mb-3">
+    <div class="card-header" (click)="toggle()">{{index +2}} Project Details</div>
+    <div class="card-body" [hidden]="!opened ">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="form-group col-sm-2">
+                        <strong for="proId">Project Name :</strong>
+                        <input type="text" class="form-control" id="proName" [disabled]="true" name="proName"
+                            [(ngModel)]="proModel.proName" #proName="ngModel">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <strong for="buildNo">Building Type :</strong>
+                        <input type="text" class="form-control" id="buildNo" [disabled]="true" name="buildNo"
+                            [(ngModel)]="proModel.buildNo">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <strong for="currStatus">Current Completion Status :</strong> &#37;
+                        <input type="text" class="form-control" id="currStatus" [disabled]="true" name="currStatus"
+                            [(ngModel)]="proModel.currStatus">
+                    </div>
+
+                    <div class="form-group col-sm-2">
+                        <strong for="estiDate">Estimated Completion Date :</strong>
+                        <input type="text" dateFormatPipe class="form-control" id="estiDate" [disabled]="true"
+                            name="estiDate" [(ngModel)]="proModel.estiDate">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <strong for="planFlat">Plan Activity For Your Flat :</strong>
+                        <input class="form-control" type="text" [(ngModel)]="proModel.planFlat" name="planFlat"
+                            id="planFlat" [disabled]="true">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <strong for="currPrice">Current Price(per Square foot) :</strong>
+                        <input type="text" class="form-control" id="currPrice" [disabled]="true" name="currPrice"
+                            [(ngModel)]="proModel.currPrice">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

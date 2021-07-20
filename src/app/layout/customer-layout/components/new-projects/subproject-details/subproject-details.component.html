@@ -1,0 +1,93 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <div class="col-sm-2 backbttn">
+        <button class="form-control" *ngIf="showArchitectDetails" matTooltip="Back to {{subProjectName}}"
+            (click)="showArchitectDetails=false"> <i class="fa fa-arrow-left pull-left" aria-hidden="true"></i> &nbsp;
+            {{subProjectName}}</button>
+    </div>
+    <div class="col-sm-12">
+        <div class="row" *ngIf="!showArchitectDetails">
+            <mat-card class="cardforLayout pointer" *ngFor="let subproject of subprojectList; trackBy: trackByFn">
+                <img mat-card-image src="./../../../../../../../assets/images/bunglow.jpg" alt="Photo bunglow"
+                    matTooltip="Click to Open" (click)="getArchitect(subproject)">
+                <mat-card-title>{{subproject.SubProjectName}}
+
+                    <button class="btn-update btn btn-light round-btn" (click)="showSubProjectFiles(subproject)"
+                        matTooltip="Click to Open Plot Related Files">
+                        <i class="fa fa-file pointer"></i></button>&nbsp;
+                </mat-card-title>
+                <mat-divider></mat-divider>
+
+                <mat-card-content matTooltip="Click to Open" (click)="getArchitect(subproject)">
+                    <p class="text desc descstyle">
+                        FSI: <strong>{{subproject.FSI}}</strong> <br />
+                        PlinthLevel: <strong>{{subproject.PlinthLevel}}</strong>
+                        <br />
+                        ContourLevel: <strong>{{subproject.ContourLevel}}</strong>
+                        <br />
+                        Budget: <strong>{{subproject.Budget}}</strong> <br />
+                        Consultant Status: <strong>{{subproject.ConsultantStatus | titlecase}}</strong>
+                        <br />
+                        Direction: <strong>{{subproject.Direction }}</strong> <br />
+                        FloorAllowed: <strong>{{subproject.FloorAllowed }}</strong> <br />
+                        FrontMargin: <strong>{{subproject.FrontMargin }}</strong> <br />
+                        FrontRoadWidth: <strong>{{subproject.FrontRoadWidth }}</strong> <br />
+                        MaxHeightOfUnit: <strong>{{subproject.MaxHeightOfUnit }}</strong> <br />
+                        MaxPlinthArea: <strong>{{subproject.MaxPlinthArea }}</strong> <br />
+                        PlotArea: <strong>{{subproject.PlotArea }}</strong> <br />
+                        PlotLength: <strong>{{subproject.PlotLength }}</strong> <br />
+                        PlotWidth: <strong>{{subproject.PlotWidth }}</strong> <br />
+                        RearMargin: <strong>{{subproject.RearMargin }}</strong> <br />
+                        RearRoadWidth: <strong>{{subproject.RearRoadWidth }}</strong> <br />
+                        Sector: <strong>{{subproject.Sector }}</strong> <br />
+                        RoadLevel: <strong>{{subproject.RoadLevel }}</strong> <br />
+                        SideMargin: <strong>{{subproject.SideMargin }}</strong> <br />
+                    </p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    <div *ngIf="showArchitectDetails">
+        <app-architect-details [subProjectDetails]="subProjectDetails"></app-architect-details>
+    </div>
+</div>
+<!-- Modal Pop Up for Show SbProject Files -->
+<div bsModal cdkDrag #fileModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">File Details</h4>
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="fileModel.hide()" />
+            </div>
+            <div class="modal-body">
+                <span class="required" *ngIf="subProjectDoc.length===0"> Document not found</span>
+                <div class="table-responsive" *ngIf="subProjectDoc.length>0">
+                    <table class="table table-bordered table-hover table-striped table-sm ">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Document</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let sproject of subProjectDoc; trackBy: trackByFn; let i = index">
+                                <td> <button type="button" class="btn btn-sm btn-link"
+                                        (click)="openFileInNewTab(sproject.FileUrl)">
+                                        <b>{{sproject.FileName}}</b></button></td>
+                                <td> {{sproject.Remark}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

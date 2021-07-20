@@ -1,0 +1,75 @@
+<div class="col-sm-12 background">
+    <div class="row">
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-outline-primary previous round" (click)="previousClick()"><i class="fa fa-arrow-left"></i></button>
+        </div>
+        <div id="{{'chart'+ id}}" class="col col-sm-10">
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-outline-primary next round" (click)="nextClick()"><i class="fa fa-arrow-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- <div bsModal #showDetailReportModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center">Lead Details (Lead Stage Dist)</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <strong>Total Leads Count : {{totalLeadCount}}</strong>
+                <br/>
+                <strong>Total Count : {{totalLeadCount}}</strong>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-9" >
+                        <strong >Report for dates </strong>
+                        <br/>
+                        <strong >From : {{from}}</strong>
+                        <br/>
+                        <strong >To : {{to}}</strong>
+                        <br/>
+                        <strong >Name : {{name}}</strong>
+                        <br/>
+                        <strong>Currently In:</strong>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="row">
+                            <strong>Search by Status</strong>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <select class="form-control" id="status" name="status" [(ngModel)]="termstatus">
+                                <option value="">--Select--</option>
+                                <option class='option' *ngFor='let status of statusArray' [value]="status">{{status}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <strong id="exception" *ngIf="exceptionMsg">No data Found</strong>
+                <div style="overflow-x: auto;">
+                   <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th *ngFor="let columnName of tableColumn">{{columnName}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let detail of showReportDetails | filter:termstatus | paginate: { itemsPerPage: 10, currentPage: p } ">
+                                <td *ngFor="let columndetail of tableColumn">{{detail[columndetail]}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot>
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

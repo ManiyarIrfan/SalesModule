@@ -1,0 +1,218 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<mat-card *ngIf="!isSpinnerActive">
+    <span class="required">{{DataNotFoundMessage}}</span>
+    <div *ngIf="!showDataNotFoundMessage">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <strong for="selectOrder">
+                            <span class="required">*</span>Select Order Id For payment Details:</strong>
+                    </div>
+                    <div class="col-sm-6">
+                        <select type="text" class="form-control" id="selectOrder" name="selectOrder" (change)="getPaymentScheduleDetails($event.target.value);">
+                            <option class='option' *ngFor='let orders of showstatement;trackBy: trackByFn;'
+                                [value]="orders.OrderId">
+                                {{orders.FlatDetails}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <mat-expansion-panel [expanded]='true'>
+            <mat-expansion-panel-header class="right-aligned-header">
+                <mat-panel-title>
+                    <strong> Payment Summary </strong>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+                <div [hidden]="!paymentDetailsNotFound">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>Order Id</th>
+                                    <th>Total Agreed Amount</th>
+                                    <th>Total Demand Raised</th>
+                                    <th>Amount Paid</th>
+                                    <th>Remaining Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let PaymentSchedule of paymentDetails;trackBy: trackByFn">
+                                    <td> {{PaymentSchedule.OrderId}} </td>
+                                    <td> {{PaymentSchedule.TotalAgreedAmount | currency:'INR'}} </td>
+                                    <td> {{PaymentSchedule.TotalDemandRaised | currency:'INR'}} </td>
+                                    <td> {{PaymentSchedule.TotalAmountPaid | currency:'INR'}} </td>
+                                    <td> {{PaymentSchedule.AmountBalance?(PaymentSchedule.AmountBalance | currency:'INR'):0}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>Stamp Duty</th>
+                                    <th>Registration Tax</th>
+                                    <th>TDS</th>
+                                    <th>GST</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td> {{LeadDetails.StampDuty| currency:'INR'}} </td>
+                                    <td> {{LeadDetails.Tax | currency:'INR'}} </td>
+                                    <td> {{LeadDetails.TDS | currency:'INR'}} </td>
+                                    <td> {{LeadDetails.GST | currency:'INR'}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-template>
+        </mat-expansion-panel>
+        <mat-expansion-panel [expanded]='true'>
+            <mat-expansion-panel-header class="right-aligned-header">
+                <mat-panel-title>
+                    <strong> Payment Demands Details </strong>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+                <div [hidden]="!paymentDetailsNotFound">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>Installment No</th>
+                                    <th>Pay Against</th>
+                                    <th>Invoice No</th>
+                                    <th>Percentage</th>
+                                    <th>Demand Raised</th>
+                                    <!-- <th>Infra Received</th> -->
+                                    <th>Amount Received</th>
+                                    <th>Remaining</th>
+                                    <th>Advance Received</th>
+                                    <th>Status</th>
+                                    <th>Estimated Billing Date</th>
+                                    <th>Demand Letter</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let PaymentSchedule of paymentDetail;trackBy: trackByFn;">
+                                    <td>{{PaymentSchedule.InstallmentNo}}</td>
+                                    <td class="text-left">{{PaymentSchedule.PayAgainst}}</td>
+                                    <td>{{PaymentSchedule.InvoiceNo}}</td>
+                                    <td>{{PaymentSchedule.Percentage}}</td>
+                                    <td class="text-right">{{PaymentSchedule.TotalAmount | currency:'INR'}} </td>
+                                    <td class="text-right"> {{PaymentSchedule.AmountReceived | currency:'INR'}} </td>
+                                    <td class="text-right">{{PaymentSchedule.TotalDemandRemaining | currency:'INR'}}
+                                    </td>
+                                    <td class="text-right">{{PaymentSchedule.AdvancePayment | currency:'INR'}}</td>
+                                    <td>{{PaymentSchedule.Status}}</td>
+                                    <td>{{PaymentSchedule.EstimatedBillingDate |date:"d MMM y"}}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" *ngIf="PaymentSchedule.VerificationStatus==='Verified'" (click)="downloadDemandLetter(PaymentSchedule,LeadDetails)">
+                                            <i class="fa fa-arrow-down"></i> Download</button>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td colspan="3" class="text-danger text-right font-weight-bold">Total</td>
+                                    <td class="text-danger font-weight-bold"> {{TotalValues.TotalPercentage}}</td>
+                                    <td class="text-danger font-weight-bold"> {{TotalValues.AllTotalAmount |
+                                        currency:'INR'}}</td>
+                                    <td class="text-danger font-weight-bold"> {{TotalValues.TotalAmountReceived |
+                                        currency:'INR'}}</td>
+                                    <td class="text-danger font-weight-bold"> {{TotalValues.AllTotalDemandRemaining |
+                                        currency:'INR'}}
+                                    </td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div [hidden]="isShow">
+                    <div [hidden]="paymentDetailsNotFound" class="col-sm-12">
+                        <span class="required">Payment Schedule is not Available for this Order ID ,Please Contact
+                            Office!!!
+                        </span>
+                    </div>
+                </div>
+            </ng-template>
+        </mat-expansion-panel>
+    </div>
+    <br />
+    <mat-expansion-panel>
+        <mat-expansion-panel-header class="right-aligned-header">
+            <mat-panel-title>
+                <strong> Payment Receipt Details</strong>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-template matExpansionPanelContent>
+            <div class="table-responsive">
+                <div *ngIf="financeReceipt && financeReceipt.length>0">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th># Installment</th>
+                                <th>Pay Against</th>
+                                <th>Invoice No</th>
+                                <th>Receipt Date</th>
+                                <th>Amount Received</th>
+                                <th>Tax</th>
+                                <th>Infra</th>
+                                <th>Advance Paid</th>
+                                <th>Pay By</th>
+                                <th>Bank</th>
+                                <th>Cheque No</th>
+                                <th>Cheque Date</th>
+                                <th>Check Copy</th>
+                                <th>Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let PaymentSchedule of financeReceipt;trackBy: trackByFn;">
+                                <td>{{PaymentSchedule.InstallmentNo}} </td>
+                                <td class="text-left">{{PaymentSchedule.PayAgainst}}</td>
+                                <td>{{PaymentSchedule.InvoiceNo}}</td>
+                                <td>{{PaymentSchedule.ReceiptDate}}</td>
+                                <td class="text-right">{{PaymentSchedule.PaidAgainstDue | currency:'INR'}} </td>
+                                <td class="text-right">{{PaymentSchedule.ServiceTax | currency:'INR'}} </td>
+                                <td class="text-right">{{PaymentSchedule.Infra | currency:'INR'}}</td>
+                                <td class="text-right">{{PaymentSchedule.AdvancePayment | currency:'INR'}}</td>
+                                <td>{{PaymentSchedule.PayBy}}</td>
+                                <td>{{PaymentSchedule.BankName}}</td>
+                                <td>{{PaymentSchedule.ChequeNumber}}</td>
+                                <td>{{PaymentSchedule.ChequeDate}}</td>
+                                <td>
+                                    <a class="btn btn-sm btn-link imgsize" *ngIf="PaymentSchedule.ReceiptCopy!== null" href="{{PaymentSchedule.ReceiptCopy}}" target="_blank">
+                                        <i class="fa fa-file-image-o" id="imageLogo"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success btn-sm" *ngIf="PaymentSchedule.VarificationStatus==='Verified'" (click)="downloadReceipt(PaymentSchedule,LeadDetails)">
+                                        <i class="fa fa-arrow-down"></i> Download</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-12" *ngIf="financeReceipt && financeReceipt.length === 0">
+                <span class="required">Financial Reciept is not Available for this Order ID ,Please Contact
+                    Office!!!
+                </span>
+            </div>
+        </ng-template>
+    </mat-expansion-panel>
+</mat-card>

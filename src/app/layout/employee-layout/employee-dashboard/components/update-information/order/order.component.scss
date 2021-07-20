@@ -1,0 +1,146 @@
+.box {
+  border: 1px solid #d3d3d3;
+  padding: 10px;
+}
+
+.btn-info {
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  vertical-align: middle;
+  border: 1px solid transparent !important;
+  border-radius: 4px;
+  border-color: #ccc !important;
+  width: 100%;
+}
+
+.thead-light {
+  font-size: 15px;
+  column-width: auto;
+}
+
+.divider-vertical1 {
+  border-right: 1px solid #d3d3d3;
+}
+
+.divider-vertical2 {
+  border-right: 1px solid #d3d3d3;
+}
+
+.icon-addon.addon-md .fa,
+.icon-addon .fa {
+  top: 28px !important;
+}
+
+.selectdate {
+  color: red;
+  text-align: center;
+  font-size: 15px;
+}
+
+.listnotfound {
+  color: red;
+  font-size: 15px;
+}
+::ng-deep .textStyle {
+  text-align: center;
+  color: black;
+}
+
+#celender {
+  min-height: 250px;
+}
+
+@media (min-width: 992px) {
+  .modal-xl {
+    max-width: 1368px;
+    max-height: 1000px;
+  }
+}
+
+.modal-header {
+  background-color: #33b5e5;
+  padding: 0.3rem 1rem;
+}
+
+.modal-header-md {
+  background-color: rgb(238, 146, 9);
+}
+
+.title-md {
+  margin-left: 220px;
+  color: white;
+}
+
+.bdyalign {
+  line-height: 2.5;
+}
+
+:host ::ng-deep .custom-toast .ui-toast-message {
+  color: #ffffff;
+  background: #fc466b;
+  background: -webkit-linear-gradient(to right, #3f5efb, #fc466b);
+  background: linear-gradient(to right, #3f5efb, #fc466b);
+}
+
+:host ::ng-deep .custom-toast .ui-toast-close-icon {
+  color: #ffffff;
+}
+
+.btn {
+  border-radius: 20px;
+}
+
+.modal-title {
+  margin-left: 27em;
+}
+
+#buttonmargin {
+  margin-right: 50px;
+}
+
+#colmargin {
+  margin-top: 2em;
+}
+
+::ng-deep .btn-link:hover {
+  color: #000000 !important;
+}
+
+// ::ng-deep .btn-link {
+//   font-size: 20px;
+//   color: white;
+// }
+// ::ng-deep .card-header {
+//   padding: 0px;
+//   border-top-right-radius: 21px;
+//   border-top-left-radius: 21px;
+//   // background: #098cb3ba;
+//   background-image: linear-gradient(to right, #075f7ae6, #0da9d873);
+// }
+.formmargin {
+  margin-bottom: 3px;
+}
+// ::ng-deep .card {
+//   border-radius: 0.756rem;
+//   border-top-left-radius: 23px;
+//   border-top-right-radius: 23px;
+// }
+// #btnlink {
+//   color: black !important;
+//   font-size: 15px;
+// }
+::ng-deep .file-upload-box {
+  width: 283px !important;
+  display: inline-block;
+  vertical-align: left;
+  max-height: 150px;
+  overflow: auto;
+}
+.marginleft{
+  margin-left: 20px !important;
+}
+.left-align{
+  text-align: left;
+}

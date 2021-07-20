@@ -1,0 +1,145 @@
+<div [@routerTransition]>
+    <div class="col-sm-12">
+        <form>
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- <app-update-information [callData]="callData"></app-update-information> -->
+                    <app-update-information [referralInfoData]="referralInfo" [Enqid]="id"></app-update-information>
+                </div>
+
+                <!-- Toast at the time of incoming call -->
+                <p-toast position="bottom-center" key="custom" (onClose)="onReject()" styleClass="custom-toast"
+                    [modal]="true" [baseZIndex]="5000">
+                    <ng-template let-message pTemplate="message">
+                        <div class="text-center">
+                            <i class="fa fa-volume-control-phone" style="font-size: 3em"></i>
+                            <h5>You have Call From Enquiry.{{callerName}} and Mobile Number:- {{callerMobileNo}} and
+                                Id:-{{callerID}}. </h5>
+                            <p>Employee Id :-{{empID}}</p>
+                            <button class="btn btn-sm btn-primary" (click)="moreInfo(incomingCallInfo)">More
+                                Information</button>
+                        </div>
+                    </ng-template>
+                </p-toast>
+                <!-- For Incoming and OutGoing Call Details Toast -->
+                <p-toast position="bottom-right" key="incomingOutgoing" (onClose)="onReject()" [baseZIndex]="10000">
+                    <ng-template let-message pTemplate="message">
+                        <div class="text-center">
+                            <i class="fa fa-volume-control-phone" style="font-size: 3em"></i>
+                            <h5 *ngIf="!missedCall && !customerMissed"><b>Last call status</b> is <b>{{this.status}}
+                                </b> and Details are updated in Call Details Tab. </h5>
+                            <h5 *ngIf="!missedCall && customerMissed"><b>Last call status</b> is <b>"{{AgentName}}</b>
+                                Missed the Call" and Details are updated in Call Details Tab. </h5>
+                            <h5 *ngIf="customerMissed"><b>Last call status </b> is "Customer didnot pickup call" and
+                                Details are updated in Call Details Tab. </h5>
+                        </div>
+                    </ng-template>
+                </p-toast>
+                <!-- For Follow Up Notification -->
+                <p-toast position="top-center" key="followupKeyData" styleClass="custom-toast" (onClose)="onReject()"
+                    [baseZIndex]="10000">
+                    <ng-template let-message pTemplate="message">
+                        <div class="text-center">
+                            <i class="fa fa-clock" style="font-size: 3em"></i>
+                            <h5>You have Follow Up For Id:-<b> {{ followUpcustomer }} </b> at <b> {{followuptime}}.</b>
+                            </h5>
+                        </div>
+                    </ng-template>
+                </p-toast>
+                <!-- For Offline call Notification -->
+                <p-toast position="bottom-left" key="offlinecallData" styleClass="custom-toast-offline"
+                    (onClose)="onReject()" [baseZIndex]="10000">
+                    <ng-template let-message pTemplate="message">
+                        <div class="text-center">
+                            <i class="fa fa-volume-control-phone" style="font-size: 3em"></i>
+                            <h5> <b> Offline Call Status</b> <br /> is
+                                <b> {{callStatus}}</b> with <b> {{offlineCallcustomer}}</b>
+                                <br />and Details Are updated in Call Details Tab. </h5>
+                        </div>
+                    </ng-template>
+                </p-toast>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- popup for to see performance -->
+<div bsModal #showPerformanceInHrmsModal="bs-modal" cdkDrag class="modal fade model" role="dialog"
+    data-backdrop="static" data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true"
+    [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg modal-notify modal-warning">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <div class="col-sm-12 text-center">
+                    <h3 class="modal-title text-white">Have you checked your targets?</h3>
+                </div>
+                <!-- <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showPerformanceInHrmsModal.hide()" /> -->
+            </div>
+            <div class="modal-body">
+                <br>
+                <div class="row justify-content-md-center font">
+                    <a href={{hrUrl}} target="_blank" *ngIf="this.loggedInuserDetails.UserType ==='Employee'"
+                        (click)="close()">
+                        <i class="fa fa-link"></i> Click Here to go to HRMS system
+                    </a>
+                </div><br><br>
+                <div class="row">
+                    <div class="col-sm-12 text-center notefont">
+                        <strong>Note: </strong><span class="text-danger">Login Id and Password would be same as being
+                            used for TRU portal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div bsModal #showIncentiveModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg modal-notify modal-warning">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <div class="col-sm-12 text-center">
+                    <h3 class="modal-title text-white">Incentive Rate</h3>
+                </div>
+                <!-- <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showPerformanceInHrmsModal.hide()" /> -->
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive scrollbar mt-2" id="style-2">
+                    <table class=" table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Incentive On</th>
+                                <th>Rate</th>
+                                <th>Effective From</th>
+                                <th>Effective To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of IncentiveData;trackBy: trackByFn">
+                                <td>
+                                    {{data.IncentiveOn}}
+                                </td>
+                                <td>
+                                    <i class="fa fa-inr" aria-hidden="true"></i>{{data.price}}
+                                </td>
+                                <td>
+                                    {{data.EffectiveStartDate |date:'d MMM y'}}
+                                </td>
+                                <td>
+                                    {{data.EffectiveEndDate |date:'d MMM y'}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-12 text-center">
+                    <button type="button" class="btn btn-primary btn-sm" (click)="showIncentiveModal.hide()">
+                        <i class="fa fa-paper-plane"></i> I Agree</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Action Items / Task Pending Modal POp up -->
+<app-task-reminder-modal></app-task-reminder-modal>

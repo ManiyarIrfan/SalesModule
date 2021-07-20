@@ -1,0 +1,168 @@
+.cardforLayout {
+  margin: 3px;
+  border: 1px solid #c3bdbd;
+  //background-color: #e1e3e4;
+  background-image: linear-gradient(to right, #e5e6e6 9%, #d1e4eb85 100%);
+  border-radius: 6px;
+  border-bottom: solid 4px rgba(78, 78, 78, 0.493);
+  position: relative;
+  padding-bottom: 7px;
+  }
+   
+  .fontweight{
+    font-weight: bold;
+    padding-right: 2px;
+  }
+
+.bright_back {
+    background: url("../../../../../../assets/images/photos.png");
+  }
+  .movie_card {
+    position: relative;
+    display: block;
+    width: 50%;
+    height: 220px;
+    margin: 8px auto;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: all 0.1s;
+    border: 1px solid #bbbbbb;
+    //box-shadow: 0px 0px 120px -25px rgba(0,0,0, 0.5);
+    &:hover {
+      transform: scale(1.00);
+      box-shadow: 0px 0px 80px -25px rgba(80, 80, 80, 0.808);
+      transition: all 0.4s;
+    }
+    .info_section {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-blend-mode: multiply;
+      z-index: 2;
+      border-radius: 10px;
+      padding-top: 100px;
+      padding-left: 32px;
+      .movie_header {
+        position: relative;
+        padding: 25px;
+        height: 40%;
+        h1 {
+          color: black;
+          font-weight: 400;
+          font-size: 25px;
+        }
+        h4 {
+          color: rgb(32, 32, 32);
+          font-weight: 400;
+          font-size: 18px;
+        }
+        .city {
+          color: rgb(32, 32, 32);
+        }
+        .type {
+          display: inline-block;
+          color: #959595;
+          margin-left: 10px;
+        }
+        .locandina {
+          position: relative;
+          float: left;
+          margin-right: 20px;
+          height: 110px;
+          box-shadow: 0 0 20px -10px rgba(0, 0, 0, 0.5);
+        }
+      }
+      .movie_desc {
+        padding: 25px;
+        height: 50%;
+        .text {
+          color: #000000;
+          font-weight: 500;
+        }
+      }
+      .movie_social {
+        margin-top: -2em;
+        ul {
+          list-style: none;
+          padding: 7px;
+        }
+      }
+    }
+    .blur_back {
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      height: 100%;
+      right: 0;
+      background-size: cover;
+      border-radius: 11px;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .movie_card {
+      width: 95%;
+      margin: 70px auto;
+      min-height: 350px;
+      height: auto;
+    }
+  
+    .blur_back {
+      width: 100%;
+      background-position: 50% 50% !important;
+    }
+  
+    .movie_header {
+      width: 100%;
+      margin-top: 85px;
+    }
+  
+    .movie_desc {
+      width: 100%;
+    }
+  
+    .info_section {
+      background: linear-gradient(to top, #e5e6e6 50%, transparent 100%);
+      display: inline-grid;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    .movie_header {
+      width: 65%;
+    }
+  
+    .movie_desc {
+      width: 50%;
+    }
+  
+    .info_section {
+      background: linear-gradient(to right, #e5e6e6 50%, transparent 100%);
+    }
+  
+    .blur_back {
+      width: 80%;
+      background-position: -100% 10% !important;
+    }
+  }
+  
+::ng-deep  .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #000000;
+}
+::ng-deep  .mat-radio-button.mat-accent .mat-radio-inner-circle, .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple), .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple, .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
+    background-color: #3f788f;
+}
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #367891;
+}
+
+hr.style-one {
+  border: 0;
+  height: 1px;
+  background: #333;
+  background-image: -webkit-linear-gradient(left, #ccc, #333, #ccc);
+  background-image: -moz-linear-gradient(left, #ccc, #333, #ccc);
+  background-image: -ms-linear-gradient(left, #ccc, #333, #ccc);
+  background-image: -o-linear-gradient(left, #ccc, #333, #ccc);
+  }
+  .formstyle{
+    padding-left: 10px;
+  }

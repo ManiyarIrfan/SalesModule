@@ -1,0 +1,214 @@
+<div [hidden]="!isLoading">
+  <p class="loading">
+    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+  </p>
+</div>
+<div *ngIf="showGrid">
+  <div class="card-body table-responsive" align="center">
+    <strong class="required"> {{NoDataFoundMessage}} </strong>
+    <table class="table table-bordered" *ngIf="NoDataFoundMessage===''">
+      <thead class="thead-light">
+        <tr>
+          <th>Sr.No.</th>
+          <th>Pay Against</th>
+          <th>Percentage</th>
+          <th>Total Demand Raised</th>
+          <th>Tax Due</th>
+          <th>Status</th>
+          <th>Estimated Billing Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of paymentScheduleFields; let i = index">
+          <td>{{payment.InstallmentNo}}</td>
+          <td>{{payment.PayAgainst}}</td>
+          <td>{{payment.Percentage}}</td>
+          <td>{{payment.TotalDemandRaised}}</td>
+          <td>{{payment.TaxReceived}}</td>
+          <td>{{payment.Status}}</td>
+          <td>{{payment.EstimatedBillingDate | date:"d MMM y"}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div bsModal #financialModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+  aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+  <form novalidate [formGroup]="FinancialStatusForm">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">Create Receipt Details</h4>
+          <img id="cross" src="assets/images/cross.png" alt="X" (click)="onCloseCreateReceipt()" />
+        </div>
+        <div class="modal-body">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <strong>
+                  <span class="required">*</span>Order Id :</strong>
+                <input type="text" class="form-control" formControlName="OrderId" required
+                  [class.error]="OrderId.invalid && (OrderId.dirty || OrderId.touched)"
+                  [class.has-success]="OrderId.valid && (OrderId.dirty || OrderId.touched)">
+              </div>
+              <hr align="left" width="100%">
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required">*</span>Installment Number :</strong>
+                <input type="text" class="form-control" formControlName="installmentNo" required
+                  [class.error]="installmentNo.invalid && (installmentNo.dirty || installmentNo.touched)"
+                  [class.has-success]="installmentNo.valid && (installmentNo.dirty || installmentNo.touched)">
+              </div>
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required">*</span>Pay Against :</strong>
+                <input type="text" class="form-control" formControlName="PayAgainst1" required
+                  [class.error]="PayAgainst1.invalid && (PayAgainst1.dirty || PayAgainst1.touched)"
+                  [class.has-success]="PayAgainst1.valid && (PayAgainst1.dirty || PayAgainst1.touched)">
+              </div>
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required">*</span>Status :</strong>
+                <input type="text" class="form-control" formControlName="Status1" required
+                  [class.error]="Status1.invalid && (Status1.dirty || Status1.touched)"
+                  [class.has-success]="Status1.valid && (Status1.dirty || Status1.touched)">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required">*</span>Receipt Date :</strong>
+                <input type="date" class="form-control" formControlName="ReceiptDate" required
+                  [class.error]="ReceiptDate.invalid && (ReceiptDate.dirty || ReceiptDate.touched)"
+                  [class.has-success]="ReceiptDate.valid && (ReceiptDate.dirty || ReceiptDate.touched)">
+              </div>
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required"></span>Document Number :</strong>
+                <input type="text" class="form-control" formControlName="DocumentNo"
+                  [class.error]="DocumentNo.invalid && (DocumentNo.dirty || DocumentNo.touched)"
+                  [class.has-success]="DocumentNo.valid && (DocumentNo.dirty || DocumentNo.touched)">
+              </div>
+              <div class="form-group col-sm-4 ">
+                <strong>
+                  <span class="required"></span>Document Type :</strong>
+                <input type="text" class="form-control" formControlName="DocumentType"
+                  [class.error]="DocumentType.invalid && (DocumentType.dirty || DocumentType.touched)"
+                  [class.has-success]="DocumentType.valid && (DocumentType.dirty || DocumentType.touched)">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required"></span>Cheque Date :</strong>
+                <input type="date" class="form-control" formControlName="ChequeDate"
+                  [class.error]="ChequeDate.invalid && (ChequeDate.dirty || ChequeDate.touched)"
+                  [class.has-success]="ChequeDate.valid && (ChequeDate.dirty || ChequeDate.touched)">
+              </div>
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required"></span>Cheque Number :</strong>
+                <input type="text" class="form-control" formControlName="ChequeNumber"
+                  [class.error]="ChequeNumber.invalid && (ChequeNumber.dirty || ChequeNumber.touched)"
+                  [class.has-success]="ChequeNumber.valid && (ChequeNumber.dirty || ChequeNumber.touched)">
+              </div>
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required"></span>Bank Name :</strong>
+                <input type="text" class="form-control" formControlName="BankName"
+                  [class.error]="BankName.invalid && (BankName.dirty || BankName.touched)"
+                  [class.has-success]="BankName.valid && (BankName.dirty || BankName.touched)">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required"></span>Branch :</strong>
+                <input type="text" class="form-control" formControlName="Branch"
+                  [class.error]="Branch.invalid && (Branch.dirty || Branch.touched)"
+                  [class.has-success]="Branch.valid && (Branch.dirty || Branch.touched)">
+              </div>
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required"></span>Pay By :</strong>
+                <input type="text" class="form-control" formControlName="PayBy"
+                  [class.error]="PayBy.invalid && (PayBy.dirty || PayBy.touched)"
+                  [class.has-success]="PayBy.valid && (PayBy.dirty || PayBy.touched)">
+              </div>
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required"></span>Service Tax :</strong>
+                <input type="text" class="form-control" formControlName="ServiceTax"
+                  [class.error]="ServiceTax.invalid && (ServiceTax.dirty || ServiceTax.touched)"
+                  [class.has-success]="ServiceTax.valid && (ServiceTax.dirty || ServiceTax.touched)">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <strong>
+                  <span class="required">*</span>Total Paid Against Due :</strong>
+                <input type="text" class="form-control" formControlName="PaidAgainstDue" required
+                  [class.error]="PaidAgainstDue.invalid && (PaidAgainstDue.dirty || PaidAgainstDue.touched)"
+                  [class.has-success]="PaidAgainstDue.valid && (PaidAgainstDue.dirty || PaidAgainstDue.touched)">
+              </div>
+              <div class="form-group" [hidden]="getFinanceStatus ==true">
+                <strong>Upload Image :</strong>
+                <input type="file" #uploader formControlName="uploadFiles" class="form-control"
+                  (change)="fileChange(uploader.files)" placeholder="Upload Files">
+              </div>
+              <div class="form-group" [hidden]="getFinanceStatus ==false">
+                <button type="button" class="btn btn-sm btn-link btnfont" (click)="viewImage()">
+                  <i class="fa fa-image"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div align="center">
+            <button [disabled]="!FinancialStatusForm.valid" type="button" class="btn btn-primary"
+              [hidden]="getFinanceStatus ==true"
+              (click)="OnInsertCreateReceiptBttnClick(FinancialStatusForm)">Submit</button>
+          </div>
+          <br />
+          <div class="row justify-content-md-center">
+            <div class="alert alert-success" *ngIf="financialStatusInsertSuccessfully!==''" role="alert">
+              <h4>
+                <i class="fa fa-check"></i> {{financialStatusInsertSuccessfully}}</h4>
+            </div>
+            <div class="alert alert-warning" *ngIf="financialStatusInsertUnsuccessfully!==''" role="alert">
+              <h4>
+                <i class="fa fa-times-circle"></i> {{financialStatusInsertUnsuccessfully}}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div bsModal #showFinancialStatusImageModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+  data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+  <div class="modal-dialog  modal-lg">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h4 class="modal-title center">Image</h4>
+        <img id="cross" src="assets/images/cross.png" alt="X" (click)="onClose()" />
+      </div>
+      <div class="modal-body">
+        <div [hidden]="!isLoading">
+          <p class="loading">
+            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+          </p>
+        </div>
+        <div>
+          <div *ngIf="isImageAvailable">
+            <img [src]="images" alt="image slide" class="img">
+          </div>
+          <div *ngIf="!isImageAvailable">
+            <h4 class="notfoundmsg">{{imageNotAvailable}}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<div>
+    <div class="card-header">
+        <div class="row">
+            <strong>
+                <h5>PreSales Performance</h5>
+            </strong>
+            <div class="col-sm-1">
+                <button [disabled]="!enabledButtonExport" type="button" class="btn btn-primary" (click)="exportEvent()">
+                    <i class="fa fa-upload"></i>
+                    &nbsp; Export</button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div [hidden]="!isLoading">
+        <p class="loading">
+            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+        </p>
+    </div>
+    <h5 class="pull-right" *ngIf="preSalesDataList.length > 0"><span class="badge badge-dark">Count :
+            {{preSalesDataList.length}}</span> </h5>
+    <div class="table-responsive scrollb" [hidden]="isLoading" id="style-2">
+        <table class="table table-bordered table-hover  table-sm text-nowrap  tableFixHead" *ngIf="preSalesDataList.length>0">
+            <thead class="table-light">
+                <tr class="text-center">
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Total <br>Calls</th>
+                    <th>Total <br>Talktime</th>
+                    <th>Average <br>Talktime</th>
+                    <th>Total <br>Outgoing</th>
+                    <th>Outgoing <br>Answered</th>
+                    <th>Total <br>Incoming</th>
+                    <th>Incoming <br>Answered</th>
+                    <th>Total <br>Answered</th>
+                    <th>FollowUps <br>Scheduled</th>
+                    <th>FollowUps <br>Conducted</th>
+                    <th>SiteVisit <br>Scheduled</th>
+                    <th>SiteVisit <br>Conducted</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="notFound" class="notfoundmsgreport"> Data Not Available</tr>
+                <tr class="text-center" *ngFor="let item of preSalesDataList">
+                    <td>{{item.Name | titlecase}}</td>
+                    <td>{{item.Team}}</td>
+                    <td>{{item.Total_Calls}}</td>
+                    <td>{{item.Total_Talktime}}</td>
+                    <td>{{item.AverageTalkTime | number : '1.0-2'}}</td>
+                    <td>{{item.Total_Outgoing}}</td>
+                    <td>{{item.Outgoing_Answered}}</td>
+                    <td>{{item.Total_Incoming}}</td>
+                    <td>{{item.Incoming_Answered}}</td>
+                    <td>{{item.Total_Answered}}</td>
+                    <td>{{item.FollowUps_Scheduled}}</td>
+                    <td>{{item.FollowUps_Conducted}}</td>
+                    <td>{{item.SiteVisit_Scheduled}}</td>
+                    <td>{{item.SiteVisit_Conducted}}</td>
+                </tr>
+                <tr class="table-light text-center" *ngFor="let totalItem of totalvalue;trackBy: trackByFn;">
+                    <td></td>
+                    <td>Total</td>
+                    <td>{{totalItem.Total_Calls}}</td>
+                    <td>{{totalItem.Total_Talktime}}</td>
+                    <td>{{totalItem.AverageTalkTime | number : '1.0-2'}}</td>
+                    <td>{{totalItem.Total_Outgoing}}</td>
+                    <td>{{totalItem.Outgoing_Answered}}</td>
+                    <td>{{totalItem.Total_Incoming}}</td>
+                    <td>{{totalItem.Incoming_Answered}}</td>
+                    <td>{{totalItem.Total_Answered}}</td>
+                    <td>{{totalItem.FollowUps_Scheduled}}</td>
+                    <td>{{totalItem.FollowUps_Conducted}}</td>
+                    <td>{{totalItem.SiteVisit_Scheduled}}</td>
+                    <td>{{totalItem.SiteVisit_Conducted}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

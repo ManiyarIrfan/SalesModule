@@ -1,0 +1,610 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<br />
+<mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="selectTab($event)">
+    <mat-tab label="Create Receipt/Payment Details">
+        <div class="container-fluid">
+            <div *ngIf="!createReceipt">
+                <form #getReceiptForm="ngForm" *ngIf="!isSpinnerActive">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-1" class="createBtn" style="padding-top: 22px">
+                                <button type="button" class="btn btn-outline-success btn-xs" placement="bottom"
+                                    ngbTooltip="Create New" (click)="createData()">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="col-sm-6">
+                                    <strong for="selectOrder">
+                                        <span class="required">*</span>Select Order Id For payment Details:</strong>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select type="text" class="form-control" id="selectOrder" name="selectOrder"
+                                        (change)="paymentScheduleDetails($event.target.value)">
+                                        <option class='option' [value]="">--- Select ---</option>
+                                        <option class='option' *ngFor="let orders of showOrderDetails"
+                                            [value]="orders.OrderId">
+                                            {{orders.OrderId}} - {{orders.CustomerName}} - {{orders.FlatNo}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <strong *ngIf="paymentDetails.length===0" class="required">Demand draft is Not Available.
+                    </strong>
+                    <div class="col-sm-12" *ngIf="paymentDetails.length>0">
+                        <div class="card">
+                            <div class="card-body TotalAmountborder" *ngFor="let PaymentSchedule of paymentDetails">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <strong>Agreed Amount :
+                                            {{PaymentSchedule.TotalAgreedAmount| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong>Total GST Amount :
+                                            {{PaymentSchedule.TotalGST| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong>Total INFRA Amount :
+                                            {{PaymentSchedule.TotalInfra| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <strong>Demand Raised :
+                                            {{PaymentSchedule.TotalDemandRaised| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong>GST Demand Raised:
+                                            {{PaymentSchedule.TotalGSTRaised| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong> INFRA Demand Raised :
+                                            {{PaymentSchedule.TotalInfraRaised| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <strong>Total Amount Paid :
+                                            {{PaymentSchedule.TotalAmountPaid| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong>Total Gst Paid:
+                                            {{PaymentSchedule.GstAmountPaid | number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong>Total INFRA Paid :
+                                            {{PaymentSchedule.InfraAmountPaid | number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <strong>Amount Balance :
+                                            {{PaymentSchedule.AmountBalance| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong>GST Amount Balance :
+                                            {{PaymentSchedule.GstAmountBalance| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <strong>Remaining INFRA :
+                                            {{PaymentSchedule.InfraAmountBalance| number:'1.2-2'}}
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <strong *ngIf="paymentDetail.length===0" class="required">Receipt is Not Created.</strong>
+                    <div class="table-responsive" *ngIf="paymentDetail.length>0">
+                        <table class="table table-bordered table-hover table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>PDF</th>
+                                    <th>Action/Status</th>
+                                    <th># Installment</th>
+                                    <th># Invoice</th>
+                                    <th>Demand Raised on Invoice</th>
+                                    <th>Amount Received</th>
+                                    <th>GST Raised on Invoice</th>
+                                    <th>Tax Received</th>
+                                    <th>Infra Raised on Invoice</th>
+                                    <th>Infra Received</th>
+                                    <th>Advance Recieved</th>
+                                    <th>Pay By</th>
+                                    <th>Bank</th>
+                                    <th>Cheque No</th>
+                                    <th>Receipt Date</th>
+                                    <th>File</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let PaymentSchedule of paymentDetail | paginate: {id:'customer-paymentschedule-installmentdetail-pagination', itemsPerPage: 10, currentPage: q1}">
+                                    <td>
+                                        <button class="btn btn-link btn-sm"
+                                            (click)="download(PaymentSchedule)">PDF</button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            *ngIf="PaymentSchedule.AccountingStatus==='Approve' && PaymentSchedule.VarificationStatus!=='Verified'"
+                                            class="btn btn-link btn-sm"
+                                            (click)="openPopup(PaymentSchedule,'Verify')">Verify</button>
+                                        <span *ngIf="PaymentSchedule.VarificationStatus==='Verified'"
+                                            class="badge badge-success">{{PaymentSchedule.VarificationStatus}}</span>
+                                        <span
+                                            *ngIf="PaymentSchedule.VarificationStatus!=='Verified'&& PaymentSchedule.AccountingStatus!=='Approve'"
+                                            class="badge badge-danger">Pending</span>
+                                    </td>
+                                    <td>{{PaymentSchedule.InstallmentNo}}</td>
+                                    <td>{{PaymentSchedule.InvoiceNo}}</td>
+                                    <td>
+                                        <span *ngIf="PaymentSchedule.TotalDemandRaised">
+                                            Rs.{{PaymentSchedule.TotalDemandRaised | currency:'INR'}}</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="PaymentSchedule.AmountReceived">
+                                            Rs.{{PaymentSchedule.AmountReceived | currency:'INR'}}</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="PaymentSchedule.TotalGSTRaised">
+                                            Rs.{{PaymentSchedule.TotalGSTRaised | currency:'INR'}}</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="PaymentSchedule.TaxReceived">
+                                            Rs.{{PaymentSchedule.TaxReceived | currency:'INR'}}</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="PaymentSchedule.TotalInfraRaised">
+                                            Rs.{{PaymentSchedule.TotalInfraRaised | currency:'INR'}}</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="PaymentSchedule.InfraReceived">
+                                            Rs.{{PaymentSchedule.InfraReceived | currency:'INR'}}</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="PaymentSchedule.AdvancePayment">
+                                            Rs.{{PaymentSchedule.AdvancePayment | currency:'INR'}}</span>
+                                    </td>
+                                    <td>{{PaymentSchedule.PayBy}}</td>
+                                    <td>{{PaymentSchedule.BankName}}</td>
+                                    <td>{{PaymentSchedule.ChequeNumber}}</td>
+                                    <td>{{PaymentSchedule.ReceiptDate}}</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-link imgsize"
+                                            *ngIf="PaymentSchedule.ReceiptCopy!== null"
+                                            href="{{PaymentSchedule.ReceiptCopy}}" target="_blank">
+                                            <i class="fa fa-file-image-o" id="imageLogo"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="paymentDetail.length>10">
+                            <pagination-controls id="customer-paymentschedule-installmentdetail-pagination"
+                                (pageChange)="q1 = $event">
+                            </pagination-controls>
+                        </tfoot>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="createReceipt">
+                <form #createReceiptform="ngForm">
+                    <div class="col-sm-1">
+                        <button type="button" class="btn btn-outline-primary btn-xs" ngbTooltip="Back"
+                            (click)="searchData()">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-12">
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">Create Receipt</legend>
+                            <div class="row"
+                                *ngIf="this.createReceiptModel.PSId && this.createReceiptModel.PSId!=='0' && this.createReceiptModel.PSId!==' '">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-body TotalAmountborder">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <strong>Total Demand Raised :
+                                                        {{createReceiptModel.TotalDemandRaised| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Total GST Raised :
+                                                        {{createReceiptModel.TaxReceived| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Total INFRA Raised :
+                                                        {{createReceiptModel.InfraCharges| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <strong>Total Amount Paid :
+                                                        {{createReceiptModel.TotalAmountwithoutGSTInfra|
+                                                        number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Total Gst Paid:
+                                                        {{createReceiptModel.TotalGstReceiptAmount| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Total INFRA Paid :
+                                                        {{createReceiptModel.TotalInfraReceiptAmount| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <strong>Advance Amount Paid :
+                                                        {{createReceiptModel.AdvancePaidAgainstDuePaid| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Advance Gst Paid:
+                                                        {{createReceiptModel.AdvanceGSTPaidAmount| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Advance INFRA Paid :
+                                                        {{createReceiptModel.AdvanceInfraPaidAmount| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <strong>Remaining Amount :
+                                                        {{createReceiptModel.remainingRaisedAmount| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Remaining Gst :
+                                                        {{createReceiptModel.remainingGSTAmount| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <strong>Remaining INFRA :
+                                                        {{createReceiptModel.remainingInfraAmount| number:'1.2-2'}}
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Order Id :</strong>
+                                    <select type="text" class="form-control" id="orderId" *ngIf="!isdisable"
+                                        name="orderId" #orderId="ngModel"
+                                        (change)="getPaymentScheduleGrid($event.target.value)" required
+                                        [(ngModel)]="createReceiptModel.OrderId"
+                                        [class.error]="orderId.invalid && orderId.touched"
+                                        [class.has-success]="orderId.valid">
+                                        <option class='option' value="">--- Select ---</option>
+                                        <option class='option' *ngFor="let orders of showOrderDetails"
+                                            [value]="orders.OrderId">
+                                            {{orders.OrderId}} - {{orders.CustomerName}} - {{orders.FlatNo}}
+                                        </option>
+                                    </select>
+                                    <input type="text" class="form-control" *ngIf="isdisable" [disabled]="true"
+                                        name="OrderId" #OrderId="ngModel" [(ngModel)]="createReceiptModel.OrderId">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Pay Against :</strong>
+                                    <select type="text" class="form-control" *ngIf="!isdisable" id="payAgainst1"
+                                        name="payAgainst1" #payAgainst1="ngModel"
+                                        (change)="getPSData($event.target.value)" [(ngModel)]="createReceiptModel.PSId"
+                                        [class.error]="payAgainst1.invalid && payAgainst1.touched" required
+                                        [class.has-success]="payAgainst1.valid">
+                                        <option class='option' value="">--- Select ---</option>
+                                        <option class='option' value=0>Others</option>
+                                        <option class='option' *ngFor="let installment of paymentSchedules"
+                                            [value]="installment.PSId">
+                                            {{installment.InvoiceNo}}</option>
+                                    </select>
+                                    <input type="text" class="form-control" *ngIf="isdisable" [disabled]="true"
+                                        name="payAgainst1" #payAgainst1="ngModel" [(ngModel)]="createReceiptModel.PSId">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Receipt Date :</strong>
+                                    <input type="date" class="form-control" name="receiptDate" required
+                                        #receiptDate="ngModel" [(ngModel)]="createReceiptModel.ReceiptDate" required
+                                        [class.error]="receiptDate.invalid && receiptDate.touched"
+                                        [class.has-success]="receiptDate.valid">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong> <span class="required">*</span>Pay By :</strong>
+                                    <select type="text" class="form-control" id="payBy" name="payBy" #payBy="ngModel"
+                                        [(ngModel)]="createReceiptModel.PayBy"
+                                        [class.error]="payBy.invalid && payBy.touched" required
+                                        [class.has-success]="payBy.valid">
+                                        <option class='option' value="">--- Select ---</option>
+                                        <option class='option' *ngFor="let paidby of PaidByInfo" [value]="paidby.key">
+                                            {{paidby.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" [hidden]="createReceiptModel.PayBy ==='Cash'">
+                                <div class="col-sm-3">
+                                    <strong>Bank Name :</strong>
+                                    <select type="text" class="form-control" id="BankName" name="BankName"
+                                        #BankName="ngModel" [(ngModel)]="createReceiptModel.BankName"
+                                        *ngIf="!showtextField"
+                                        (ngModelChange)="selectedBank(createReceiptModel.BankName)"
+                                        [class.error]="BankName.invalid && BankName.touched"
+                                        [class.has-success]="BankName.valid">
+                                        <option class='option' value="">--- Select ---</option>
+                                        <option class='option' *ngFor="let bankName of bankNamesInfo"
+                                            [value]="bankName.key">
+                                            {{bankName.value}}</option>
+                                    </select>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" *ngIf="showtextField"
+                                                name="BankName1" [(ngModel)]="createReceiptModel.BankName">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-danger pull-left" *ngIf="showtextField"
+                                                (click)="showtextField = false">
+                                                Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>Branch :</strong>
+                                    <input type="text" class="form-control" name="Branch" #Branch="ngModel"
+                                        [(ngModel)]="createReceiptModel.Branch"
+                                        [class.error]="Branch.invalid && Branch.touched"
+                                        [class.has-success]="Branch.valid">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>Cheque Date :</strong>
+                                    <input type="date" class="form-control" name="chequeDate" #chequeDate="ngModel"
+                                        [(ngModel)]="createReceiptModel.ChequeDate"
+                                        [class.error]="chequeDate.invalid && chequeDate.touched"
+                                        [class.has-success]="chequeDate.valid">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong> Cheque Number / Transaction Id:</strong>
+                                    <input type="text" class="form-control" name="ChequeNumber" #ChequeNumber="ngModel"
+                                        [(ngModel)]="createReceiptModel.ChequeNumber"
+                                        [class.error]="ChequeNumber.invalid && ChequeNumber.touched"
+                                        [class.has-success]="ChequeNumber.valid">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Total Paid :</strong>
+                                    <input type="text" class="form-control" name="PaidAgainstDue" required
+                                        #PaidAgainstDue="ngModel" (blur)="checkAmount('AmountPaid')"
+                                        [(ngModel)]="createReceiptModel.PaidAgainstDue" pattern="^[^-\s][0-9. ]*"
+                                        [class.error]="PaidAgainstDue.invalid && PaidAgainstDue.touched"
+                                        [class.has-success]="PaidAgainstDue.valid" [disabled]="FullgstinfraPaid">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Total GST Paid :</strong>
+                                    <input type="text" class="form-control" name="PaidAgainstgstDue" required
+                                        #PaidAgainstgstDue="ngModel" (blur)="checkAmount('GstPaid')"
+                                        [(ngModel)]="createReceiptModel.ServiceTax" pattern="^[^-\s][0-9. ]*"
+                                        [class.error]="PaidAgainstgstDue.invalid && PaidAgainstgstDue.touched"
+                                        [class.has-success]="PaidAgainstgstDue.valid"
+                                        [disabled]="createReceiptModel.remainingGSTAmount === 0 ">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Total Infra Paid :</strong>
+                                    <input type="text" class="form-control" name="PaidAgainstinfraDue" required
+                                        #PaidAgainstinfraDue="ngModel" (blur)="checkAmount('InfraPaid')"
+                                        [(ngModel)]="createReceiptModel.Infra" pattern="^[^-\s][0-9. ]*"
+                                        [class.error]="PaidAgainstinfraDue.invalid && PaidAgainstinfraDue.touched"
+                                        [class.has-success]="PaidAgainstinfraDue.valid"
+                                        [disabled]="createReceiptModel.remainingInfraAmount === 0">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Advance Paid :</strong>
+                                    <input type="text" class="form-control" name="advancepaid" required
+                                        [disabled]="disableadvPaymentField" #advancepaid="ngModel"
+                                        [(ngModel)]="createReceiptModel.AdvancePayment" pattern="^[^-\s][0-9. ]*"
+                                        [class.error]="advancepaid.invalid && advancepaid.touched"
+                                        [class.has-success]="advancepaid.valid">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <strong> Remark :</strong>
+                                    <textarea type="text" class="form-control" name="remark" #remark="ngModel"
+                                        [(ngModel)]="createReceiptModel.Remark"
+                                        [class.error]="remark.invalid && remark.touched"
+                                        [class.has-success]="remark.valid"></textarea>
+                                </div>
+                                <div class="col-sm-3">
+                                    <br>
+                                    <!-- <strong>Upload Image :</strong> -->
+                                    <tru-file-upload
+                                        [accept]="'.png,.PNG,.jpeg,.JPEG,.jpg,.JPG,.tiff,.TIFF,.tif,.TIF,.pdf,.PDF'"
+                                        [(inputFiles)]="uploadpaymentReceipt" [multiple]="false">
+                                    </tru-file-upload>
+                                    <a class="btn btn-sm btn-link img-size" ngbTooltip="View File"
+                                        *ngIf="createReceiptModel.ImageUrl!== null"
+                                        href="{{createReceiptModel.ImageUrl}}" target="_blank">
+                                        <i class="fa fa-file-image-o" id="imageLogo"></i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Legal Name :</strong>
+                                    <input type="text" class="form-control" [disabled]="isdisable" name="LegalName"
+                                        required #LegalName="ngModel" [disabled]="isAvailable"
+                                        [(ngModel)]="createReceiptModel.LegalName"
+                                        [class.error]="LegalName.invalid && LegalName.touched"
+                                        [class.has-success]="LegalName.valid">
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>
+                                        <span class="required">*</span>Legal Address :</strong>
+                                    <input type="text" class="form-control" [disabled]="isdisable" name="address"
+                                        required #address="ngModel" [disabled]="isAvailable"
+                                        [(ngModel)]="createReceiptModel.address"
+                                        [class.error]="address.invalid && address.touched"
+                                        [class.has-success]="address.valid">
+                                </div>
+                            </div>
+                            <br>
+                            <div align="center">
+                                <button type="button" class="btn btn-primary" *ngIf="!isdisable"
+                                    [disabled]="isLoading||disableBtn ||createReceiptform.invalid "
+                                    (click)="CreateReceipt(createReceiptModel,uploadpaymentReceipt,createReceiptform,'CreateReceipt')">
+                                    <i class="fas fa-paper-plane"></i> Submit</button>
+                                <button type="button" class="btn btn-primary" *ngIf="isdisable"
+                                    [disabled]="isLoading ||disableBtn || createReceiptform.invalid"
+                                    (click)="UpdateReceipt(createReceiptform,uploadpaymentReceipt)">
+                                    <i class="fas fa-paper-plane"></i>Update</button>
+                                <br>
+                                <span class="mt-2" *ngIf="isLoading">
+                                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                </span>
+                            </div>
+                            <br />
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="Rejected Orders From Accounting">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="table-responsive mt-2">
+                    <table class="table table-bordered table-hover table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Order Id</th>
+                                <th>Receipt No</th>
+                                <th>Customer Name</th>
+                                <th>BHK</th>
+                                <th>Flat No</th>
+                                <th>Voucher Type</th>
+                                <th>Accounting Status</th>
+                                <th>Rejection Date</th>
+                                <th>Reject Reason</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="name-width" type="number" name="searchOrderId"
+                                        [(ngModel)]="filterDataModel.OrderId" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchReceiptNo"
+                                        [(ngModel)]="filterDataModel.ReceiptNo" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchCustomerName"
+                                        [(ngModel)]="filterDataModel.CustomerName" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchBHK"
+                                        [(ngModel)]="filterDataModel.BHK" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchIFLATNO"
+                                        [(ngModel)]="filterDataModel.FLATNO" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchVoucherType"
+                                        [(ngModel)]="filterDataModel.VoucherType" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchAccountingStatus"
+                                        [(ngModel)]="filterDataModel.AccountingStatus" (keyup)="filterLeadData()">
+                                </td>
+                                <td></td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchIRejectionReason"
+                                        [(ngModel)]="filterDataModel.RejectionReason" (keyup)="filterLeadData()">
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let data of rejectedData | paginate: {itemsPerPage:14, currentPage: p,id:'rejected-pagination' }">
+                                <td>
+                                    <button class="btn btn-link btn-sm" (click)="GoToCreate(data)">
+                                        <i class="fa fa-eye"></i>{{data.OrderId}}</button>
+                                </td>
+                                <td>{{data.ReceiptNo}}</td>
+                                <td>{{data.CustomerName}}</td>
+                                <td>{{data.BHK}}</td>
+                                <td>{{data.FLATNO}}</td>
+                                <td>{{data.VoucherType}}</td>
+                                <td>{{data.AccountingStatus}}</td>
+                                <td>{{data.RejectionDate |date:'d MMM y'}}</td>
+                                <td>{{data.RejectionReason}}</td>
+                            </tr>
+                        </tbody>
+                        <div class="col-sm-12 text-center mt-2" *ngIf="!isFound">
+                            <strong class="text-danger">No Data Found</strong>
+                        </div>
+                        <tfoot class="pull-right" *ngIf="rejectedData.length>14">
+                            <pagination-controls id="rejected-pagination" (pageChange)="p = $event">
+                            </pagination-controls>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </mat-tab>
+</mat-tab-group>
+
+<div bsModal cdkDrag #ConfirmationModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-notify modal-info modal-md" role="document">
+        <div class="modal-content">
+            <div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
+                        <br>
+                        <strong>Do you want to proceed?</strong>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button class="btn btn-primary btn-sm" (click)="confirmation('yes')">Yes</button>
+                    <button class="btn btn-danger btn-sm" (click)="confirmation('no')">No Thanks</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

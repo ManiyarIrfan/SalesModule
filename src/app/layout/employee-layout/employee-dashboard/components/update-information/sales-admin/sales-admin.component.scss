@@ -1,0 +1,22 @@
+.textBox {
+    background-image: url(../../../../../../../assets/images/checked.png);
+    background-position: right;
+    background-repeat: no-repeat;
+    padding-left: 17px;
+}
+.top-position {
+    margin-top: 49px;
+}
+.scrollbar {
+    max-height: 450px;
+    height: 450px;
+}
+
+:host ::ng-deep {
+    .mat-form-field-appearance-outline .mat-form-field-flex {
+        padding: 1px 10px !important;
+        margin-top: -8px !important;
+        position: relative;
+        height: 50px !important;
+    }
+}

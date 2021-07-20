@@ -1,0 +1,727 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<br />
+<form *ngIf="!isSpinnerActive" #referralGenerationForm="ngForm">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <mat-checkbox [checked]="refModel.Priority" [disabled]="disabledPriority"
+                            (change)="onEOICheck($event)"><strong>EOI</strong>
+                        </mat-checkbox>
+                    </div>
+                    <div class="col-sm-8" *ngIf="disableFields">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <strong for="refCountryCode">
+                                    <span class="required">*</span>Priority No:</strong>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="tel" class="form-control input-underline" name="priority"
+                                    [class.error]="priority.invalid && priority.touched" [disabled]="disabledPriority"
+                                    [class.has-success]="priority.valid" pattern="^[0-9, ]+( [0-9, ]+)*$" required
+                                    [(ngModel)]="refModel.Priority" placeholder="Enter Priority No" #priority="ngModel"
+                                    maxlength=4 (input)="validatePriorityNo(refModel.Priority)">
+                                <strong [ngClass]="[msg==='Available' ? 'text-success' : 'text-danger']"
+                                    *ngIf="msg && refModel.Priority">{{msg}}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="row pull-right">
+                    <div class="col-sm-6">
+                        <strong for="createdate">Past Creation Date :</strong>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type='date' class="form-control" name='createdate'
+                            [class.error]="createdate.invalid && createdate.touched"
+                            [class.has-success]="createdate.valid" id='createdate' [max]="getToday()"
+                            [min]="getlastthreeDay()" [(ngModel)]="refModel.createdOn"
+                            pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                            #createdate="ngModel">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-success " id="createnew" name="createnew"
+                    (click)="onClearScreen()">
+                    <i class="fa fa-plus"></i> Create New </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Lead Information</strong>
+            </legend>
+            <div class="form-group row">
+                <div class="col-sm-3" *ngIf="!enableSource">
+                    <strong for="source">
+                        <span class="required">*</span>Source :</strong>
+                    <select class="form-control" id="source" name="source"
+                        [class.error]="source.invalid && source.touched" [class.has-success]="source.valid"
+                        [(ngModel)]="refModel.Source" required #source="ngModel">
+                        <option value="">--select--</option>
+                        <option class='option' *ngFor='let source of storeSourceData;trackBy: trackByFn'
+                            [value]="source.Name">{{source.Name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-3" *ngIf="enableSource">
+                    <strong for="Source">Source :</strong>
+                    <input type="text" class="form-control" id="Source" [disabled]="true" name="Source"
+                        [(ngModel)]="refModel.Source" #Source="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="refFirst">
+                        <span class="required">*</span>Lead Name :</strong>
+                    <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" id="refFirst" name="refFirst"
+                        [class.error]="refFirst.invalid && refFirst.touched" [class.has-success]="refFirst.valid"
+                        [(ngModel)]="refModel.refFirst" placeholder="Enter Name..." required #refFirst="ngModel"
+                        [disabled]="enableSource">
+                </div>
+                <div class="col-sm-3" *ngIf="loggedInuserDetails.Role!==7&& loggedInuserDetails.Role!==3">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="refCountryCode">
+                                <span class="required">*</span>Country Code :</strong>
+                            <input type="number" class=" form-control
+                                input-underline" id="refCountryCode form" name="refCountryCode"
+                                [class.error]="refCountryCode.invalid && refCountryCode.touched"
+                                [class.has-success]="refCountryCode.valid" required
+                                [(ngModel)]="refModel.refCountryCode" placeholder="Country Code..."
+                                #refCountryCode="ngModel" maxlength=4>
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="refMobileNo">
+                                <span class="required">*</span>Mobile Number :</strong>
+                            <input type="tel" id="refMobileNo" name="refMobileNo" class="form-control input-underline"
+                                (blur)="getMobileValidation(refModel.refMobileNo)" pattern="^\d{10}$"
+                                [class.error]="refMobileNo.invalid && refMobileNo.touched"
+                                [class.has-success]="refMobileNo.valid" placeholder="Mobile Number..." required
+                                #refMobileNo="ngModel" [(ngModel)]="refModel.refMobileNo" minlength=10 maxlength=10
+                                [disabled]="enableSource">
+                            <div *ngIf="refMobileNo.errors && (refMobileNo.dirty || refMobileNo.touched)"
+                                class="alert alert-danger">
+                                <div [hidden]="!refMobileNo.errors.required">
+                                    Mobile No is required!
+                                </div>
+                                <div [hidden]="!refMobileNo.errors.pattern">
+                                    Enter Valid Mobile No!
+                                </div>
+                            </div>
+                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-3" *ngIf="loggedInuserDetails.Role===7 || loggedInuserDetails.Role===3">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <strong for="refCountryCode">
+                                <span class="required">*</span>Country Code :</strong>
+                            <input type="tel" class="form-control input-underline" id="refCountryCode form"
+                            (blur)="refModel.refCountryCode=($event.target.value);show($event.target.value)"
+                                name="refCountryCode" [class.error]="refCountryCode.invalid && refCountryCode.touched"
+                                [class.has-success]="refCountryCode.valid" [disabled]="enableSource" required
+                                [(ngModel)]="refModel.refCountryCode" placeholder="Country Code..."
+                                #refCountryCode="ngModel" pattern="\d[1-0]{4}\" minlength=0 maxlength=4
+                                onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false:true">
+                        </div>
+                        <div class="col-sm-7" *ngIf="showme===true">
+                            <strong for="refMobileNo">
+                                <span class="required">*</span>Mobile Number :</strong>
+                            <input type="tel" id="refMobileNo" name="refMobileNo" class="form-control input-underline"
+                                (blur)="getUserDetailsOnMobile(refModel.refMobileNo)" pattern="^\d{10}$"
+                                [class.error]="refMobileNo.invalid && refMobileNo.touched"
+                                [class.has-success]="refMobileNo.valid" placeholder="Enter Mobile Number..." required
+                                #refMobileNo="ngModel" [(ngModel)]="refModel.refMobileNo" minlength=10 maxlength=10
+                                [disabled]="enableSource"
+                                onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false:true">
+                            <div *ngIf="refMobileNo.errors && (refMobileNo.dirty || refMobileNo.touched)"
+                                class="alert alert-danger">
+                                <div [hidden]="!refMobileNo.errors.required">
+                                    Mobile No is required!
+                                </div>
+                                <div [hidden]="!refMobileNo.errors.pattern">
+                                    Enter Valid Mobile No!
+                                </div>
+                            </div>
+                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                            <!-- <span [hidden]="disableSubmitBtn" class="required">Mobile Number is Not Available</span> -->
+                        </div>
+                        <div class="col-sm-7" *ngIf="showme===false" >
+                            <strong for="refMobileNo">
+                                <span class="required">*</span>Mobile Number:</strong>
+                            <input  id="refMobileNo1" name="refMobileNo1" class="form-control input-underline"
+                            (blur)="valid(refModel.refMobileNo)" 
+                                [class.error]="refMobileNo1.invalid && refMobileNo1.touched"
+                                [class.has-success]="refMobileNo1.valid" placeholder="Enter Mobile Number..." required
+                                #refMobileNo1="ngModel" [(ngModel)]="refModel.refMobileNo" 
+                                [disabled]="enableSource" maxlength=12
+                  onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false:true">
+                            <div *ngIf="refMobileNo1.errors && (refMobileNo1.dirty || refMobileNo1.touched)"
+                                class="alert alert-danger">
+                                <div [hidden]="!refMobileNo1.errors.required">
+                                    Mobile No is required!
+                                </div>
+                            </div>
+                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                            <!-- <span [hidden]="disableSubmitBtn" class="required">Mobile Number is Not Available</span> -->
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <strong for="refLandline">Alternate Mobile Number :</strong>
+                    <input type="tel" class="form-control" id="refAlternate" name="refAlternate" pattern="^\d{10}$"
+                        inlength=10 maxlength=10 [class.error]="refAlternate.invalid && refAlternate.touched"
+                        [class.has-success]="refAlternate.valid" [(ngModel)]="refModel.refAlternate"
+                        placeholder="Enter Alternate Number..." #refAlternate="ngModel">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-3">
+                    <strong for="refEmail">Email ID :</strong>
+                    <input type="email" id="refEmail" name="refEmail" (blur)="getEmailValidation(refModel.refEmail)"
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$" class="form-control"
+                        [class.error]="refEmail.invalid && refEmail.touched" [class.has-success]="refEmail.valid"
+                        [(ngModel)]="refModel.refEmail" placeholder="email@abc.com" #refEmail="ngModel"
+                        [disabled]="enableSource">
+                    <div *ngIf="refEmail.errors && (refEmail.dirty || refEmail.touched)" class="alert alert-danger">
+                        <div [hidden]="!refEmail.errors.required">
+                            Email Id is required!
+                        </div>
+                        <div [hidden]="!refEmail.errors.pattern">
+                            Enter Valid Email!
+                        </div>
+                    </div>
+                    <span [hidden]="isEmailAvailable" class="required">{{showemail}}</span>
+                </div>
+                <div class="col-sm-3">
+                    <strong for="refAddress1">Address :</strong>
+                    <input type="text" class="form-control" id="refAddress1" name="refAddress1"
+                        [(ngModel)]="refModel.refAddress1" placeholder="Enter Address..."
+                        pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*" #refAddress1="ngModel"
+                        [class.error]="refAddress1.invalid && refAddress1.touched"
+                        [class.has-success]="refAddress1.valid">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="refOccupation">Occupation :</strong>
+                    <select type="text" class="form-control" id="refOccupation" name="refOccupation"
+                        [(ngModel)]="refModel.refOccupation" placeholder="Enter Preferred Communication...">
+                        <option value="">--select--</option>
+                        <option *ngFor="let occupation of OccupationInfo;trackBy: trackByFn" [value]="occupation.value">
+                            {{occupation.value}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <strong for="refCity">City :</strong>
+                    <select type="text" class="form-control" id="refCity" name="refCity" [(ngModel)]="refModel.refCity">
+                        <option value="Pune">Pune</option>
+                        <option value="Mumbai">Mumbai</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-3" *ngIf="disableFields">
+                    <strong for="refPinCode">Pin Code :</strong>
+                    <input type="tel" class="form-control" id="refPinCode" name="refPinCode"
+                        pattern="^[0-9, ]+( [0-9, ]+)*$" [class.error]="refPinCode.invalid && refPinCode.touched"
+                        [class.has-success]="refPinCode.valid" [(ngModel)]="refModel.PinCode"
+                        placeholder="Enter PinCode Number" #refPinCode="ngModel">
+                </div>
+                <div class="col-sm-3" *ngIf="disableFields">
+                    <strong for="RefPanNo">Pan No:</strong>
+                    <input type="tel" class="form-control" id="RefPanNo" name="refPanNo"
+                        [class.error]="RefPanNo.invalid && RefPanNo.touched" [class.has-success]="RefPanNo.valid"
+                        [(ngModel)]="refModel.RefPanNo" placeholder="Enter Alternate Number..." #RefPanNo="ngModel">
+                </div>
+                <div class="col-sm-3" *ngIf="disableFields">
+                    <strong for="AdharNo">Aadhar No:</strong>
+                    <input type="tel" class="form-control" id="refAdhar" name="refAdhar"
+                        pattern="^[0-9, ]+( [0-9, ]+)*$" [class.error]="AdharNo.invalid && AdharNo.touched"
+                        [class.has-success]="AdharNo.valid" minlength="12" maxlength="12" [(ngModel)]="refModel.AdharNo"
+                        placeholder="Enter Adhar Number" #AdharNo="ngModel">
+                </div>
+                <div class="col-sm-3" *ngIf="disableFields">
+                    <strong for="refState">State :</strong>
+                    <select type="text" class="form-control" id="refState" name="refState"
+                        [(ngModel)]="refModel.refState">
+                        <option value="Maharashtra">Maharashtra</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-3" *ngIf="refModel.Source ==='Customer Referral'">
+                    <strong for="refByName">
+                        <span class="required">*</span>Referred By Name :</strong>
+                    <input type="text" class="form-control" id="refByName" name="refByName"
+                        [class.error]="refByName.invalid && refByName.touched" [class.has-success]="refByName.valid"
+                        [(ngModel)]="refModel.refByName" placeholder="Enter Name..." required #refByName="ngModel"
+                        [disabled]="enableSource">
+                </div>
+                <div class="col-sm-3" *ngIf="refModel.Source ==='Channel Partner'">
+                    <strong for="refByName">
+                        <span class="required">*</span>Referred By Name :</strong>
+
+                    <p-dropdown [options]="storeCPName" required #refByName="ngModel" [style]="{'width':'100%'}"
+                        id="refByName" name="refByName" [(ngModel)]="refModel.refByName" placeholder="Select Name"
+                        optionLabel="name" [filter]="true"></p-dropdown>
+                    <!-- <p-dropdown [options]="storeCName" [(ngModel)]="refModel.refByName" [filter]="true"></p-dropdown> -->
+                    <!-- <select type="text" class="form-control" id="refByName" name="refByName"
+                        [(ngModel)]="refModel.refByName">
+                        <option value="">--select--</option>
+                        <option *ngFor="let cpDetail of allCPNames;trackBy: trackByFn;" [value]="cpDetail.BrokerId">
+                            {{cpDetail.BrokerId}} - {{cpDetail.Name}}</option>
+                    </select> -->
+                </div>
+                <div class="col-sm-3" *ngIf="refModel.Source ==='CRO'">
+                    <strong for="refByName">
+                        <span class="required">*</span>Referred By Name :</strong>
+                    <p-dropdown [options]="storeCRONames" required #refByCROName="ngModel" id="refByName"
+                        name="refByName" [(ngModel)]="refModel.refByName" [style]="{'width':'100%'}"
+                        placeholder="Select Name" optionLabel="name" [filter]="true"></p-dropdown>
+                    <!-- <select type="text" class="form-control" id="refByCROName" name="refByCROName"
+                        [(ngModel)]="refModel.refByCROName">
+                        <option value="">--select--</option>
+                        <option *ngFor="let Detail of allCRONames;trackBy: trackByFn;" [value]="Detail.CROId">
+                            {{Detail.CROName}}</option>
+                    </select> -->
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="col-sm-12">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Lead Requirement</strong>
+            </legend>
+            <div class="form-group row">
+                <div class="col-sm-3">
+                    <strong for="requireType">Type Of Requirement :</strong>
+                    <select class="form-control" id="requireType" name="requireType"
+                        [class.error]="requireType.invalid && requireType.touched"
+                        [class.has-success]="requireType.valid" [(ngModel)]="refModel.requireType"
+                        #requireType="ngModel" (click)="onChangeSelect($event.target.value)">
+                        <option value="">--select--</option>
+                        <option *ngFor="let type of RequirementInfo;trackBy: trackByFn" [value]="type.value">
+                            {{type.value}}</option>
+                    </select>
+                </div>
+                <ng-container>
+                    <div class="col-sm-3" *ngIf="refModel.requireType==='Residential'">
+                        <strong for="bhk">BHK/Options:</strong>
+                        <select class="form-control" id="bhk" name="bhk"
+                            [class.error]="option.invalid && option.touched" [class.has-success]="option.valid"
+                            [(ngModel)]="refModel.bhk" #option="ngModel">
+                            <option value="">--select--</option>
+                            <option *ngFor="let type of BhkInfo;trackBy: trackByFn" [value]="type.value">{{type.value}}
+                            </option>
+                        </select>
+                    </div>
+                </ng-container>
+                <ng-container>
+                    <div class="col-sm-3" *ngIf="refModel.requireType==='Commercial'">
+                        <strong for="comm_options">Options :</strong>
+                        <select class="form-control" id="comm_options" name="comm_options"
+                            [class.error]="option.invalid && option.touched" [class.has-success]="option.valid"
+                            [(ngModel)]="refModel.comm_options" #option="ngModel">
+                            <option value="">--select--</option>
+                            <option *ngFor="let type of CommercialInfo;trackBy: trackByFn" [value]="type.value">
+                                {{type.value}}</option>
+                        </select>
+                    </div>
+                </ng-container>
+                <ng-container>
+                    <div class="col-sm-3" *ngIf="refModel.requireType==='IT Park'">
+                        <strong for="it_options">Options :</strong>
+                        <select class="form-control" id="it_options" name="it_options"
+                            [class.error]="option.invalid && option.touched" [class.has-success]="option.valid"
+                            [(ngModel)]="refModel.it_options" #option="ngModel">
+                            <option value="">--select--</option>
+                            <option *ngFor="let type of IT_ParkInfo;trackBy: trackByFn" [value]="type.value">
+                                {{type.value}}</option>
+                        </select>
+                    </div>
+                </ng-container>
+                <ng-container>
+                    <div class="col-sm-3" *ngIf="refModel.requireType==='Plots'">
+                        <strong for="it_options">Options :</strong>
+                        <select class="form-control" id="it_options" name="it_options"
+                            [class.error]="option.invalid && option.touched" [class.has-success]="option.valid"
+                            [(ngModel)]="refModel.PlotSize" #option="ngModel">
+                            <option value="">--select--</option>
+                            <option *ngFor="let type of PlotInfo;trackBy: trackByFn" [value]="type.value">
+                                {{type.value}}</option>
+                        </select>
+                    </div>
+                </ng-container>
+                <div class="col-sm-3">
+                    <strong for="budget"> Budget : (In Lacs)</strong>
+                    <select type="text" class="form-control" id="budget" name="budget"
+                        [class.error]="budget.invalid && budget.touched" [class.has-success]="budget.valid"
+                        [(ngModel)]="refModel.budget" placeholder="Enter Budget..." #budget="ngModel">
+                        <option value="">--select--</option>
+                        <option *ngFor="let budgets of BudgetInfo;trackBy: trackByFn" [value]="budgets.value">
+                            {{budgets.value}} &#8377;
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <strong for="preCity">
+                        <span class="required">*</span>Preferred City :</strong>
+                    <select type="text" class="form-control" id="preCity" name="preCity" required
+                        [class.error]="preCity.invalid && preCity.touched" [class.has-success]="preCity.valid"
+                        [(ngModel)]="refModel.preCity" #preCity="ngModel"
+                        (change)="GetPreferedAreaByCity($event.target.value)">
+                        <option value="">--select--</option>
+                        <option *ngFor="let item of preferredCityInfo;trackBy: trackByFn" [value]="item.value">
+                            {{item.value}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <strong for="preArea">
+                            <span class="required">*</span>Preferred Area :</strong>
+                        <select type="text" class="form-control" id="preArea" name="preArea" required
+                            #preferredArea="ngModel" [(ngModel)]="refModel.PreferredArea"
+                            [class.error]="preferredArea.invalid && preferredArea.touched"
+                            [class.has-success]="preferredArea.valid"
+                            (change)="GetPreferedProjectByArea($event.target.value)" placeholder="Preferred Area">
+                            <option value="">--select--</option>
+                            <option *ngFor="let item of PreferredAreaInfo;trackBy: trackByFn" [value]="item.Location">
+                                {{item.Location}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="preProject">
+                            <span class="required">*</span>Preferred Project :</strong>
+                        <select type="text" class="form-control" #preferredProject="ngModel" id="preProject"
+                            name="preProject" required [(ngModel)]="refModel.PreferredProject"
+                            [class.error]="preferredProject.invalid && preferredProject.touched"
+                            [class.has-success]="preferredProject.valid" placeholder="Preferred Project">
+                            <option value="">--select--</option>
+                            <option *ngFor="let item of PreferredProjectInfo;trackBy: trackByFn"
+                                [value]="item.ProjectName">
+                                {{item.ProjectName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="possession">Possession :</strong>
+                        <input type="text" class="form-control" id="possession" name="possession"
+                            [class.error]="possession.invalid && possession.touched"
+                            [class.has-success]="possession.valid" [(ngModel)]="refModel.Possession"
+                            placeholder="Enter possession eg.1month" #possession="ngModel"
+                            pattern="^[^-\s][a-zA-Z0-9 ]*">
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="Budget">Campaign :</strong>
+                        <select type="text" class="form-control" id="Campaign" name="campaign" #campaign="ngModel"
+                            [class.error]="campaign.invalid && campaign.touched" [class.has-success]="campaign.valid"
+                            [(ngModel)]="refModel.Campaign">
+                            <option value="">--select--</option>
+                            <option *ngFor="let item of campaignInfo;trackBy: trackByFn" [value]="item.Name">
+                                {{item.Name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="col-sm-12" *ngIf="disableFields">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Token Amount Details</strong>
+            </legend>
+            <div class="form-group row">
+                <div class="col-sm-3">
+                    <strong for="BankName"> <span class="required">*</span>Payment Type:</strong>
+                    <select type="text" class="form-control" id="paymenttype" name="paymenttype" #paymenttype="ngModel"
+                        [class.error]="paymenttype.invalid && paymenttype.touched" required
+                        [class.has-success]="paymenttype.valid" [(ngModel)]="refModel.PaymentType"
+                        (change)="typeChanges()">
+                        <option value="">--select--</option>
+                        <option *ngFor="let item of paymentType;trackBy: trackByFn" [value]="item.key">
+                            {{item.value}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <strong for="BankName">Name of Bank:</strong>
+                    <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" name="TokenBankName"
+                        [class.error]="TokenBankName.invalid && TokenBankName.touched"
+                        [class.has-success]="TokenBankName.valid" [(ngModel)]="refModel.TokenBankName"
+                        placeholder="Enter Bank Name" #TokenBankName="ngModel"
+                        [disabled]="refModel.PaymentType ==='Tru Pay'">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="TokenChequeNo">Cheque No :</strong>
+                    <input type="tel" class="form-control" id="TokenChequeNo" name="TokenChequeNo"
+                        pattern="^[0-9, ]+( [0-9, ]+)*$" [class.error]="TokenChequeNo.invalid && TokenChequeNo.touched"
+                        [class.has-success]="TokenChequeNo.valid" [(ngModel)]="refModel.TokenChequeNo"
+                        placeholder="Enter Cheque Number..." #TokenChequeNo="ngModel"
+                        [disabled]="refModel.PaymentType ==='Tru Pay'">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="TokenAmount"> <span class="required">*</span>Amount:</strong>
+                    <input type="number" class="form-control" name="TokenAmount" pattern="^[0-9]*$" required
+                        [class.error]="TokenAmount.invalid && TokenAmount.touched"
+                        [class.has-success]="TokenAmount.valid" [(ngModel)]="refModel.TokenAmount"
+                        placeholder="Enter Amount" #TokenAmount="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="TokenChequeDate"><span class="required">*</span>Date :</strong>
+                    <input type='date' class="form-control" name='TokenChequeDate' [min]="getToday()"
+                        [(ngModel)]="refModel.TokenChequeDate" required
+                        pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                        #TokenChequeDate="ngModel">
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="col-sm-12" *ngIf="disableFields">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>My reference who would be interested to know more</strong>
+            </legend>
+            <div class="form-group row">
+                <div class="col-sm-3">
+                    <strong for="rName1">Name:</strong>
+                    <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" name="rName1"
+                        [class.error]="rName1.invalid && rName1.touched" [class.has-success]="rName1.valid"
+                        [(ngModel)]="refModel.rName1" placeholder="Enter Name" #rName1="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="rMobile1">Mobile Number :</strong>
+                    <input type="tel" class="form-control" id="rMobile1" name="rMobile1"
+                        pattern="^[0-9, ]+( [0-9, ]+)*$" [class.error]="rMobile1.invalid && rMobile1.touched"
+                        [class.has-success]="rMobile1.valid" minlength="10" maxlength=10 [(ngModel)]="refModel.rMobile1"
+                        placeholder="Enter Mobile Number..." #rMobile1="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="rName2">Name:</strong>
+                    <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" name="rName2"
+                        [class.error]="rName2.invalid && rName2.touched" [class.has-success]="rName2.valid"
+                        [(ngModel)]="refModel.rName2" placeholder="Enter  Name" #rName2="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="rMobile2">Mobile Number :</strong>
+                    <input type="tel" class="form-control" id="rMobile2" name="rMobile2"
+                        pattern="^[0-9, ]+( [0-9, ]+)*$" [class.error]="rMobile2.invalid && rMobile2.touched"
+                        [class.has-success]="rMobile2.valid" minlength="10" maxlength=10 [(ngModel)]="refModel.rMobile2"
+                        placeholder="Enter Mobile Number..." #rMobile2="ngModel">
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="col-sm-12" *ngIf="disableFields">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Bank Details</strong>
+            </legend>
+            <div class="form-group row">
+                <div class="col-sm-3">
+                    <strong for="BName">Name of Beneficiary :</strong>
+                    <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" name="BName"
+                        [class.error]="BName.invalid && BName.touched" [class.has-success]="BName.valid"
+                        [(ngModel)]="refModel.bName" placeholder="Enter Beneficiary Name" #BName="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="BankName">Name of Bank :</strong>
+                    <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" name="BankName"
+                        [class.error]="BankName.invalid && BankName.touched" [class.has-success]="BankName.valid"
+                        [(ngModel)]="refModel.BankName" placeholder="Enter Branch Name" #BankName="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="branch">Branch Name :</strong>
+                    <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" name="branch"
+                        [class.error]="branch.invalid && branch.touched" [class.has-success]="branch.valid"
+                        [(ngModel)]="refModel.Branch" placeholder="Enter Branch Name" #branch="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="accountNo">Account Number :</strong>
+                    <input type="tel" class="form-control" name="accountNo" pattern="^[0-9, ]+( [0-9, ]+)*$"
+                        [class.error]="accountNo.invalid && accountNo.touched" [class.has-success]="accountNo.valid"
+                        [(ngModel)]="refModel.AccountNo" placeholder="Enter Account No" #accountNo="ngModel">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-3">
+                    <strong for="IFSC">IFSC Code :</strong>
+                    <input type="text" class="form-control" name="ifsc" [class.error]="IFSC.invalid && IFSC.touched"
+                        [class.has-success]="IFSC.valid" [(ngModel)]="refModel.IFSC" placeholder="Enter IFSC Code"
+                        #IFSC="ngModel">
+                </div>
+                <div class="col-sm-3">
+                    <strong for="AccountType">Account Type : </strong>
+                    <select type="text" class="form-control" id="AccountType" name="AccountType" #AccountType="ngModel"
+                        [class.error]="AccountType.invalid && AccountType.touched"
+                        [class.has-success]="AccountType.valid" [(ngModel)]="refModel.AccountType">
+                        <option value="">--select--</option>
+                        <option *ngFor="let item of AccountTypeInfo;trackBy: trackByFn" [value]="item.value">
+                            {{item.key}}</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="col-sm-12" *ngIf="loggedInuserDetails.Role === 7 || loggedInuserDetails.Role === 3">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Site Visit </strong>
+            </legend>
+            <div class="form-group">
+                <strong for="visitSite">Do you want to Schedule Site Visit : </strong>
+                <strong class="radio-inline">
+                    <input type="radio" name="visitSite" (click)="changeVisitSite('yes')"
+                        [(ngModel)]="refModel.visitSite" value="yes">Yes
+                </strong>
+                <strong class="radio-inline">
+                    <input type="radio" name="visitSite" (click)="changeVisitSite('no')"
+                        [(ngModel)]="refModel.visitSite" value="no">No
+                </strong>
+            </div>
+            <ng-container *ngIf="showGroup">
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <strong for="preDate">
+                            <span class="required">*</span>Preferred Date :</strong>
+                        <input name='preDate' class="form-control" [class.error]="predate.invalid && predate.touched"
+                            [class.has-success]="predate.valid" id='preDate' type='date' max="2050-01-01"
+                            [min]="getToday()" [(ngModel)]="refModel.preDate"
+                            pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                            required #predate="ngModel">
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <strong for="preTime">
+                            <span class="required">*</span>Preferred Time :</strong>
+                        <input class="form-control" atp-time-picker value="{{selectedTime}}" name="time" id="time"
+                            (click)="openClock()" [(ngModel)]="refModel.time" #time="ngModel" />
+                        <span class="hours">Office hours: 8AM to 8PM</span>
+                    </div>
+                </div>
+            </ng-container>
+        </fieldset>
+    </div>
+    <!-- <div class="col-sm-4" [hidden]="(loggedInuserDetails.Role !== 7 || loggedInuserDetails.Role !== 3) && disableFields"> -->
+    <div class="col-sm-4" [hidden]="RoleFlag && disableFields">
+        <strong for="remark">Assign/Reassign Sales Agent:</strong>
+        <select class="form-control" id="salesAgentAssinged" [disabled]="SalesAgentAssignedId" name="salesAgentAssinged"
+            [(ngModel)]="refModel.SalesAgentAssignedId">
+            <option value="">---Select---</option>
+            <option class='option' *ngFor='let element of employeeName;trackBy: trackByFn' [value]="element.EmployeeId">
+                {{element.Name}}
+            </option>
+        </select>
+    </div>
+
+    <div align="center">
+        <h6 class="notfoundmsg">Please Fill All Mandatory Fields ( with * marks) To Enable Button.</h6>
+        <!-- <div *ngIf="loggedInuserDetails.Role !== 7  && loggedInuserDetails.Role !== 3 && !disableFields">
+            <button type="button" id="submit" name="submit" value="Submit" (click)="OnSubmitBtnClick(refModel)"
+                class="btn btn-primary" [disabled]="!referralGenerationForm.form.valid || !isMobileAvailable ">
+                <i class="fa fa-paper-plane"></i>Submit</button>
+        </div>
+        <div *ngIf="loggedInuserDetails.Role !== 7  || loggedInuserDetails.Role === 3&& disableFields">
+            <button type="button" id="submit" name="submit" value="Submit" (click)="submitEOIForm(refModel)"
+                class="btn btn-primary"
+                [disabled]="!referralGenerationForm.form.valid || !isMobileAvailable || !isPriorityNoAvailable ">
+                <i class="fa fa-paper-plane"></i>Submit</button>
+        </div>
+        <div *ngIf="(loggedInuserDetails.Role === 7 ) && !disableFields">
+            <button type="button" id="submit" name="submit" value="Submit" (click)="OnSubmitBtnClick(refModel)"
+                class="btn btn-primary" [disabled]="!referralGenerationForm.form.valid || !disableSubmitBtn">
+                <i class="fa fa-paper-plane"></i> Save and Start SiteVisit </button>
+        </div>
+        <div *ngIf="(loggedInuserDetails.Role === 7 || loggedInuserDetails.Role === 3)&& disableFields">
+            <button type="button" id="submit" name="submit" value="Submit" (click)="submitEOIForm(refModel)"
+                class="btn btn-primary"
+                [disabled]="!referralGenerationForm.form.valid && !refModel.Priority || !isPriorityNoAvailable">
+                <i class="fa fa-paper-plane"></i> Submit</button>
+        </div> -->
+
+        <div *ngIf="loggedInuserDetails.Role !== 7 &&!disableFields">
+            <button type="button" id="submit" name="submit" value="Submit"
+                (click)="OnSubmitBtnClick(refModel,referralGenerationForm)" class="btn btn-primary"
+                [disabled]="!referralGenerationForm.form.valid">
+                <i class="fa fa-paper-plane"></i> Submit</button>
+        </div>
+        <div *ngIf="disableFields">
+            <button type="button" id="submit" name="submit" value="Submit"
+                (click)="OnSubmitBtnClick(refModel,referralGenerationForm)" class="btn btn-primary"
+                [disabled]="!referralGenerationForm.form.valid||!isPriorityNoAvailable">
+                <i class="fa fa-paper-plane"></i> Submit</button>
+        </div>
+        <div *ngIf="loggedInuserDetails.Role === 7 &&!disableFields">
+            <button type="button" id="submit" name="submit" value="Submit"
+                (click)="OnSubmitBtnClick(refModel,referralGenerationForm)" class="btn btn-primary"
+                [disabled]="!referralGenerationForm.form.valid || !disableSubmitBtn">
+                <i class="fa fa-paper-plane"></i> Save and Start SiteVisit </button>
+        </div>
+        <br>
+    </div>
+    <br>
+</form>
+<div bsModal #userSelectionModal="bs-modal" cdkDrag class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #leadDetailspopForm="ngForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left"> Entered Mobile Number is Already in System.</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="cancel()" />
+                </div>
+                <div class="modal-body">
+                    <strong *ngIf="leadDetails.length>1" class="required">If Duplicate Entry Please Confirm with
+                        Presales and Sales which one to use</strong>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Name</th>
+                                    <!-- <th>User Type</th> -->
+                                    <th>Mobile No</th>
+                                    <th> Alternate No</th>
+                                    <th>Sales Assigned</th>
+                                    <th>PreSales Assigned</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of leadDetails;trackBy: trackByFn">
+                                    <td>
+                                        <button class="btn btn-link btn-sm"
+                                            (click)="selectedId(details)">{{details.LeadId}}</button>
+                                    </td>
+                                    <td> {{details.FirstName}} {{details.LastName}}</td>
+                                    <!-- <td>{{details.UserType}}</td> -->
+                                    <td>{{details.MobileNo}}</td>
+                                    <td>{{details.AlternateNo}}</td>
+                                    <td>{{details.SalesAgentAssinged}}</td>
+                                    <td>{{details.PresalesAgentAssigned}}</td>
+                                    <td>{{details.Email}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-danger btn-md pull-right" (click)="cancel()"> Cancel </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

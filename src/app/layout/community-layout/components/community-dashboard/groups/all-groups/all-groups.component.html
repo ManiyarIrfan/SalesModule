@@ -1,0 +1,104 @@
+<div class="row">
+    <div class="col-sm-12 mb-1 mt-1">
+        <div class="row">
+            <div class="col-sm-7">
+                <h4>Groups</h4>
+            </div>
+            <div class="col-sm-3">
+                <div class="search-container pull-right">
+                    <input type="text" id="search-bar" placeholder="Search with ID,Names" autocomplete="off" name="test"
+                        [(ngModel)]="searchPosts">
+                    <a><img class="search-icon" src="../../../../../assets/community/search-icon.png"></a>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <h6 (click)="goToTab()" class="pull-right newDisc pointer"><strong>&nbsp;Add Group
+                        &nbsp;<i class="fa fa-plus"></i></strong></h6>
+            </div>
+        </div>
+        <hr class="hrstyle">
+    </div>
+    <div class="col-sm-12 mtop-1">
+        <div *ngIf="GroupList.length > 0">
+            <i (click)="PostTab='grid'" title="Grid View Show Posts" data-toggle="tooltip" data-placement="top"
+                class="fa pull-right m-3 fa-th" aria-hidden="true"></i>
+            <i (click)="PostTab='list'" title="List View Show Posts" data-toggle="tooltip" data-placement="top"
+                class="fa pull-right m-3 fa-list" aria-hidden="true"></i>
+        </div>
+    </div>
+    <div class="col-sm-12" *ngIf="PostTab==='grid'">
+        <span class="text-danger" *ngIf="GroupList.length===0">No Group's Found</span>
+        <div class="row" [ngClass]="(GroupList.length===0)?'mbtm':'marbo'">
+            <div class="col-sm-4 mb-3"
+                *ngFor="let item of GroupList | filter:searchPosts ;trackBy: trackByFn;let i=index;">
+                <div class="card" (click)="viewGroup(item)" style="padding: 1px;">
+                    <div class="card-body " style="background-color: white !important;">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <img class="rounded-circle" width="30px" height="30px"
+                                    src="{{item.CreatorProfilePic ? item.CreatorProfilePic :'../../../../../../../assets/images/user.png'}}"
+                                    alt="">
+                                <span class="pl-2">{{item.UserName | titlecase}}</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span data-toggle="tooltip" mdbTooltip="Project Name" placement="top"
+                                    class="font13 font-weight-light pull-right rounded-pill badge badge-bluee pt-2 pb-2 pr-3 pl-3">{{item.Project | titlecase}}</span>
+                            </div>
+                            <div class="col-sm-12 mt-2 pt-2">
+                                <h4 mdbTooltip="Group Name" placement="top">
+                                    <span>{{item.GroupName}}</span></h4>
+                            </div>
+                            <div class="col-sm-12 ">
+                                <!-- <div>
+                                    <span>Created: {{item.CreatedOn  | date:'dd MMM yyyy'}}</span>
+                                </div> -->
+                                <div class="authors-container pull-right" data-collaborators="2"
+                                    *ngIf="item.UserProfilePic && item.UserProfilePic !== ''">
+                                    <div class="author"
+                                        *ngFor="let img of item.UserProfilePic.split(', ');trackBy: trackByFn;">
+                                        <a class="account-photo account-product-owner">
+                                            <div class="mask">
+                                                <img id="imageLogo" class="photo" [src]="img" alt="Logo image" />
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12" *ngIf="PostTab==='list'">
+        <div class="row" [ngClass]="(GroupList.length===0)?'mbtm':'marbo'">
+            <div class="col-sm-12">
+                <ul class="timeline hidedot"
+                    *ngFor="let item of GroupList | filter:searchPosts ;trackBy: trackByFn;let i=index;">
+                    <li class="cardli">
+                        <div class="avatar" (click)="viewGroup(item)">
+                            <img
+                                src="{{item.GroupProfilePic ? item.GroupProfilePic :'../../../../../../../assets/images/user.png'}}">
+                        </div>
+                        <div class="bubble-container">
+                            <div class="bubble">
+                                <h6 class="pull-right martop-1">Created :{{item.CreatedOn  | date:'dd MMM yyyy'}}</h6>
+                                <h3 class="pointer martop1 " (click)="viewGroup(item)">{{item.GroupName}}</h3> <br />
+                                <h5 class="font-16" (click)="viewGroup(item)"> Project : {{item.Project | titlecase}}
+                                </h5>
+                                <h5 class="font-16">
+                                    <span class="pull-left text-muted">Members : {{item.MemberCount}}</span>
+                                    <span class="pull-right pointer martop1">
+                                        <img class="imgborder rounded-circle" width="30px" height="30px"
+                                            src="{{item.CreatorProfilePic ? item.CreatorProfilePic :'../../../../../../../assets/images/user.png'}}"
+                                            alt=""><span class="pl-2"
+                                            style="color: #ea4c89;">@{{item.UserName | titlecase}}</span></span>
+                                </h5>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

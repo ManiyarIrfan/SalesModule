@@ -1,0 +1,1547 @@
+<br>
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<form #searchForm="ngForm">
+    <div class="row">
+        <div class="col-sm-2">
+            <button type="button" id="button2" class="btn btn-success" (click)="onClickCreateOrderBtn()" [disabled]="Showsummery" (click)="clearOrderFormAccordion(searchForm)" *ngIf="(loggedInuserDetails.Role==1 || loggedInuserDetails.Role==3)">
+                <i class="fa fa-plus"></i> Create Order </button>
+        </div>
+        <div class="col-sm-3">
+            <input type="text" name="ordersearch" class="form-control pull-left" autocomplete="false" [disabled]="this.showOrderGridArray.length===0" placeholder="Filter By Customer Name, Sales Agent, Mobile" [(ngModel)]="orderSearch">
+        </div>
+        <div class="col-sm-2">
+            <button type="button" id="button1" class="btn btn-primary center-block" (click)="GetAllSearchDetails()" [disabled]="Showsummery">
+                <i class="fa fa-search"></i> Search Order </button>
+        </div>
+        <div class="col-sm-2" *ngIf="loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1" id="buttonmargin">
+            <button type="button" class="btn btn-primary" (click)="collapsed = !collapsed;ScrollDownOnClick(collapsed);SessionCreate()" [disabled]="Showsummery"><i class="fa fa-asterisk"></i> Orders Pending for Approvals</button>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" (click)="switchToSummery()">{{SwitchSummeryName}}</button>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-sm-12" align="center">
+        <div [hidden]="!isLoadingOrderDetails">
+            <p class="loading">
+                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+            </p>
+        </div>
+    </div>
+</div>
+
+<div align="center" *ngIf="NoDataFoundMessageOnUpdateSearch!=='' || loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1">
+    <strong>
+        <span class="text-dark">{{NoDataFoundMessageOnUpdateSearch}}</span>
+    </strong>
+</div>
+
+<div class="row">
+    <div class="col-sm-12" align="center">
+        <div [hidden]="!isLoadingAccordion">
+            <p class="loading">
+                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+            </p>
+        </div>
+    </div>
+</div>
+<div align="center" *ngIf="NoDataFoundMessageOnSearch!==''">
+    <strong>
+        <span class="text-dark">{{NoDataFoundMessageOnSearch}}</span>
+    </strong>
+</div>
+<br />
+<div *ngIf="(NoDataFoundMessageOnSearch==='' || !showAccordion)  && !Showsummery">
+    <div class="row" *ngIf="showOrderGridArray?.length > 0 && !showAccordion">
+        <div class="card cardfortable">
+            <div class="title text-center">
+                <span class="text textweight"> All Orders
+                    <strong class="pull-right"> Count : <span class="badge badge-info">
+                            {{showOrderGridArray.count?showOrderGridArray.count:0}}</span></strong>
+                </span>
+            </div>
+            <div class="table-responsive scrollbar" id="style-2" style="overflow: auto;">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th># Order</th>
+                            <th>PDF</th>
+                            <th>AGR_PDF</th>
+                            <th>NOC PDF</th>
+                            <th>SD PDF</th>
+                            <th>Order Status</th>
+                            <th>Booking Date</th>
+                            <th>Customer Name</th>
+                            <th>Sales Assigned</th>
+                            <th>Broker Assigned</th>
+                            <th>Flat Details</th>
+                            <th>Rate</th>
+                            <th>Basic Cost</th>
+                            <th>Infra Charge</th>
+                            <th>Agreement</th>
+                            <th>Stamp Duty</th>
+                            <th>GST</th>
+                            <th>Reg.Tax</th>
+                            <th>Total Cost</th>
+                            <th>Agreement Status</th>
+                            <th>Agreement Date</th>
+                            <th>Parking Charge</th>
+                            <th>PLC</th>
+                            <th>Floor Rise</th>
+                            <th>Discount Scheme</th>
+                            <th>Booking Amount</th>
+                            <th>Total Due</th>
+                            <th>Aadhar Card</th>
+                            <th>Mobile Number</th>
+                            <th>Email Id</th>
+                            <th>Payment Milestone</th>
+                            <th>Company Name</th>
+                            <th>Designation</th>
+                            <th>Bank Executive Name</th>
+                            <th>Loan Sanction Letter</th>
+                            <th>Loan Sanction Date</th>
+                            <th>NOC Issued</th>
+                            <th>NOC Issued Date</th>
+                            <th>Maintenance Deposit</th>
+                            <th>Flat View</th>
+                            <th>Monthly Maintenance</th>
+                            <th>Incentive</th>
+                            <th>Incentive Value</th>
+                            <th>Internal Area</th>
+                            <th>Enclosed Balcony</th>
+                            <th>Attached Terrace</th>
+                            <th>Parking Slot</th>
+                            <th>Joint Name</th>
+                            <th>Source</th>
+                            <th>Source Details</th>
+                            <th>Bank Name</th>
+                            <th>Registration Number</th>
+                            <th>Correspondence Address</th>
+                            <th>StampDuty Cheque</th>
+                            <th>Rate Remark</th>
+                            <th>Order Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let order of showOrderGridArray | filter:orderSearch | paginate: {itemsPerPage: 10, currentPage: CurrentPageId };trackBy: trackByFn;">
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="emitOrderID(order,2)" name="button">{{order.OrderId}}</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="showCompanyNameModel(order)">PDF_{{order.OrderId}}</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="openwindow(order.AgreementFile)" *ngIf="order.AgreementFile!==null">AGR_{{order.OrderId}}</button>
+                                <span *ngIf="order.AgreementFile===null">NA</span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="openwindow(order.NOCFile)" *ngIf="order.NOCFile!==null">NOC_{{order.OrderId}}</button>
+                                <span *ngIf="order.NOCFile===null">NA</span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="openwindow(order.StampDutyFile)" *ngIf="order.StampDutyFile!==null">SD_{{order.OrderId}}</button>
+                                <span *ngIf="order.StampDutyFile===null">NA</span>
+                            </td>
+                            <td>{{order.OrderStatus}}</td>
+                            <td>{{order.BookingDate | date:"d MMM y"}}</td>
+                            <td>{{order.CustomerName}}</td>
+                            <td>{{order.SalesAgentAssinged}}</td>
+                            <td>{{order.BrokerAssinged}}</td>
+                            <td>{{order.ProjectName}} - {{order.BuildingType}} - {{order.BHK}} - {{order.FlatNo}} - {{order.ReraArea}}
+                            </td>
+                            <td>{{order.Rate}}</td>
+                            <td>{{order.AgreedCost| currency: 'INR'}}</td>
+                            <td>{{order.InfraCharge}}</td>
+                            <td> <strong class="text-success">{{order.DiscountSubTotal| currency: 'INR'}}</strong>
+                            </td>
+                            <td>{{order.TDS}}</td>
+                            <td>{{order.GST}}</td>
+                            <td>{{order.Tax}}</td>
+                            <td> <strong class="text-success">{{order.TotalValue| currency: 'INR'}}</strong></td>
+                            <td>{{order.AgreementStatus}}</td>
+                            <td>{{order.AgreementDate |date:"d MMM y"}}</td>
+                            <td>{{order.ParkingCharge}}</td>
+                            <td>{{order.PLC}}</td>
+                            <td>{{order.FloorRise}}</td>
+                            <td>{{order.DiscountScheme}}</td>
+                            <td>{{order.BookingAmount}}</td>
+                            <td>{{order.TotalDue }}</td>
+                            <td>{{order.AadharCard}}</td>
+                            <td>{{order.MobileNo}}</td>
+                            <td>{{order.Email}}</td>
+                            <td>{{order.PaymentMileston}}</td>
+                            <td>{{order.CompanyName}}</td>
+                            <td>{{order.Designation}}</td>
+                            <td>{{order.BankExecutiveName}}</td>
+                            <td>{{order.LoanSanctionLetter}}</td>
+                            <td>{{order.LoanSanctionDate |date:"d MMM y"}}</td>
+                            <td>{{order.NOCIssued}}</td>
+                            <td>{{order.NOCIssuedDate |date:"d MMM y"}}</td>
+                            <td>{{order.MaintenanceDeposit}}</td>
+                            <td>{{order.FlatView}}</td>
+                            <td>{{order.MonthlyMaintenance}}</td>
+                            <td>{{order.IncentiveProposed}}</td>
+                            <td>{{order.IncentiveValue}}</td>
+                            <td>{{order.CarpetArea}}</td>
+                            <td>{{order.EnclosedBalcony}}</td>
+                            <td>{{order.AttachedTerrace}}</td>
+                            <td>{{order.ParkingSlot}}</td>
+                            <td>{{order.JointName1}}</td>
+                            <td>{{order.Source}}</td>
+                            <td>{{order.SourceDetails}}</td>
+                            <td>{{order.BankName}}</td>
+                            <td>{{order.RegistrationNo}}</td>
+                            <td>{{order.CorrespondenceAddress}}</td>
+                            <td>{{order.StampDutyCheckCollected}}</td>
+                            <td>{{order.Remark}}</td>
+                            <td>{{order.OrderRemark}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <tfoot class="pull-right">
+                <pagination-controls (pageChange)="CurrentPageId = $event; pageChangeEvent($event,'table1')">
+                </pagination-controls>
+            </tfoot>
+        </div>
+    </div>
+</div>
+
+<div align="center" *ngIf="NoDataFoundMessageOnUpdateSearch!=='' || loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1">
+    <strong>
+        <span class="text-dark">{{NoDataFoundMessageOnUpdateSearch}}</span> </strong>
+</div>
+
+<div class="row" *ngIf="loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1">
+    <div class="col-sm-12" align="center">
+        <div [hidden]="!isLoadingUpdateOrderDetails">
+            <p class="loading">
+                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+            </p>
+        </div>
+    </div>
+</div>
+<br>
+<div *ngIf="!collapsed">
+    <div *ngIf="NoDataFoundMessageOnUpdateSearch==='' || !showAccordion || loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1">
+        <div class="col-sm-12">
+            <div class="row" *ngIf="showOrderGridArrayUpdate?.length > 0 && !showAccordion || loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1">
+                <div class="card cardfortable">
+                    <div class="title text-center">
+                        <span> Pending for Approvals</span>
+                    </div>
+                    <div class="table-responsive scrollbar" id="style-2">
+                        <table class="table table-bordered table-hover  table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th># Order</th>
+                                    <th>PDF</th>
+                                    <th>Agreement</th>
+                                    <th>NOC</th>
+                                    <th>Stamp Duty</th>
+                                    <th>Order Status</th>
+                                    <th>Booking Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Sales Assigned</th>
+                                    <th>Broker Assigned</th>
+                                    <th>Flat Details</th>
+                                    <th>Basic Rate</th>
+                                    <th>Basic Cost</th>
+                                    <th>Infra Charge</th>
+                                    <th>Agreement</th>
+                                    <th>Stamp Duty</th>
+                                    <th>GST</th>
+                                    <th>Reg. Tax</th>
+                                    <th>Total Cost</th>
+                                    <th>Parking Charge</th>
+                                    <th>PLC</th>
+                                    <th>Floor Rise</th>
+                                    <th>Discount Scheme</th>
+                                    <th>Booking Amount</th>
+                                    <th>Total Due</th>
+                                    <th>Aadhar Card</th>
+                                    <th>Mobile Number</th>
+                                    <th>Email Id</th>
+                                    <th>Payment Milestone</th>
+                                    <th>Company Name</th>
+                                    <th>Designation</th>
+                                    <th>Bank Executive Name</th>
+                                    <th>Loan Sanction Letter</th>
+                                    <th>Loan Sanction Date</th>
+                                    <th>NOC Issued</th>
+                                    <th>NOC Issued Date</th>
+                                    <th>Maintenance Deposit</th>
+                                    <th>Flat View</th>
+                                    <th>Monthly Maintenance</th>
+                                    <th>Incentive</th>
+                                    <th>Incentive Value</th>
+                                    <th>Internal Area</th>
+                                    <th>Enclosed Balcony</th>
+                                    <th>Attached Terrace</th>
+                                    <th>Parking Slot</th>
+                                    <th>Joint Name</th>
+                                    <th>Source</th>
+                                    <th>Source Details</th>
+                                    <th>Bank Name</th>
+                                    <th>Agreement Status</th>
+                                    <th>Agreement Date</th>
+                                    <th>Registration Number</th>
+                                    <th>Correspondence Address</th>
+                                    <th>StampDuty Cheque</th>
+                                    <th>Rate Remark</th>
+                                    <th>Order Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let updateOrder of showOrderGridArrayUpdate | filter:orderSearch | paginate: {id:'customer-order-update-pagination', itemsPerPage: 12, currentPage: CurrentPageId1 }">
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-link" (click)="emitOrderID(updateOrder,1)" name="button">{{updateOrder.OrderId}}</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-link" (click)="showCompanyNameModel(updateOrder)">PDF_{{updateOrder.OrderId}}</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="openwindow(updateOrder.AgreementFile)" *ngIf="updateOrder.AgreementFile!==null">AGR_{{updateOrder.OrderId}}</button>
+                                        <span *ngIf="updateOrder.AgreementFile===null">NA</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="openwindow(updateOrder.NOCFile)" *ngIf="updateOrder.NOCFile!==null">AGR_{{updateOrder.OrderId}}</button>
+                                        <span *ngIf="updateOrder.NOCFile===null">NA</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="openwindow(updateOrder.StampDutyFile)" *ngIf="updateOrder.StampDutyFile!==null">SD_{{updateOrder.OrderId}}</button>
+                                        <span *ngIf="updateOrder.StampDutyFile===null">NA</span>
+                                    </td>
+                                    <td>{{updateOrder.OrderStatus}}</td>
+                                    <td>{{updateOrder.BookingDate | date:"d MMM y"}}</td>
+                                    <td>{{updateOrder.CustomerName}}</td>
+                                    <td>{{updateOrder.SalesAgentAssinged}}</td>
+                                    <td>{{updateOrder.BrokerAssinged}}</td>
+                                    <td>{{updateOrder.ProjectName}} - {{updateOrder.BuildingType}} - {{updateOrder.BHK}} - {{updateOrder.FlatNo}} - {{updateOrder.ReraArea}}</td>
+                                    <td>{{updateOrder.Rate| currency: 'INR'}}</td>
+                                    <td>{{updateOrder.AgreedCost}}</td>
+                                    <td>{{updateOrder.InfraCharge}}</td>
+                                    <td> <strong class="text-success">{{updateOrder.DiscountSubTotal| currency:'INR'}}
+                                        </strong></td>
+                                    <td>{{updateOrder.TDS}}</td>
+                                    <td>{{updateOrder.GST}}</td>
+                                    <td>{{updateOrder.Tax}}</td>
+                                    <td> <strong class="text-success">{{updateOrder.TotalValue| currency:'INR'}}
+                                        </strong>
+                                    </td>
+                                    <td>{{updateOrder.ParkingCharge}}</td>
+                                    <td>{{updateOrder.PLC}}</td>
+                                    <td>{{updateOrder.FloorRise}}</td>
+                                    <td>{{updateOrder.DiscountScheme}}</td>
+                                    <td>{{updateOrder.BookingAmount}}</td>
+                                    <td>{{updateOrder.TotalDue}}</td>
+                                    <td>{{updateOrder.AadharCard}}</td>
+                                    <td>{{updateOrder.MobileNo}}</td>
+                                    <td>{{updateOrder.Email}}</td>
+                                    <td>{{updateOrder.PaymentMileston}}</td>
+                                    <td>{{updateOrder.CompanyName}}</td>
+                                    <td>{{updateOrder.Designation}}</td>
+                                    <td>{{updateOrder.BankExecutiveName}}</td>
+                                    <td>{{updateOrder.LoanSanctionLetter}}</td>
+                                    <td>{{updateOrder.LoanSanctionDate |date:"d MMM y"}}</td>
+                                    <td>{{updateOrder.NOCIssued}}</td>
+                                    <td>{{updateOrder.NOCIssuedDate}}</td>
+                                    <td>{{updateOrder.MaintenanceDeposit}}</td>
+                                    <td>{{updateOrder.FlatView}}</td>
+                                    <td>{{updateOrder.MonthlyMaintenance}}</td>
+                                    <td>{{updateOrder.IncentiveProposed}}</td>
+                                    <td>{{updateOrder.IncentiveValue}}</td>
+                                    <td>{{updateOrder.CarpetArea}}</td>
+                                    <td>{{updateOrder.EnclosedBalcony}}</td>
+                                    <td>{{updateOrder.AttachedTerrace}}</td>
+                                    <td>{{updateOrder.ParkingSlot}}</td>
+                                    <td>{{updateOrder.JointName1}}</td>
+                                    <td>{{updateOrder.Source}}</td>
+                                    <td>{{updateOrder.SourceDetails}}</td>
+                                    <td>{{updateOrder.BankName}}</td>
+                                    <td>{{updateOrder.AgreementStatus}}</td>
+                                    <td>{{updateOrder.AgreementDate}}</td>
+                                    <td>{{updateOrder.RegistrationNo}}</td>
+                                    <td>{{updateOrder.CorrespondenceAddress}}</td>
+                                    <td>{{updateOrder.StampDutyCheckCollected}}</td>
+                                    <td>{{updateOrder.Remark}}</td>
+                                    <td>{{updateOrder.OrderRemark}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="NoDataFoundMessageOnUpdateSearch===''">
+                            <pagination-controls id="customer-order-update-pagination" (pageChange)="CurrentPageId1 = $event; pageChangeEvent($event,'table2')">
+                            </pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div bsModal #popupCompanyNameModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body" style="text-align: center;">
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="close()" />
+                <h5>{{companyNameForInvoice}}</h5>
+                <input id="company" name="company" class="form-control" [(ngModel)]="EnterCompanyName" placeholder="Enter Company Name"><br>
+                <input id="reraRegistrationNo" name="reraRegistrationNo" class="form-control" [(ngModel)]="EnterRERARegistrationNo" placeholder="Enter RERA Registration No."><br>
+                <button type="button" [disabled]="!EnterRERARegistrationNo || !EnterCompanyName" id="button3" class="btn btn-primary center-block" (click)="GeneratePDF()"> Generate
+                    PDF</button> &nbsp;&nbsp;
+                <button type="button" id="button4" class="btn btn-primary center-block" (click)="close()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<accordion *ngIf="showAccordion && !Showsummery && !isSpinnerActive">
+    <form #OrderForm="ngForm">
+        <div id="divToPdf">
+            <accordion-group heading="Step 1: Customer Details ({{orderModel.OrderId}})" class="textStyle" [isOpen]="isFirstOpen">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <strong for="SalesAgentAssinged">Sales Agent :</strong>
+                        <input [disabled]="true" type="text" class="form-control" id="SalesAgentAssinged" name="SalesAgentAssinged" [(ngModel)]="orderModel.SalesAgentAssinged">
+                    </div>
+                    <!-- <div class="col-sm-3">
+                        <strong for="SalesAgentId">Sales Agent :</strong>
+                        <input [disabled]="true" type="text" class="form-control" id="SalesAgentId" name="SalesAgentId"
+                            [(ngModel)]="orderModel.SalesAgentId">
+                    </div> -->
+                    <div class="col-sm-3" *ngIf="isFieldDisabled">
+                        <strong for="EmployeeId1">
+                            <span class="required">*</span>Employee Id :</strong>
+                        <input [disabled]="true" type="text" class="form-control" id="EmployeeId1" name="EmployeeId" [(ngModel)]="orderModel.EmployeeId" required #EmployeeId="ngModel" [class.error]="EmployeeId.invalid && EmployeeId.touched" [class.has-success]="EmployeeId.valid">
+                    </div>
+                    <div class="col-sm-3" *ngIf="!isFieldDisabled">
+                        <strong for="EmployeeId2">
+                            <span class="required">*</span>Employee Id :</strong>
+                        <input [disabled]="true" type="text" class="form-control" id="EntityId" name="EntityId" [(ngModel)]="sessionModel.EntityId" required #EmployeeId="ngModel" [class.error]="EmployeeId.invalid && EmployeeId.touched" [class.has-success]="EmployeeId.valid">
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="BrokerAssinged">Broker :</strong>
+                        <input [disabled]="true" type="text" class="form-control" id="BrokerAssinged" name="BrokerAssinged" [(ngModel)]="orderModel.BrokerAssinged">
+                    </div>
+                    <!-- <div class="col-sm-3">
+                        <strong for="BrokerId">Broker :</strong>
+                        <input [disabled]="true" type="text" class="form-control" id="BrokerId" name="BrokerId"
+                            [(ngModel)]="orderModel.BrokerId">
+                    </div> -->
+                    <div class="col-sm-3">
+                        <strong for="AadharCard">
+                            <span class="required">*</span>Aadhaar Card :</strong>
+                        <input [disabled]="isFieldDisabled" type="text" maxlength=12 pattern="^\d{12}$" class="form-control" id="AadharCard" name="AadharCard" [(ngModel)]="orderModel.AadharCard" required #AadharCard="ngModel" placeholder="Enter Adhar Card Number..." [class.error]="AadharCard.invalid && AadharCard.touched"
+                            [class.has-success]="AadharCard.valid">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3" *ngIf="!isFieldDisabled">
+                        <strong for="txtCustomerName">
+                            <span class="required">*</span>Customer Name :</strong>
+                        <input class="form-control" name="test" [(ngModel)]="txtCustomerName" type="text" id="keyword" (keyup)="searchCustomer(txtCustomerName)" placeholder="Search By Name... " required #SearchText="ngModel" pattern="[a-zA-Z. ]*" [class.error]="SearchText.invalid && SearchText.touched"
+                            [class.has-success]="SearchText.valid" autocomplete="off" autofocus />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="listnotfound">{{ErrorForInvalidSearch}}</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="listnotfound">{{showInvalidCustomerSearchError}}</h4>
+                            </div>
+                        </div>
+                        <div class="search-result" [hidden]="!flag">
+                            <ul>
+                                <li *ngFor="let cust of customers">
+                                    <a (click)="onselectCustomer(cust)">{{cust.FirstName}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-3" *ngIf="!isFieldDisabled">
+                        <strong for="txtMobileNumber">
+                            <span class="required">*</span>Mobile Number :</strong>
+                        <input readonly="true" class="form-control" name="text1" id="text1" [(ngModel)]="txtMobileNumber" required #SearchText1="ngModel" [class.error]="SearchText1.invalid && SearchText1.touched" [class.has-success]="SearchText1.valid" autofocus />
+                        <div class="search-result" [hidden]="!flag">
+                            <ul>
+                                <li *ngFor="let cust of customers ">
+                                    <a (click)="onselectCustomer(cust)">{{cust.MobileNo}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-3" *ngIf="!isFieldDisabled">
+                        <strong for="txtEmailId">
+                            <span class="required">*</span>Email ID :</strong>
+                        <input readonly="true" class="form-control" name="text2" id="text2" [(ngModel)]="txtEmailId" required #SearchText2="ngModel" [class.error]="SearchText2.invalid && SearchText2.touched" [class.has-success]="SearchText2.valid" autofocus />
+                        <div class="search-result" [hidden]="!flag">
+                            <ul>
+                                <li *ngFor="let cust of customers">
+                                    <a (click)="onselectCustomer(cust)">{{cust.UserId}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-3" *ngIf="isFieldDisabled">
+                        <strong for="CustomerName">
+                            <span class="required">*</span>Customer Name :</strong>
+                        <input [disabled]="isFieldDisabled" type="text" class="form-control" id="CustomerName" name="CustomerName" [(ngModel)]="orderModel.CustomerName" placeholder="Search by Customer Name" required #SearchText="ngModel" pattern="[a-zA-Z. ]*" [class.error]="SearchText.invalid && SearchText.touched"
+                            [class.has-success]="SearchText.valid" autofocus />
+                    </div>
+                    <div class="col-sm-3" *ngIf="isFieldDisabled">
+                        <strong for="MobileNo">
+                            <span class="required">*</span>Mobile Number :</strong>
+                        <input [disabled]="isFieldDisabled" type="text" class="form-control" id="MobileNo" name="MobileNo" [(ngModel)]="orderModel.MobileNo" pattern="^\d{10}$" minlength=10 maxlength=10 required #SearchText1="ngModel" [class.error]="SearchText1.invalid && SearchText1.touched"
+                            [class.has-success]="SearchText1.valid">
+                    </div>
+                    <div class="col-sm-3" *ngIf="isFieldDisabled">
+                        <strong for="Email">
+                            <span class="required">*</span>Email ID :</strong>
+                        <input [disabled]="isFieldDisabled" type="text" class="form-control" id="Email" name="Email" [(ngModel)]="orderModel.Email" [pattern]="emailPattren" required #SearchText2="ngModel" [class.error]="SearchText2.invalid && SearchText2.touched" [class.has-success]="SearchText2.valid">
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="panNo1">
+                            <span class="required">*</span>PAN Number 1 :</strong>
+                        <input [disabled]="isFieldDisabled" type="text" maxlength=10 pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}$" class="form-control" id="panNo1" name="panNo1" [(ngModel)]="orderModel.PANNo1" required #panNo1="ngModel" placeholder="-- 5-Letters - 4-Digits - 1-Letter --"
+                            [class.error]="panNo1.invalid && panNo1.touched" [class.has-success]="panNo1.valid">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <strong for="jointName1">Joint Name 1 :</strong>
+                        <input [disabled]="isFieldDisabled" type="text" class="form-control" id="jointName1" name="jointName1" [(ngModel)]="orderModel.JointName1" #jointName1="ngModel" pattern="[a-zA-Z. ]*" placeholder="Enter Joint Name 1..." (change)="jointName1Check(orderModel.JointName1)"
+                            [class.error]="jointName1.invalid && jointName1.touched" [class.has-success]="jointName1.valid">
+                    </div>
+                    <div class="col-sm-3" *ngIf="!enablePan1">
+                        <strong for="panNo2"> PAN Number 2 :</strong>
+                        <input [disabled]="isFieldDisabled" pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}$" maxlength=10 type="text" class="form-control" id="panNo2" name="panNo2" [(ngModel)]="orderModel.PANNo2" #panNo2="ngModel" placeholder="Enter PAN Number 2..." [class.error]="panNo2.invalid && panNo2.touched"
+                            [class.has-success]="panNo2.valid">
+                    </div>
+                    <div class="col-sm-3" *ngIf="enablePan1">
+                        <strong for="panNo2"> <span class="required">*</span>PAN Number 2 :</strong>
+                        <input [disabled]="isFieldDisabled" pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}$" maxlength=10 type="text" class="form-control" id="panNo2" name="panNo2" required [(ngModel)]="orderModel.PANNo2" #panNo2="ngModel" placeholder="Enter PAN Number 2..." [class.error]="panNo2.invalid && panNo2.touched"
+                            [class.has-success]="panNo2.valid">
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="jointName2">Joint Name 2 :</strong>
+                        <input [disabled]="isFieldDisabled" type="text" class="form-control" id="jointName2" name="jointName2" [(ngModel)]="orderModel.JointName2" #jointName2="ngModel" pattern="[a-zA-Z. ]*" placeholder="Enter Joint Name 2..." (change)="jointName2Check(orderModel.JointName2)"
+                            [class.error]="jointName2.invalid && jointName2.touched" [class.has-success]="jointName2.valid">
+                    </div>
+                    <div class="col-sm-3" *ngIf="!enablePan2">
+                        <strong for="panNo3">PAN Number 3 :</strong>
+                        <input [disabled]="isFieldDisabled" pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}$" maxlength=10 type="text" class="form-control" id="panNo3" name="panNo3" [(ngModel)]="orderModel.PANNo3" #panNo3="ngModel" placeholder="Enter PAN Number 3..." [class.error]="panNo3.invalid && panNo3.touched"
+                            [class.has-success]="panNo3.valid">
+                    </div>
+                    <div class="col-sm-3" *ngIf="enablePan2">
+                        <strong for="panNo3"> <span class="required">*</span> PAN Number 3 :</strong>
+                        <input [disabled]="isFieldDisabled" pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}$" maxlength=10 type="text" class="form-control" id="panNo3" name="panNo3" required [(ngModel)]="orderModel.PANNo3" #panNo3="ngModel" placeholder="Enter PAN Number 3..." [class.error]="panNo3.invalid && panNo3.touched"
+                            [class.has-success]="panNo3.valid">
+                    </div>
+                </div>
+            </accordion-group>
+            <accordion-group class="text-center" heading="Step 2: Property Details ({{orderModel.OrderId}})">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-4 text-left">
+                            <div class="row text-left">
+                                <div class="col-sm-5">
+                                    <strong for="ProjectName">
+                                        <span class="required">*</span>Project Name :</strong>
+                                </div>
+                                <div class="col-sm-7" *ngIf="!isFieldDisabled">
+                                    <select [disabled]="isFieldDisabled" (change)="GetSelectedBuildingTypeList()" class="form-control" id="ProjectName" name="ProjectName" [(ngModel)]="orderModel.ProjectName" required #projectname="ngModel" [class.error]="projectname.invalid && projectname.touched"
+                                        [class.has-success]="projectname.valid">
+                                        <option value="">---Select Project Name---</option>
+                                        <option *ngFor="let select of selectedProjectNames"
+                                            [hidden]="select.ProjectName === 'Common'">{{select.ProjectName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-7" *ngIf="isFieldDisabled">
+                                    <input [disabled]="isFieldDisabled" class="form-control" id="ProjectName" name="ProjectName" [(ngModel)]="orderModel.ProjectName">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5" *ngIf="preferredBuildingTypeLists.length>0">
+                                    <span for="BuildingType">
+                                        <strong>
+                                            <span class="required">*</span>Building Type :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-7" *ngIf="preferredBuildingTypeLists.length>0 && !isFieldDisabled">
+                                    <select [disabled]="isFieldDisabled" (change)="GetSelectedBhkList()" class="form-control" id="BuildingType" name="BuildingType" [(ngModel)]="orderModel.BuildingType" required #buildingtype="ngModel" [class.error]="buildingtype.invalid && buildingtype.touched"
+                                        [class.has-success]="buildingtype.valid">
+                                        <option value="">---Select Building Type---</option>
+                                        <option *ngFor="let select of preferredBuildingTypeLists">
+                                            {{select.BuildingType}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-7" *ngIf="isFieldDisabled">
+                                    <input [disabled]="isFieldDisabled" class="form-control" id="BuildingType" name="BuildingType" [(ngModel)]="orderModel.BuildingType">
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="!isFieldDisabled">
+                                <div class="col-sm-5" *ngIf="preferredBhkLists.length>0">
+                                    <span for="BHK">
+                                        <strong> <span class="required">*</span>BHK :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-7" *ngIf="preferredBhkLists.length>0">
+                                    <select [disabled]="isFieldDisabled" (change)="GetSelectedFlatNumberList()" class="form-control" id="BHK" name="BHK" [(ngModel)]="orderModel.BHK" required #bhk="ngModel" [class.error]="bhk.invalid && bhk.touched" [class.has-success]="bhk.valid">
+                                        <option value="">---Select BHK---</option>
+                                        <option *ngFor="let select of preferredBhkLists">{{select.BHK}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="isFieldDisabled">
+                                <div class="col-sm-5">
+                                    <span for="BHK">
+                                        <strong>
+                                            <span class="required">*</span>BHK :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-7">
+                                    <input [disabled]="isFieldDisabled" class="form-control" id="BHK" name="BHK" [(ngModel)]="orderModel.BHK">
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="!isFieldDisabled">
+                                <div class="col-sm-5" *ngIf="preferredFlatNumberLists.length>0">
+                                    <span for="FlatNo">
+                                        <strong *ngIf="orderModel.ProjectType !== 'Plots'">
+                                            <span class="required">*</span>Flat Number :
+                                    </strong>
+                                    <strong *ngIf="orderModel.ProjectType === 'Plots'">
+                                            <span class="required">*</span>Plot Number :
+                                        </strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-7" *ngIf="preferredFlatNumberLists.length>0 ">
+                                    <select [disabled]="isFieldDisabled" (change)="GetSelectedCarpetAreaList()" class="form-control" id="FlatNo" name="FlatNo" [(ngModel)]="orderModel.FlatNo" required #flatNo="ngModel" [class.error]="flatNo.invalid && flatNo.touched" [class.has-success]="flatNo.valid">
+                                        <option *ngIf="orderModel.ProjectType !== 'Plots'" value="">---Select Flat
+                                            Number---</option>
+                                        <option *ngIf="orderModel.ProjectType === 'Plots'" value="">---Select
+                                            Plot---</option>
+                                        <option *ngFor="let select of preferredFlatNumberLists">
+                                            {{select.FlatNo}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="isFieldDisabled">
+                                <div class="col-sm-5">
+                                    <span for="FlatNo">
+                                        <strong> <span class="required">*</span>Flat Number :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-7">
+                                    <input [disabled]="isFieldDisabled" class="form-control" id="FlatNo" name="FlatNo" [(ngModel)]="orderModel.FlatNo">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5"></div>
+                                <div class="col-sm-7">
+                                    <h4 class="selectdate">{{showSelectedListNotFoundMessage}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 text-left">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span for="CarpetArea">
+                                        <strong>Internal Area :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span id="CarpetArea" name="CarpetArea" [(ngModel)]="orderModel.CarpetArea" ngDefaultControl>{{orderModel.CarpetArea | number:'1.2-2'}}</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span for="AttachedTerrace">
+                                        <strong>Attached Terrace :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <span id="AttachedTerrace" name="AttachedTerrace" [(ngModel)]="orderModel.AttachedTerrace" ngDefaultControl>{{orderModel.AttachedTerrace}}</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <strong for="ParkingSlot">Parking Allotted :</strong>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <span id="ParkingSlot" name="ParkingSlot" [(ngModel)]="orderModel.ParkingSlot" ngDefaultControl>{{orderModel.ParkingSlot}}</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span for="FlatView">
+                                        <strong>Flat View :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-6 text-left">
+                                    <span id="FlatView" class="text-left" name="FlatView" [(ngModel)]="orderModel.FlatView" ngDefaultControl>{{orderModel.FlatView}}</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <span for="Remark">
+                                        <strong>Remark :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-8">
+                                    <span>{{orderModel.Remark}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-sm-4 text-left">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <span for="ReraArea">
+                                        <strong>RERA/Calculation Area (Sq.mtr) :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong id="ReraArea" name="ReraArea" [(ngModel)]="orderModel.ReraArea" ngDefaultControl>{{orderModel.ReraArea | number:'1.2-4'}}</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    <span for="SaleableArea">
+                                        <strong>RERA/Calculation Area (Sq.ft) :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong id="SaleableArea" name="SaleableArea" [(ngModel)]="orderModel.SaleableArea" ngDefaultControl>{{ orderModel.SaleableArea| number:'1.2-4'}}</strong>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <span for="LoadingPer">
+                                        <strong> Loading % </strong>
+                                    </span>
+                                </div>
+
+                                <div class="col-sm-3 formmargin">
+                                    <input [disabled]="isFieldDisabled" type="text" class="form-control" id="LoadingPer" name="LoadingPer" [(ngModel)]="orderModel.LoadingPer" onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false : true"
+                                        (input)="CalculateAgreedCost(orderModel)" #LoadingPer="ngModel" pattern="^(0|[1-9][0-9]*)$" placeholder="Loading  %" [class.has-success]="LoadingPer.valid">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <span for="BillableArea">
+                                        <strong> Billable Area (Sq.ft): </strong>
+                                    </span>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <strong> {{orderModel.BillableArea }}</strong>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row" *ngIf="!isFieldDisabled">
+                                <div class="col-sm-4">
+                                    <span for="Rate">
+                                        <strong> <span class="required">*</span>Rate :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-8">
+                                    <strong *ngIf="!hideEditButton" type="number" id="Rate" name="Rate" [(ngModel)]="orderModel.Rate" ngDefaultControl>{{orderModel.Rate | number:'1.2-2'}}</strong>
+                                    <input class="form-control" *ngIf="hideEditButton" required type="number" id="Rate" name="Rate" [(ngModel)]="orderModel.Rate" ngDefaultControl #Rate="ngModel" [class.error]="Rate.invalid && Rate.touched" [class.has-success]="Rate.valid">
+                                    <button *ngIf="!hideEditButton" [disabled]="hideEditRateButtonInitially" type="button" class="btn btn-link" (click)="onClickEditRate()">Edit
+                                        Rate</button>
+                                    <br>
+                                    <button *ngIf="hideEditButton" type="button" class="btn btn-success" (click)="onUpdateRate(orderModel)">Update
+                                        Rate
+                                    </button>
+                                    <button *ngIf="hideEditButton" type="button" class="btn btn-danger" (click)="onClickCancelRate()">Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 alert alert-success" *ngIf="showUpdateRateSuccessfullMessage!==''" role="alert">
+                                <h6><i class="fa fa-check"></i> {{showUpdateRateSuccessfullMessage}}</h6>
+                            </div>
+                            <div class="col-sm-12 alert alert-warning" *ngIf="showUpdateRateUnSuccessfullMessage!==''" role="alert">
+                                <h6><i class="fa fa-times-circle"></i> {{showUpdateRateUnSuccessfullMessage}}
+                                </h6>
+                            </div>
+                            <div class="row" *ngIf="isFieldDisabled">
+                                <div class="col-sm-9">
+                                    <span for="Rate">
+                                        <strong> <span class="required">*</span>Rate :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>{{orderModel.Rate | number:'1.2-2'}}</strong>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <span for="EnclosedBalcony" style="padding-right: 70px;">
+                                        <strong>Enclosed Balcony :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span id="EnclosedBalcony" name="EnclosedBalcony" [(ngModel)]="orderModel.EnclosedBalcony" ngDefaultControl>{{orderModel.EnclosedBalcony}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </accordion-group>
+        </div>
+
+        <accordion-group heading="Step 3: Financial Details ({{orderModel.OrderId}})" class="textStyle">
+            <div class="row">
+                <div class="col-sm-6">
+                    <fieldset class="scheduler-border">
+                        <!-- <legend class="scheduler-border">Broker Section</legend> -->
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <strong for="agreedCost">Basic Cost :</strong>
+                            </div>
+                            <div class="col-sm-4 formmargin">
+                                <input disabled type="text" class="form-control" id="agreedCost" name="agreedCost" [(ngModel)]="orderModel.AgreedCost" onkeypress="Validate(event)" (input)="CalculateSubTotal(orderModel)" #agreedCost="ngModel" pattern="[0-9. ]*" placeholder="Basic Cost...">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="ParkingCharge">
+                                    <strong>Parking Charge :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-4 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="ParkingCharge" name="ParkingCharge" [(ngModel)]="orderModel.ParkingCharge" onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false : true"
+                                    (input)="CalculateSubTotal(orderModel)" #parkingCharge="ngModel" pattern="[0-9. ]*" placeholder="Parking Charge..." [class.has-success]="parkingCharge.valid">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="FloorRise">
+                                    <strong>Floor Rise :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-4 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="FloorRise" name="FloorRise" [(ngModel)]="orderModel.FloorRise" onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false : true"
+                                    (input)="CalculateSubTotal(orderModel)" #floorRise="ngModel" pattern="[0-9. ]*" placeholder="Floor Rise..." [class.has-success]="floorRise.valid">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="PLC">
+                                    <strong>PLC :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-4 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="PLC" name="PLC" [(ngModel)]="orderModel.PLC" #pLC="ngModel" pattern="[0-9. ]*" onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false : true"
+                                    (input)="CalculateSubTotal(orderModel)" placeholder="PLC..." [class.has-success]="pLC.valid">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="InfraCharge">
+                                    <strong>Infra Charge :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-4 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="InfraCharge" name="InfraCharge" [(ngModel)]="orderModel.InfraCharge" onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false : true"
+                                    (input)="CalculateSubTotal(orderModel)" #infraCharge="ngModel" pattern="[0-9. ]*" placeholder="Infra Charge..." [class.has-success]="infraCharge.valid">
+                            </div>
+                        </div>
+                        <hr align="left" width="100%">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="SubTotal">
+                                    <strong>Sub Total</strong>
+                                    <strong>(Total Agreement Cost) :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7" *ngIf="!isFieldDisabled">
+                                <span type="number" id="SubTotal" name="SubTotal" [(ngModel)]="orderModel.SubTotal" ngDefaultControl>{{orderModel.SubTotal | number:'1.2-2'}}</span>
+                                <!-- <input type="number" class="form-control" id="SubTotal" name="SubTotal" [disabled]="true" (change)="onDiscountSchemeChange()" [(ngModel)]="orderModel.SubTotal" ngDefaultControl> -->
+                            </div>
+                            <div class="col-sm-7" *ngIf="isFieldDisabled">
+                                <span>{{orderModel.SubTotal | number:'1.2-2'}}</span>
+                            </div>
+                        </div>
+                        <hr align="left" width="100%">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="DiscountScheme">
+                                    <strong> Discount Scheme :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-4" *ngIf="!isFieldDisabled">
+                                <select type="number" (change)="onDiscountSchemeChange()" class="form-control" id="DiscountScheme" name="DiscountScheme" [(ngModel)]="orderModel.DiscountScheme" #discountScheme="ngModel" ngDefaultControl [class.error]="discountScheme.invalid && discountScheme.touched"
+                                    [class.has-success]="discountScheme.valid">
+                                    <option value="">--Select--</option>
+                                    <option *ngFor="let select of preferredSchemeList" [value]="select.value">
+                                        {{select.key}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4" *ngIf="isFieldDisabled">
+                                <select [disabled]="isDisabledForUpdate" [disabled]="isFieldDisabled" (change)="OnChangeUpdateFields()" type="number" (change)="onDiscountSchemeChange()" class="form-control" id="DiscountScheme" name="DiscountScheme" [(ngModel)]="orderModel.DiscountScheme"
+                                    #discountScheme="ngModel" ngDefaultControl [class.error]="discountScheme.invalid && discountScheme.touched" [class.has-success]="discountScheme.valid">
+                                    <option value="">--Select--</option>
+                                    <option *ngFor="let select of preferredSchemeList" [value]="select.value">
+                                        {{select.key}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-1">
+                                <span>&#37;</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="DiscountSubTotal">
+                                    <strong>Final Agreement Cost After Discount :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7">
+                                <span>{{orderModel.DiscountSubTotal | number:'1.2-2'}}</span>
+                            </div>
+                        </div>
+                        <strong class="required" *ngIf="disableButton">Your Rate is Below AveragePrize</strong>
+                        <hr align="left" width="100%">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <span for="TDS">
+                                    <strong>TDS :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-3 formmargin">
+                                <input type="text" class="form-control" name="TDS" [(ngModel)]="orderModel.TDS" [disabled]="isFieldDisabled" (input)="calculatePer(orderModel.TDS,'percentageTDS')" ngbTooltip="You can Round Of TDS Here">
+                            </div>
+                            <div class="col-sm-3 formmargin ">
+                                <input [disabled]="isFieldDisabled" min="0" max="6" type="number" class="form-control " id="percentageTDS" name="percentageTDS" value="percentageTDS" [(ngModel)]="orderModel.percentageTDS" (input)="OnPercentChange($event.target.value);onTDSChange($event.target.value) ">
+                            </div>
+                            <div class="col-sm-1 ">
+                                &#37;
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-sm-5">
+                                <span for="GST ">
+                                    <strong>GST* :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-3 formmargin">
+                                <input type="text " class="form-control " name="gstno" [(ngModel)]="orderModel.GST" [disabled]="isFieldDisabled" (input)="calculatePer($event.target.value,'percentageGST')" ngbTooltip="You can Round Of GST Here">
+                            </div>
+                            <div class="col-sm-3 formmargin">
+                                <input [disabled]="isFieldDisabled" type="number" min="0" max="6" class="form-control" id="percentageGST" name="percentageGST" value="percentageGST" [(ngModel)]="orderModel.percentageGST" (input)="OnPercentChange($event.target.value);onGSTChange($event.target.value)">
+                            </div>
+                            <div class="col-sm-1">
+                                &#37;
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-sm-5">
+                                <span for="StampDuty">
+                                    <strong>Stamp Duty* :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-3 formmargin">
+                                <input type="text" class="form-control" name="StampDuty" [(ngModel)]="orderModel.StampDuty" [disabled]="isFieldDisabled" (input)="calculatePer($event.target.value,'PercentStampDuty')" ngbTooltip="You can Round Of Stamp Duty Here">
+                            </div>
+                            <div class="col-sm-3 formmargin">
+                                <input [disabled]="isFieldDisabled" type="number" min="0" max="6" class="form-control" id="PercentStampDuty" name="PercentStampDuty" value="PercentStampDuty" [(ngModel)]="orderModel.PercentStampDuty" (input)="onStampDutyChange($event.target.value);OnPercentChange($event.target.value);">
+                            </div>
+                            <div class="col-sm-1">
+                                &#37;
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <span for="Tax">
+                                        <strong>Registration Tax*:</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>{{orderModel.Tax | number:'1.2-2'}}</span>
+                                </div>
+                                <div class="col-sm-3 formmargin">
+                                    <input [disabled]="isFieldDisabled" class="form-control" id="percentageTAX" name="percentageTAX" value="percentageTAX" pattern="[0-9 ]*" [(ngModel)]="orderModel.percentageTAX" (input)="onTaxChange($event.target.value);OnPercentChange($event.target.value)">
+                                </div>
+                            </div>
+                            <strong>('*' As Per Govt. Regulation)</strong>
+                        </div>
+                        <div class="row">
+                            <hr align="left" width="100%">
+                            <div class="col-sm-5">
+                                <span for="TotalValue">
+                                    <strong>Total Cost Including Taxes:</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7">
+                                <span>{{orderModel.TotalValue | number:'1.2-2'}}</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-sm-6">
+                    <fieldset class="scheduler-border">
+                        <br />
+                        <div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span for="TotalDue">
+                                        <strong>Amount Due As Per % Completion :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>{{orderModel.TotalDue | number:'1.2-2'}}</span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input [disabled]="isFieldDisabled" type="number" min="0" max="6" class="form-control" id="TotalDuePercentage" name="TotalDuePercentage" value="TotalDuePercentage" [(ngModel)]="orderModel.TotalDuePercentage" (input)="OnBookingDuePercentChange($event.target.value)"
+                                        #totalDuePercentage="ngModel" [class.has-success]="totalDuePercentage.valid">
+                                </div>
+                            </div>
+                            <hr align="left" width="100%">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 left-align">
+                                <span for="BookingPercentage">
+                                    <strong>
+                                        <span class="required marginleft">*</span>Booking Percentage :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-2 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="bookingpercentage" name="bookingpercentage" [(ngModel)]="orderModel.BookingPercentage" placeholder="Percentage..." required #bookingpercentage="ngModel" pattern="[0-9 ]*" max="100"
+                                    [class.error]="bookingpercentage.invalid && bookingpercentage.touched" [class.has-success]="bookingpercentage.valid" (change)="onBookingPercentage(orderModel.BookingPercentage)">
+                            </div>
+                            <div class="col-sm-1">
+                                &#37;
+                            </div>
+                            <div class="col-sm-4 formmargin">
+                                <input [disabled]="true" type="text" class="form-control" id="BookingAmount" name="BookingAmount" [(ngModel)]="orderModel.BookingAmountForPercentage" placeholder="Enter Booking Amount..." required #BookingAmount="ngModel" pattern="[0-9. ]*" [class.error]="BookingAmount.invalid && BookingAmount.touched"
+                                    [class.has-success]="BookingAmount.valid">
+                            </div>
+                        </div>
+                        <!-- Booking Amount Paid by User/Customer -->
+                        <div class="row">
+                            <div class="col-sm-5 left-align">
+                                <span for="BookingAmountPaid">
+                                    <span class="required marginleft">*</span><strong>Booking Amount Paid :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="BookingAmountPaid" name="BookingAmountPaid" required [(ngModel)]="orderModel.BookingAmount" placeholder="Enter Booking Amount paid..." ngDefaultControl #BookingAmountPaid="ngModel"
+                                    pattern="[0-9. ]*" [class.has-success]="BookingAmountPaid.valid">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 left-align">
+                                <span for="bankname" class="marginleft">
+                                    <strong>Booking Bank name :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="bankname" name="bankname" [(ngModel)]="orderModel.ChequeBankName" placeholder="Enter Booking Bank Name..." ngDefaultControl #bankname="ngModel" [class.has-success]="bankname.valid">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 left-align">
+                                <span for="chequenumber" class="marginleft">
+                                    <strong>Booking Cheque Number :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="chequenumber" name="chequenumber" [(ngModel)]="orderModel.ChequeNumber" placeholder="Enter Booking Cheque Number..." ngDefaultControl #chequenumber="ngModel" pattern="[0-9. ]*" [class.has-success]="chequenumber.valid">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 left-align">
+                                <span for="chequedate" class="marginleft">
+                                    <strong>Booking Cheque Date :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7 formmargin">
+                                <input [disabled]="isFieldDisabled" type="date" class="form-control" id="chequedate" name="chequedate" [(ngModel)]="orderModel.ChequeDate" placeholder="Enter Booking Amount paid..." ngDefaultControl #chequedate="ngModel" [class.has-success]="chequedate.valid">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-sm-5 left-align">
+                                    <span for="BookingDate">
+                                        <strong>
+                                            <span class="required marginleft">*</span>Booking Date :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-7 formmargin">
+                                    <input [disabled]="isFieldDisabled" type="date" max="3000-31-12" [max]="getToday()" class="form-control" id="BookingDate1" name="BookingDate" [(ngModel)]="orderModel.BookingDate" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                                        required #BookingDate="ngModel" [class.error]="BookingDate.invalid && BookingDate.touched" [class.has-success]="BookingDate.valid">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 left-align">
+                                <span for="MaintenanceDeposit" class="marginleft">
+                                    <strong>Maintenance Deposit :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7 formmargin">
+                                <input [disabled]="isFieldDisabled" type="text" class="form-control" id="MaintenanceDeposit" name="MaintenanceDeposit" [(ngModel)]="orderModel.MaintenanceDeposit" placeholder="Enter Maintenance Deposit..." ngDefaultControl #MaintenanceDeposit="ngModel"
+                                    pattern="[0-9. ]*" [class.has-success]="MaintenanceDeposit.valid">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 left-align">
+                                <span for="MonthlyMaintenance" class="marginleft">
+                                    <strong>Monthly Maintenance :</strong>
+                                </span>
+                            </div>
+                            <div class="col-sm-7 formmargin">
+                                <input type="number" [disabled]="true" class="form-control" id="MonthlyMaintenance" name="MonthlyMaintenance" [(ngModel)]="orderModel.MonthlyMaintenance" ngDefaultControl>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group row">
+                                <div class="col-sm-5">
+                                    <span for="MonthlyMaintenance">
+                                        <strong>Stamp Duty Cheque Collected :</strong>
+                                    </span>
+                                </div>
+                                <div class="col-sm-2 formmargin">
+                                    <strong class="radio-inline">
+                                        <input type="radio" name="StampDutyCheckCollected"
+                                            [(ngModel)]="orderModel.StampDutyCheckCollected" value="Yes" checked>Yes
+                                    </strong>
+                                    <strong class="radio-inline">
+                                        <input [disabled]="isFieldDisabled" type="radio" name="StampDutyCheckCollected"
+                                            [(ngModel)]="orderModel.StampDutyCheckCollected" value="No">No
+                                    </strong>
+                                </div>
+                                <div class="col-sm-3" *ngIf="orderModel.StampDutyCheckCollected==='Yes' && !isFieldDisabled">
+                                    <strong>Upload Document :</strong>
+                                    <tru-file-upload [accept]="'.png,.PNG,.jpeg,.JPEG,.jpg,.JPG,.tiff,.TIFF,.tif,.TIF,.pdf,.PDF,.doc,.DOC'" [(inputFiles)]="uploadStampDutyFile" [multiple]="false">
+                                    </tru-file-upload>
+                                </div>
+                                <div class="col-sm-2" *ngIf="orderModel.StampDutyFile">
+                                    <button type="button" class="btn btn-sm btn-link" id="btnlink" (click)="OpenFile(orderModel.StampDutyFile)"><strong class="fontsize"><i
+                                                class="fas fa-file"></i>
+                                            <u>&nbsp;View File</u></strong></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group row">
+                            <strong class="radio-inline">
+                                    <input type="radio" name="BookingAmountPaid" [disabled]="isFieldDisabled"
+                                        [(ngModel)]="orderModel.OrderStatus" value="Booking Amount Paid" required
+                                        checked>Yes
+                                </strong>
+                                <strong class="radio-inline">
+                                    <input [disabled]="isFieldDisabled" type="radio" name="BookingAmountPaid"
+                                        [(ngModel)]="orderModel.OrderStatus" value="No">No
+                                </strong> 
+                        </div>-->
+
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">Broker Section</legend>
+                            <div *ngIf="!isFieldDisabled">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <strong for="IncentiveProposed">
+                                            <span class="required">*</span>Incentive Proposed:</strong>
+                                    </div>
+                                    <div class="col-sm-6" *ngIf="showBasicCostPercent">
+                                        <input [disabled]="isDisableOnBrokerAssigned" type="number" min="0" max="6" class="form-control" id="IncentiveProposed" name="IncentiveProposed" value="IncentiveProposed" (input)="changeBasicCost('BasicCost')" [(ngModel)]="orderModel.IncentiveProposed"
+                                            [class.error]="IncentiveProposed.invalid && IncentiveProposed.touched" [class.has-success]="IncentiveProposed.valid" required #IncentiveProposed="ngModel">
+                                    </div>
+                                    <div class="col-sm-6" *ngIf="!showBasicCostPercent">
+                                        <input [disabled]="isDisableOnBrokerAssigned" type="number" min="0" max="6" class="form-control" id="IncentiveProposed" name="IncentiveProposed" value="IncentiveProposed" (input)="changeBasicCost('AgreementCost')" [(ngModel)]="orderModel.IncentiveProposed"
+                                            [class.error]="IncentiveProposed.invalid && IncentiveProposed.touched" [class.has-success]="IncentiveProposed.valid" required #IncentiveProposed="ngModel">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        &#37;
+                                    </div>
+                                </div>
+                                <hr align="left" width="100%">
+                            </div>
+                            <div *ngIf="!isFieldDisabled">
+                                <div class="row">
+                                    <div class="col-sm-5"></div>
+                                    <div class="col-sm-7">
+                                        <span class="radio-inline">
+                                            <input type="radio" name="BasicCost" (click)="changeBasicCost('BasicCost')"
+                                                [(ngModel)]="orderModel.BasicCost" value="BasicCost">
+                                            <strong>Basic Cost </strong>
+                                        </span>
+                                        <span class="radio-inline">
+                                            <input [disabled]="isDisableOnBrokerAssigned" type="radio" name="BasicCost"
+                                                (click)="changeBasicCost('AgreementCost')"
+                                                [(ngModel)]="orderModel.BasicCost" value="AgreementCost">
+                                            <strong>Agreement Cost</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="isFieldDisabled">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <strong for="IncentiveProposed">
+                                            <span class="required">*</span>Incentive Proposed:</strong>
+                                    </div>
+                                    <div class="col-sm-6" *ngIf="showBasicCostPercent">
+                                        <input [disabled]="isDisableOnBrokerAssigned && isFieldDisabled" (change)="OnChangeUpdateFields()" type="number" min="0" max="6" class="form-control" id="IncentiveProposed" name="IncentiveProposed" value="IncentiveProposed" (input)="changeBasicCost('BasicCost')"
+                                            [(ngModel)]="orderModel.IncentiveProposed" [class.error]="IncentiveProposed.invalid && IncentiveProposed.touched" [class.has-success]="IncentiveProposed.valid" required #IncentiveProposed="ngModel">
+                                    </div>
+                                    <div class="col-sm-6" *ngIf="!showBasicCostPercent">
+                                        <input [disabled]="isDisabledForUpdate || orderModel.BrokerAssinged==='No Broker' || orderModel.BrokerAssinged==='null'" [disabled]="isFieldDisabled" [disabled]="isDisableOnBrokerAssigned" (change)="OnChangeUpdateFields()" type="number" min="0" max="6"
+                                            class="form-control" id="IncentiveProposed" name="IncentiveProposed" value="IncentiveProposed" (input)="changeBasicCost('AgreementCost')" [(ngModel)]="orderModel.IncentiveProposed" [class.error]="IncentiveProposed.invalid && IncentiveProposed.touched"
+                                            [class.has-success]="IncentiveProposed.valid" required #IncentiveProposed="ngModel">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        &#37;
+                                    </div>
+                                </div>
+                                <hr align="left" width="100%">
+                            </div>
+                            <div *ngIf="isFieldDisabled">
+                                <div class="row">
+                                    <div class="col-sm-5"></div>
+                                    <div class="col-sm-7">
+                                        <span class="radio-inline">
+                                            <input type="radio" name="BasicCost" (click)="changeBasicCost('BasicCost')"
+                                                [(ngModel)]="orderModel.BasicCost" value="BasicCost">
+                                            <strong>Basic Cost </strong>
+                                        </span>
+                                        <span class="radio-inline">
+                                            <input
+                                                [disabled]="isDisabledForUpdate || orderModel.BrokerAssinged==='No Broker'"
+                                                [disabled]="isFieldDisabled" [disabled]="isDisableOnBrokerAssigned"
+                                                (change)="OnChangeUpdateFields()" type="radio" name="BasicCost"
+                                                (click)="changeBasicCost('AgreementCost')"
+                                                [(ngModel)]="orderModel.BasicCost" value="AgreementCost">
+                                            <strong>Agreement Cost</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <strong for="IncentiveValue">
+                                        <span class="required">*</span>Incentive Value:</strong>
+                                </div>
+                                <div class="col-sm-7">
+                                    <span>{{orderModel.IncentiveValue | number:'1.2-2'}}</span>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="MonthlyMaintenance">Remark :</strong>
+                                <textarea rows="2" [disabled]="isFieldDisabled" class="form-control" id="OrderRemark" name="OrderRemark" [(ngModel)]="orderModel.OrderRemark" placeholder="Enter Remark..." #OrderRemark="ngModel" pattern="[a-zA-Z0-9. ]*" [class.has-success]="OrderRemark.valid"
+                                    ngDefaultControl></textarea>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="MonthlyMaintenance">Previous Remark :</strong>
+                                <textarea rows="2" class="form-control" id="PreviousRemark" name="PreviousRemark" [(ngModel)]="orderModel.OrderRemark" [disabled]="true" #PreviousRemark="ngModel" ngDefaultControl></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <br>
+            <div align="center">
+                <h6 *ngIf="mandatoryFieldsMessage" class="notfoundmsg">Please Fill All Mandatory Fields ( with * marks) To Enable Button.</h6>
+                <button type="button" class="btn btn-primary center-block" (click)="OnInsertBtnClick(OrderForm)" [disabled]="!OrderForm.form.valid || orderModel.Rate === null || disableButton || isFieldDisabled" [hidden]="isButtonHideForUpdate">Submit Order</button>
+                <button [disabled]="isDisabledForUpdate || orderModel.BrokerAssinged==='No Broker'" [disabled]="isButtonDisabledForUpdate" *ngIf="loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1" type="button" class="btn btn-primary center-block"
+                    (click)="OnUpdateBtnClick()" [hidden]="isButtonHideForSubmit">Update
+                    Order</button>
+                <div class="row">
+                    <div class="col-sm-12" align="center">
+                        <div [hidden]="!isLoadingOrderSubmitMessage">
+                            <p class="loading">
+                                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-md-center">
+                <div class="alert alert-success" *ngIf="showOrderSuccessfullMessage!==''" role="alert">
+                    <h4><i class="fa fa-check"></i> {{showOrderSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-danger" *ngIf="showOrderUnSuccessfullMessage!==''" role="alert">
+                    <h4><i class="fa fa-times-circle"></i> {{showOrderUnSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-success" *ngIf="showOrderUpdateSuccessfullMessage!==''" role="alert">
+                    <h4 *ngIf="loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1">
+                        <i class="fa fa-check"></i> {{showOrderUpdateSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-danger" *ngIf="showOrderUpdateUnSuccessfullMessage!==''" role="alert">
+                    <h4 *ngIf="loggedInuserDetails.Level==='L1' && loggedInuserDetails.Role===3 || loggedInuserDetails.Role===1">
+                        <i class="fa fa-times-circle"></i> {{showOrderUpdateUnSuccessfullMessage}}</h4>
+                </div>
+            </div>
+        </accordion-group>
+    </form>
+    <accordion-group heading="Step 3-A: Loan & OCR Details ({{orderModel.OrderId}})" class="textStyle" *ngIf="isFieldDisabled && (loggedInuserDetails.Role===2||loggedInuserDetails.Role===1)">
+        <app-ocr-bank-details [orderDetails]="orderModel"></app-ocr-bank-details>
+    </accordion-group>
+    <accordion-group heading="Step 4: Agreement Status ({{orderModel.OrderId}})" class="textStyle" *ngIf="isFieldDisabled && (loggedInuserDetails.Role===2||loggedInuserDetails.Role===1)">
+        <tru-emp-agreement-status [orderDetails]="orderModel"></tru-emp-agreement-status>
+    </accordion-group>
+    <accordion-group heading="Step 5: Generate Invoice ({{orderModel.OrderId}})" class="textStyle" *ngIf="isFieldDisabled && (loggedInuserDetails.Role === 2||loggedInuserDetails.Role === 1)">
+        <tru-emp-payment-schedule [orderDetails]="orderModel"></tru-emp-payment-schedule>
+    </accordion-group>
+</accordion>
+
+<form #OrderSummaryForm="ngForm" *ngIf="Showsummery">
+    <div class="row text-center">
+        <div class="col-sm-6">
+            <input type="text" autocomplete="off" [alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true" required ngxDaterangepickerMd id="date" name="Date" #date="ngModel" [(ngModel)]="selectedDateRange" class="form-control" placeholder="Select Start Date and End Date"
+                (change)="onChangeDate(selectedDateRange)" [class.error]="date.invalid && date.touched" [class.has-success]="date.valid" />
+        </div>
+        <div class="col-sm-4">
+            <span>To search or create order first click on Hide Summary button</span>
+        </div>
+        <div class="col-sm-2">
+            <span>
+                <h5>Orders <span class="badge badge-primary"> {{TotalOrders}}</span></h5>
+            </span>
+        </div>
+    </div>
+    <span class="required">{{noDataMsg}}</span>
+    <br>
+
+    <div class="row">
+        <div class="col-sm-12" *ngIf="isLoading">
+            <div>
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-6" *ngIf="TableDataSales.length>0">
+            <div class="card cardfortable">
+                <div class="title textweight text-center">
+                    <span>Orders By Sales</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="text-center">Sales Name</th>
+                                <th class="text-center" *ngFor="let tableHead of getheaderSales; trackBy: trackByFn">
+                                    {{tableHead}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pointer text-center" *ngFor="let gettableData of TableDataSales ;trackBy: trackByFn; let i=index;">
+                                <td *ngIf="i<TableDataSales.length-1" class="text-center"><button type="button" Class="btn btn-link btn-sm" (click)="showDetailsPopUp(gettableData,'Open','Sales')">
+                                        {{gettableData.ColName}}({{gettableData.Total}})</button></td>
+                                <td *ngIf="i===TableDataSales.length-1" class="text-center">
+                                    {{gettableData.ColName}}({{gettableData.Total}})
+                                </td>
+                                <td class="text-center" *ngFor="let tableHead of getheaderSales;trackBy: trackByFn">
+                                    {{gettableData[tableHead]?gettableData[tableHead]:0}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12" *ngIf="TableDataProject.length>0">
+                    <div class="card cardfortable">
+                        <div class="title textweight text-center">
+                            <span>Orders By Project</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap" #table>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="text-center">Project Name</th>
+                                        <th class="text-center" *ngFor="let tableHead of getheaderByProject; trackBy: trackByFn">
+                                            {{tableHead}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="pointer text-center" *ngFor="let gettableDataP of TableDataProject ;trackBy: trackByFn; let j=index;">
+
+                                        <td *ngIf="j <TableDataProject.length-1" class="text-center"><button type="button" class="btn btn-link btn-sm" (click)="showDetailsPopUp(gettableDataP,'Open','Project')">
+                                                {{gettableDataP.ColName}}({{gettableDataP.Total}})</button></td>
+
+                                        <td *ngIf="j === TableDataProject.length-1" class="text-center">
+                                            {{gettableDataP.ColName}}({{gettableDataP.Total}})</td>
+                                        <td *ngFor="let tableHeadP of getheaderByProject;trackBy: trackByFn">
+                                            {{gettableDataP[tableHeadP]?gettableDataP[tableHeadP]:0}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="col-sm-12" *ngIf="tabledataPreSales.length>0">
+                    <div class="card cardfortable">
+                        <div class="title textweight text-center">
+                            <span>Orders By Presales</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap" #table>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="text-center">Presales Name</th>
+                                        <th class="text-center" *ngFor="let tableHead of getheaderPreSales; trackBy: trackByFn">
+                                            {{tableHead}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="pointer text-center" *ngFor="let gettableData of tabledataPreSales ;trackBy: trackByFn; let i=index;">
+                                        <td *ngIf="i<tabledataPreSales.length-1" class="text-center"><button type="button" Class="btn btn-link btn-sm" (click)="showDetailsPopUp(gettableData,'Open','Presales')">
+                                                {{gettableData.ColName}}({{gettableData.Total}})</button></td>
+                                        <td *ngIf="i===tabledataPreSales.length-1" class="text-center">
+                                            {{gettableData.ColName}}({{gettableData.Total}})
+                                        </td>
+                                        <td class="text-center" *ngFor="let tableHead of getheaderPreSales;trackBy: trackByFn">
+                                            {{gettableData[tableHead]?gettableData[tableHead]:0}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="celender"></div>
+</form>
+
+<div bsModal #summaryDetailsModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title title">Order Summary Details - {{SumProjectName}}</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showDetailsPopUp(null,'close',null)" />
+            </div>
+            <div class="modal-body">
+                <div class="row text-center">
+                    <div class="col-sm-12" *ngIf="isLoading">
+                        <div>
+                            <p class="loading">
+                                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" *ngIf="SummaryDetails.length > 0">
+                        <div class="card cardfortable">
+                            <div class="title textweight text-center">
+                                <span>Order Details</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Lead Id</th>
+                                            <th>Customer Name</th>
+                                            <th>MobileNo</th>
+                                            <th>OrderId</th>
+                                            <th>Flat Details</th>
+                                            <th>BHK</th>
+                                            <th>AgreedCost</th>
+                                            <th>Total Value</th>
+                                            <th>OrderStatus</th>
+                                            <th>BookingDate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="pointer" (click)="showDetails(details)" *ngFor=" let details of SummaryDetails| paginate: {id:'summary-Details-pagination',itemsPerPage:6, currentPage: p1 };let i=index;">
+                                            <td>{{i+1}}</td>
+                                            <td>{{details.ReferralId}}</td>
+                                            <td>{{details.CustName}}</td>
+                                            <td>{{details.MobileNo}}</td>
+                                            <td>{{details.OrderId}}</td>
+                                            <td>{{details.FlatDetails}}</td>
+                                            <td>{{details.BHK}}</td>
+                                            <td>{{details.AgreedCost}}</td>
+                                            <td>{{details.TotalValue}}</td>
+                                            <td>{{details.OrderStatus}}</td>
+                                            <td>{{details.BookingDate}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <tfoot class="pull-right" *ngIf="SummaryDetails.length >6">
+                                    <pagination-controls id="summary-Details-pagination" (pageChange)="p1 = $event">
+                                    </pagination-controls>
+                                </tfoot>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-sm-12" id="colmargin">
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-6" *ngIf="SummaryByBuilding.length > 0">
+                                <div class="card cardfortable">
+                                    <div class="title textweight text-center">
+                                        <span>Orders By Building</span>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap" #table>
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th class="text-center">BuildingType</th>
+                                                    <th class="text-center">Orders</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor=" let details of SummaryByBuilding| paginate: {id:'summaryByBuilding-Details-pagination',itemsPerPage:5, currentPage: detailsbybuilding };let i=index;">
+                                                    <td class="text-center">{{details.BuildingType}}</td>
+                                                    <td class="text-center">{{details.Count}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <tfoot class="pull-right" *ngIf="SummaryByBuilding.length >5">
+                                            <pagination-controls id="summaryByBuilding-Details-pagination" (pageChange)="detailsbybuilding = $event"></pagination-controls>
+                                        </tfoot>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Pop Up for sales Agent same as Logged in user check -->
+<div bsModal #salesDuplicationModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header-md">
+                <h4 class="modal-title-md title-md">Warning</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="salesDuplicationModel.hide()" />
+            </div>
+            <div class="modal-body">
+                <div class="row text-center">
+                    <h5> Sales Agent Assigned & Loggedin Agent are different.</h5>
+                    <h5> Your Manager OR the Assigned sales agent can assign this lead to you.</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,135 @@
+<p-tabView>
+  <div>
+    <div class="card-header">
+      <strong>
+        <h5>Untouched Enquiry Analysis</h5>
+      </strong>
+      <div class="row">
+        <div class="col-sm-11"></div>
+        <div class="col-sm-1" *ngIf="getUntouchedCount.length > 0">
+          <button type="button" class="btn btn-primary pull-right" (click)="exportEvent('reportCount')">
+            <i class="fa fa-upload"></i> &nbsp; Export</button>
+        </div>
+      </div>
+    </div>   
+    <div class="row" *ngIf="isLoading">
+      <div class="col-sm-12 text-center">
+        <p class="loading">
+          <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+        </p>
+      </div>
+    </div>
+    <div class="row" *ngIf="!isLoading">
+      <div class="col-sm-12">
+        <strong>
+          <span class="text-danger" *ngIf="getUntouchedCount.length===0">No Data Found</span>
+        </strong>
+        <div class="table-responsive" *ngIf="getUntouchedCount.length>0">
+          <table class="table table-striped table-bordered table-sm" #table>
+            <thead class="thead-light sticky">
+              <tr class="text-center" data-toggle="tooltip" data-placement="top">
+                <th>Sr. No.</th>
+                <th>Employee</th>
+                <th title="Never Called"> Untouched</th>
+                <th title="Once Called">Untouched 1</th>
+                <th title="Twice Called">Untouched 2</th>
+                <th title="Thrice Called">Untouched 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-center"
+                *ngFor=" let TableData of getUntouchedCount | paginate: {id:'cd', itemsPerPage: 10, currentPage: q1 };let i = index;trackBy: trackByFn;">
+                <td>{{i+1}}</td>
+                <td>{{TableData.EmpName | titlecase}}</td>
+                <td (click)="getUntouchedAnalysisDetail(TableData,'Untouched')">
+                  <button class="btn btn-sm btn-link">{{TableData.Untouched}}</button>
+                </td>
+                <td (click)="getUntouchedAnalysisDetail(TableData,'Untouched1')">
+                  <button class="btn btn-sm btn-link">{{TableData.Untouched1}}
+                  </button>
+                </td>
+                <td (click)="getUntouchedAnalysisDetail(TableData,'Untouched2')">
+                  <button class="btn btn-sm btn-link">{{TableData.Untouched2}}</button>
+                </td>
+                <td (click)="getUntouchedAnalysisDetail(TableData,'Untouched3')">
+                  <button class="btn btn-sm btn-link">{{TableData.Untouched3}}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <tfoot class="pull-right" *ngIf="getUntouchedCount.length > 10">
+            <pagination-controls id="cd" (pageChange)="q1 = $event"></pagination-controls>
+          </tfoot>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-tabView>
+
+<div bsModal #popupUntouchedDetailModel="bs-modal" cdkDrag class="modal fade model" role="dialog"
+  data-backdrop="static" data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true"
+  [config]="{backdrop: 'static'}">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="col-sm-12">
+          <h3 class="modal-title  text-center">Lead Details</h3>
+        </div>
+        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="close()" />
+      </div>
+      <div class="modal-body">
+        <div class="row" *ngIf="PopUpLoading">
+          <div class="col-sm-12 text-center">
+            <p class="loading">
+              <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-11"></div>
+          <div class="col-sm-1" *ngIf="getUntouchedDetail.length > 0">
+            <button type="button" class="btn btn-primary" (click)="exportEvent('reportDetail')">
+              <i class="fa fa-upload"></i> &nbsp; Export</button>
+          </div>
+        </div>
+        <br />
+        <div class="row col-sm-12" *ngIf="!PopUpLoading">
+          <strong>
+            <span class="text-danger" *ngIf="getUntouchedDetail.length===0">No Data Found</span>
+          </strong>
+          <div class="table-responsive" *ngIf="getUntouchedDetail.length>0">
+            <table class="table table-striped table-bordered table-sm" #table>
+              <thead class="thead-light sticky">
+                <tr class="text-center">
+                  <th>Sr. No.</th>
+                  <th>Lead Name</th>
+                  <th>Mobile No</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Received On</th>
+                  <th>Status Change Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center" (click)="showDetails(TableData)"
+                  *ngFor=" let TableData of getUntouchedDetail | paginate: { id:'ab' ,itemsPerPage: 10, currentPage: t1 };let i = index;trackBy: trackByFn;">
+                  <td>{{i+1}}</td>
+                  <td>{{TableData.FirstName|titlecase}} {{TableData.LastName|titlecase}}</td>
+                  <td> {{TableData.MobileNo}} </td>
+                  <td> {{TableData.Email}} </td>
+                  <td> {{TableData.EnquiryStatus}} </td>
+                  <td> {{TableData.CreatedOn}}
+                  <td> {{TableData.StatusChangeReason}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <tfoot class="pull-right" *ngIf="getUntouchedDetail.length > 10">
+              <pagination-controls id="ab" (pageChange)="t1 = $event"></pagination-controls>
+            </tfoot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

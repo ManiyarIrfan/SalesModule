@@ -1,0 +1,145 @@
+.modal-header {
+  background-color: #33b5e5;
+}
+
+.alertModal {
+  background-color: #dc3545;
+}
+
+.title {
+  margin-left: 660px;
+  color: white;
+}
+
+.modal-title[_ngcontent-c20] {
+  margin-left: 301px;
+  color: white;
+}
+
+.previous {
+  background-color: #f1f1f1;
+  color: black;
+  cursor: pointer;
+}
+
+.responsive {
+  width: 68px;
+  max-width: 400px;
+  height: 65px;
+  margin-top: 26px;
+}
+
+#download {
+  top: 5px;
+  right: 39px;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+}
+
+.foldername {
+  text-align: center;
+  font-size: 18px;
+  color: black;
+  font-weight: 450;
+}
+
+.folderNameStyle {
+  text-align: center;
+  font-size: 16px;
+}
+
+.box {
+  border-radius: 10px;
+  height: 145px;
+  border: 1px solid #cdc8c8;
+  cursor: pointer;
+}
+
+@media (min-width: 576px) {
+  .col-sm-2 {
+    flex: 0 0 16.66666667%;
+    max-width: 9.666667%;
+  }
+}
+.box:hover {
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+.text {
+  color: white;
+  margin-top: -12px;
+  margin-left: 430px;
+}
+
+#img {
+  height: 400px;
+  width: 100%;
+}
+
+.alertHeading {
+  font-size: 25px;
+}
+
+.textAlign {
+  text-align: center;
+  width: 200px;
+}
+
+.far {
+  font-weight: 600;
+  font-size: 1.4em;
+}
+
+// .fa{
+//   font-weight: 500 !important;
+// }
+
+.btn-link {
+  font-weight: 800;
+  font-size: 0.9em;
+}
+
+#imageLogo {
+  width: 25px;
+  height: 25px;
+  margin-top: -10px;
+  margin-right: 9px;
+}
+
+@media (min-width: 992px) {
+  .modal-xl {
+    max-width: 1368px;
+    max-height: 1000px;
+  }
+}
+
+#title {
+  font-weight: 450;
+  font-size: 20px;
+}
+#btnmargin {
+  margin-left: 4em;
+}
+
+.box {
+  background: #c6c6c64f;
+}
+
+#boxpos {
+  margin-right: 1em;
+  margin-bottom: 2em;
+}
+#formheight {
+  height: 65px;
+}
+
+.modal-title {
+  margin-left: 176px;
+  color: white;
+  line-height: 0.5;
+}
+
+#model{
+  margin-left: 30em;
+}

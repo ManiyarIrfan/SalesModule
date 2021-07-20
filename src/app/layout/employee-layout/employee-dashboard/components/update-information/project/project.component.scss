@@ -1,0 +1,28 @@
+.alert {
+  font-size: 12px;
+}
+.modal-header {
+  background-color: #33b5e5;
+}
+.modal-title {
+  margin-left: 292px;
+  color: white;
+  line-height: 0.5;
+}
+.updatetitle {
+  margin-left: 320px;
+}
+@media (min-width: 992px) {
+  .modal-lg {
+    max-width: 860px;
+  }
+}
+.btn {
+  border-radius: 20px;
+}
+.card-alignment{
+  padding: 13px 30px;
+}
+.setcolor{
+  background-color: #05799c;
+}

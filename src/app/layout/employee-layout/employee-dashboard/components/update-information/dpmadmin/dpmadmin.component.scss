@@ -1,0 +1,95 @@
+::ng-deep .md-drppicker.double {
+    width: 670px;
+}
+
+.mat-tab-label {
+    min-width: 25px !important;
+    padding: 5px;
+    font-size: medium;
+    background-color: transparent;
+    font-weight: 700;
+}
+
+
+/* Styles for the active tab label */
+
+.mat-tab-label.mat-tab-label-active {
+    min-width: 25px !important;
+    padding: 5px;
+    font-size: medium;
+    background-color: transparent;
+    color: blue;
+    font-weight: 700;
+}
+
+.circle {
+    border-radius: 50%;
+    width: 40px;
+}
+
+.fa-refresh {
+    margin-left: -3px;
+}
+
+.greendot {
+    height: 12px;
+    width: 12px;
+    background-color: green;
+    border-radius: 50%;
+    display: inline-block;
+    float: right;
+}
+
+.reddot {
+    height: 12px;
+    width: 12px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+    float: right;
+}
+
+.Bluedot {
+    //color: #fce304;
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(214, 97%, 50%);
+}
+
+.Reddot {
+    //color: rgb(245, 9, 9);
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: #f32929;
+}
+
+.DarkBluedot {
+    //color: rgb(9, 84, 245);
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(0, 0%, 6%);
+}
+
+.scrollbar {
+    overflow: auto;
+    max-height: 460px;
+    min-height: 250px;
+}
+
+.marginright {
+    margin-right: 15px;
+}
+
+.mat-tab-body-content {
+    overflow: hidden !important;
+}
+
+.md-drppicker.shown.drops-down-right {
+    zoom: 75% !important;
+}

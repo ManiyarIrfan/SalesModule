@@ -1,0 +1,181 @@
+<div class="col-sm-12">
+    <form>
+        <ngb-tabset #tabset="ngbTabset">
+            <ngb-tab id="tab1" title="DashBoard" *ngIf="roling.indexOf('DashBoard')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-emp-dashboard (emitEventorder)="receiveCustOrderInfo($event)" (emitEvent)="receiveMessage($event)" (emitEventoppo)="receiveMessageOpportunity($event)">
+                    </tru-emp-dashboard>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab2" title="View Profile" *ngIf="roling.indexOf('View Profile')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-edit-view-details></tru-edit-view-details>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab20" title="Scheduled SV" *ngIf="roling.indexOf('Scheduled SV')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-scheduled-site-visit (emitEvent)="leadGenerationDetails($event)"></tru-scheduled-site-visit>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab18" title="CP Dashboard" *ngIf="roling.indexOf('PowerSalesDashboard')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-power-sales-dashboard (emitEventoppo)="receiveMessageOpportunity($event)" (emitEvent)="receiveMessage($event)"></tru-power-sales-dashboard>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab22" title="CRO Dashboard" *ngIf="roling.indexOf('CRO Dashboard')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-cro-admin-dashboard (emitEvent)="receiveMessage($event)"></tru-cro-admin-dashboard>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab19" title="CP/CRO Details" *ngIf="roling.indexOf('CpDetails')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-cp-details [id]="id"></tru-cp-details>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab13" title="All Enquiry" *ngIf="roling.indexOf('All Enquiry')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-pre-sales-leads (emitEvent)="receiveMessage($event)"></tru-pre-sales-leads>
+                </ng-template>
+            </ngb-tab>
+            <!-- For sales and presales Enquiry Details Tab sequence -->
+            <div *ngIf="loggedInuserDetails.Role === 5">
+                <ngb-tab id="tab14" title="Enquiry Details" *ngIf="roling.indexOf('Enquiry Details')!==-1">
+                    <ng-template ngbTabContent>
+                        <tru-lead-detail [id]="id" (emitEvent)="leadGenerationDetails($event)">
+                        </tru-lead-detail>
+                    </ng-template>
+                </ngb-tab>
+            </div>
+            <div *ngIf="(loggedInuserDetails.Role === 11 )|| (loggedInuserDetails.Role === 5 && loggedInuserDetails.EngagementType!=='OnDemand')">
+                <ngb-tab id="tab12" title="Pre Sales Dashboard" *ngIf="roling.indexOf('Pre Sales Dashboard')!==-1">
+                    <ng-template ngbTabContent>
+                        <tru-pre-sales-dashboard (emitEvent)="receiveMessage($event)" (emitEventoppo)="receiveMessageOpportunity($event)"></tru-pre-sales-dashboard>
+                    </ng-template>
+                </ngb-tab>
+            </div>
+            <div *ngIf="loggedInuserDetails.Role === 5 && loggedInuserDetails.EngagementType==='OnDemand'">
+                <ngb-tab id="tab12" title="Dashboard" *ngIf="roling.indexOf('Pre Sales Dashboard')!==-1">
+                    <ng-template ngbTabContent>
+                        <tru-pre-sales-dashboard (emitEvent)="receiveMessage($event)" (emitEventoppo)="receiveMessageOpportunity($event)"></tru-pre-sales-dashboard>
+                    </ng-template>
+                </ngb-tab>
+            </div>
+            <ngb-tab id="tab4" title="My Leads" *ngIf="roling.indexOf('Lead Dashboard')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-referral-status (emitEventoppo)="receiveMessageOpportunity($event)" (emitEventorder)="receiveCustOrderInfo($event)">
+                    </tru-referral-status>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab15" title="Lead Details" *ngIf="roling.indexOf('Opportunity Details')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-opportunity-details [referralInfo]="referralInfo" (emitEventorder)="receiveCustOrderInfo($event)"></tru-opportunity-details>
+                </ng-template>
+            </ngb-tab>
+            <!-- For sales and presales Enquiry Details Tab sequence -->
+            <div *ngIf="loggedInuserDetails.Role !== 5">
+                <ngb-tab id="tab14" title="Enquiry Details" *ngIf="roling.indexOf('Enquiry Details')!==-1">
+                    <ng-template ngbTabContent>
+                        <tru-lead-detail [id]="id" (emitEvent)="leadGenerationDetails($event)"></tru-lead-detail>
+                    </ng-template>
+                </ngb-tab>
+            </div>
+            <ngb-tab id="tab3" title="Lead +" *ngIf="roling.indexOf('Lead Generation')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-referral-generation [details]="details"></tru-referral-generation>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab7" title="Order" *ngIf="roling.indexOf('Order')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-order [orderInfo]="orderInfo"></tru-order>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab25" title="Payment & Receipt" *ngIf="roling.indexOf('Payment Receipt')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-payment-receipt></tru-payment-receipt>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab8" title="CP Payment Status" *ngIf="roling.indexOf('CP Payment Status')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-cp-payment-status></tru-cp-payment-status>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab5" title="Availability" *ngIf="roling.indexOf('Project Availability')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-project-details></tru-project-details>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab6" title="Project Status" *ngIf="roling.indexOf('Project Status')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-project-status></tru-project-status>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab10" title="Projects" *ngIf="roling.indexOf('Project')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-project></tru-project>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab11" title="Admin Panel" *ngIf="roling.indexOf('Admin Panel')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-admin-panel></tru-admin-panel>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab9" title="SR" *ngIf="roling.indexOf('SR')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-edit-service-request></tru-edit-service-request>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab16" title="Folders" *ngIf="roling.indexOf('File Management')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-file-management></tru-file-management>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab17" title="Reports" *ngIf="roling.indexOf('Reports')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-all-reports></tru-all-reports>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab23" title="Daily Reports" *ngIf="roling.indexOf('Daily Reports')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-front-desk-lead-status (emitEventoppo)="receiveMessageOpportunity($event)">
+                    </tru-front-desk-lead-status>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab21" title="Training" *ngIf="roling.indexOf('Training')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-presales-training></tru-presales-training>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab24" title="Issue Track" *ngIf="roling.indexOf('Issue Track')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-issue-track></tru-issue-track>
+                </ng-template>
+            </ngb-tab>
+            <div *ngIf="loggedInuserDetails.Role === 5 && loggedInuserDetails.EngagementType === 'OnDemand' && loggedInuserDetails.TenantId === 0">
+                <ngb-tab id="tab25" title="Schedule" *ngIf="roling.indexOf('Schedule')!==-1">
+                    <ng-template ngbTabContent>
+                        <app-dpm></app-dpm>
+                    </ng-template>
+                </ngb-tab>
+            </div>
+            <div *ngIf="loggedInuserDetails.Role === 11 && loggedInuserDetails.TenantId === 0">
+                <ngb-tab id="tab25" title="DPM Admin" *ngIf="roling.indexOf('DPM Admin')!==-1">
+                    <ng-template ngbTabContent>
+                        <app-dpmadmin></app-dpmadmin>
+                    </ng-template>
+                </ngb-tab>
+            </div>
+            <ngb-tab id="tab26" title="Idea Box" *ngIf="roling.indexOf('Idea Box')!==-1">
+                <ng-template ngbTabContent>
+                    <tru-idea-module></tru-idea-module>
+                </ng-template>
+            </ngb-tab>
+            <div *ngIf="loggedInuserDetails.Role === 3 && (loggedInuserDetails.Level === 'L1'|| loggedInuserDetails.Level === 'L2')">
+                <ngb-tab id="tab27" title="Admin" *ngIf="roling.indexOf('Admin')!==-1">
+                    <ng-template ngbTabContent>
+                        <app-sales-admin></app-sales-admin>
+                    </ng-template>
+                </ngb-tab>
+            </div>
+        </ngb-tabset>
+    </form>
+</div>

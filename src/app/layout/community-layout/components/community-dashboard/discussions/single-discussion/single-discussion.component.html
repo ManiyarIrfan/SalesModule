@@ -1,0 +1,216 @@
+<div class="row">
+    <div class="col-sm-12 pt-3">
+        <div class="row">
+            <div class="col-sm-12 cardstyle padd">
+                <h4><strong>{{(currentSelectedDiscussion && currentSelectedDiscussion.Subject) ? currentSelectedDiscussion.Subject : ''}}</strong></h4>
+                <span>{{currentSelectedDiscussion.Views}} views</span><span>&nbsp;&nbsp;<i
+                        class=" fazoom middle fa fa-circle" aria-hidden="true"></i>
+                    &nbsp;&nbsp;{{currentSelectedDiscussion.Timeelapsed}}</span>
+                <!-- <div class="pull-right m-1">
+                    <i class="fa fa-share-alt" aria-hidden="true"></i>
+                </div> -->
+                <div class="pull-right m-1">
+                    <i data-placement="bottom" data-toggle="tooltip" title="DisLike this Post"
+                        (click)="giveResponse('GiveDislikes',null,null)" class="fa pointer fa-thumbs-o-down"></i>
+                    <span>&nbsp;&nbsp;{{currentSelectedDiscussion.Dislikes ? currentSelectedDiscussion.Dislikes : 0}}</span>
+                </div>
+                <div class="pull-right m-1">
+                    <i data-placement="bottom" data-toggle="tooltip" title="Like this Post"
+                        (click)="giveResponse('GiveLike',null,null)" class="fa pointer fa-thumbs-o-up"></i>
+                    <span>&nbsp;&nbsp;{{currentSelectedDiscussion.Likes ? currentSelectedDiscussion.Likes : 0}}</span>
+                </div>
+                <hr class="hrForTitle">
+                <div>
+                    <img class="profilepic_main " width="65px" height="65px"
+                        src="{{currentSelectedDiscussion.ProfilePic ? currentSelectedDiscussion.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                        alt="">
+                    &nbsp;<strong class="center">{{currentSelectedDiscussion.UserName | titlecase}}</strong>
+                </div>
+                <div class="discussiondata">
+                    <p [innerHTML]="currentSelectedDiscussion.Message"></p>
+                </div>
+                <div *ngIf="loggedInuserDetails===null">
+                    <span (click)="CheckLoggedIn()" class="pull-right pointer ">
+                        (You must log in to reply)
+                    </span>
+                </div> <br>
+                <span *ngIf="loggedInuserDetails!==null" class="pull-right text-dark">Share :
+                    <fb-like [url]="currentURL"></fb-like>
+                    <linkedin-share [url]="currentURL"></linkedin-share>
+                    <tweet [url]="currentURL"></tweet>
+                    <pin-it [url]="currentURL"></pin-it>
+                </span>
+                <div
+                    *ngIf="currentSelectedDiscussion && currentSelectedDiscussion.Attachments && currentSelectedDiscussion.Attachments !== ''">
+                    <hr class="hrstyle">
+                    <h6>Attachments : </h6>
+                    <div class="row listtyle" id="style-1" style="margin-left: 0px;">
+                        <span *ngFor="let file of currentSelectedDiscussion.Attachments.split(',');trackBy: trackByFn;">
+                            <div class="p-1 pointer" *ngIf="file && file !==''">
+                                <div *ngIf="file.split('=').length > 0">
+                                    <div *ngIf="file.split('=')[1] && file.split('=')[1] !==''">
+                                        <a href="{{file.split('=')[1]}}" target="_blank">
+                                            <img id="imageLogo"
+                                                *ngIf="file && file.substr(file.lastIndexOf('.') + 1) === 'png' || file && file.substr(file.lastIndexOf('.') + 1) === 'PNG' || file && file.substr(file.lastIndexOf('.') + 1) === 'jpeg' || file && file.substr(file.lastIndexOf('.') + 1) === 'jpg' || file && file.substr(file.lastIndexOf('.') + 1) === 'JPG' || file && file.substr(file.lastIndexOf('.') + 1) === 'JPEG'"
+                                                class="responsive pointer" src="{{file.split('=')[1]}}" alt="Logo image"
+                                                style="height: 30px; width: 30px;" />
+                                        </a>
+                                        <a href="{{file.split('=')[1]}}" target="_blank" (click)="viewFile(file)">
+                                            <img id="imageLogo"
+                                                *ngIf="file &&file.substr(file.lastIndexOf('.') + 1) === 'pdf' || file && file.substr(file.lastIndexOf('.') + 1) === 'PDF'"
+                                                class="responsive pointer" src="assets\images\pdfNew.png"
+                                                alt="PDF file image" style="height: 25px; width: 25px;" />
+                                        </a>
+                                        <a href="{{file.split('=')[1]}}" target="_blank" (click)="viewFile(file)">
+                                            <img id="imageLogo"
+                                                *ngIf="file && file.substr(file.lastIndexOf('.') + 1) === 'xlsx' || file && file.substr(file.lastIndexOf('.') + 1) === 'xls'|| file && file.substr(file.lastIndexOf('.') + 1) === 'xltm'|| file && file.substr(file.lastIndexOf('.') + 1) === 'xlt' || file && file.substr(file.lastIndexOf('.') + 1) === 'xltx'"
+                                                class="responsive pointer"
+                                                src="../../../../../../../assets/images/exceln.png"
+                                                alt="xlsx file image" style="height: 25px; width: 25px;" />
+                                        </a>
+                                        <a href="{{file.split('=')[1]}}" target="_blank" (click)="viewFile(file)">
+                                            <img id="imageLogo"
+                                                *ngIf="file &&file.substr(file.lastIndexOf('.') + 1) === 'docx' || file && file.substr(file.lastIndexOf('.') + 1) === 'doc'|| file && file.substr(file.lastIndexOf('.') + 1) === 'dot'|| file && file.substr(file.lastIndexOf('.') + 1) === 'docm' "
+                                                class="responsive pointer"
+                                                src="../../../../../../../assets/images/doc.png" alt="docx file image"
+                                                style="height: 25px; width: 25px;" />
+                                        </a>
+                                        <span (click)="viewFile(file)" class="p-3 pointer">{{file.split('=')[0]}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <span class="m-2">{{currentSelectedDiscussion.Comments ? currentSelectedDiscussion.Comments : 0}}
+                Comments
+            </span>
+            <div class="col-sm-12  mb-3" [hidden]="loggedInuserDetails===null">
+                <div class="row">
+                    <img class=" profilepic center"
+                        src="{{currentSelectedDiscussion.ProfilePic ? currentSelectedDiscussion.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                        width="40px" alt="">
+                    <div class="col-sm-11">
+                        <textarea (click)="CheckLoggedIn()" type="text" id="form7"
+                            class="md-textarea hideborder form-control pull-left" rows="2" autocomplete="off"
+                            name="discussion" #discussion="ngModel" [(ngModel)]="discussionReplay">
+                        </textarea>
+                    </div>
+                    <div class="col-sm-12 mt-1">
+                        <button (click)="giveResponse('GiveReplay',currentSelectedDiscussion,null)" type="button"
+                            [disabled]="!discussionReplay"
+                            class="btn btnstyle btnmrgin btn-dark btnpost btn-sm pull-right">
+                            &nbsp;&nbsp;Reply&nbsp;&nbsp;
+                        </button>
+                        <button (click)="GiveCommentFlag=false;discussionReplay=''" type="button"
+                            class="btn btnstyle btn-sm pull-right">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <ol class="messageList" *ngFor="let item of DiscussionTransaction; trackBy: trackByFn;let i=index;">
+                    <li class="message">
+                        <a class="post-anchor "></a>
+                        <div class="messageUserInfo">
+                            <div class="avatarHolder">
+                                <span class="threaditemaction action-user">
+                                    <img class="imgwid profilepic "
+                                        src="{{item.ProfilePic ? item.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                                        alt="">
+                                </span>
+                                <h6 class="userText">
+                                    <strong>{{item.ReplayBy ? (item.ReplayBy | titlecase) : 'Anonymous'}}</strong>
+                                    <div class="tail">
+                                    </div>
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="messageInfo primaryContent">
+                            <div class="messageContent">
+                                <article>
+                                    <a class="pull-right"> <a class="DateTime">{{item.Timeelapsed}}</a></a>
+                                </article> <br>
+                                <blockquote class="messageText">
+                                    <p>{{item.Discussion ? item.Discussion : ''}}</p>
+                                </blockquote>
+                            </div>
+                            <hr>
+                            <div class="messageMeta ToggleTriggerAnchor">
+                                <div class="likesSummary">
+                                    <i (click)="giveResponse('GiveSubLike',item,null)"
+                                        class="fa faa-parent animated  fa-thumbs-o-up pointer"></i>&nbsp;&nbsp;{{item.Likes}}&nbsp;&nbsp;
+                                    <i (click)="giveResponse('GiveSubDislikes',item,null)"
+                                        class="fa fa-thumbs-o-down pointer"></i>&nbsp;&nbsp;{{item.Dislikes}}&nbsp;&nbsp;
+                                    <span class="pointer" *ngIf="loggedInuserDetails!==null"
+                                        (click)="item.GiveChildCommentFlag=!item.GiveChildCommentFlag">
+                                        <i class="fa fa-reply" aria-hidden="true"></i>&nbsp;REPLY
+                                    </span>
+                                    <!-- <span class="pull-right text-dark sharebtn">Share :
+                                        <i class="pointer pl-1 pr-2 facebook-bg fa fa-facebook-official"
+                                            aria-hidden="true"></i>
+                                        <i class="pointer pl-1 pr-2 insta-bg fa fa-instagram" aria-hidden="true"></i>
+                                        <i class="pointer pl-1 pr-2 twitter-bg fa fa-twitter" aria-hidden="true"></i>
+                                    </span> -->
+                                    <div class="row" *ngIf="item.GiveChildCommentFlag">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-2"></div>
+                                                <div class="col-sm-10 justify-md-content-right">
+                                                    <textarea type="text" id="form7"
+                                                        class="md-textarea hideborder form-control pull-right" rows="2"
+                                                        autocomplete="off" name="subDiscussion" #subDiscussion="ngModel"
+                                                        [(ngModel)]="item.SubDiscussion"></textarea>
+                                                </div>
+                                                <div class="col-sm-12 mt-1">
+                                                    <button (click)="giveResponse('GiveSubReplay',item,null)"
+                                                        type="button" [disabled]="!item.SubDiscussion "
+                                                        class="btn btnstyle btn-dark btnpost btn-sm pull-right">
+                                                        &nbsp;&nbsp;Reply&nbsp;&nbsp;
+                                                    </button>
+                                                    <button
+                                                        (click)="item.GiveChildCommentFlag=false;item.SubDiscussion=''"
+                                                        type="button" class="btn btnstyle  btn-sm pull-right">
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-1 pt-3 pb-2 mbottm1" *ngIf="item.RepliesData.length > 0">
+                                <span *ngIf="!item.viewRepliesFlag" class="padleft-3 text-primary pointer"
+                                    (click)="item.viewRepliesFlag=true">
+                                    View Replies {{item.RepliesData.length}} <i class="fa fa-chevron-down"></i>
+                                </span>
+                                <span *ngIf="item.viewRepliesFlag" class="padleft-3 text-primary pointer"
+                                    (click)="item.viewRepliesFlag=false">
+                                    Hide Replies <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                                </span>
+                                <div *ngIf="item.viewRepliesFlag">
+                                    <div class="pt-2 pb-1" *ngFor="let sub of item.RepliesData; trackBy: trackByFn;">
+                                        <img class="sub_profilepic center"
+                                            src="{{sub.ProfilePic ? sub.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                                            alt="">
+                                        <span class="center fweight400"> {{sub.ReplayBy}}&nbsp;&nbsp; </span>
+                                        <span class="center timel"><i class=" fazoom middle fa fa-circle"
+                                                aria-hidden="true"></i>&nbsp;&nbsp;{{sub.Timeelapsed}}</span>
+                                        <p class="padleft2">{{sub.SubDiscussion}}&nbsp;&nbsp;&nbsp;
+                                            <i (click)="giveResponse('GiveSubLike',sub,item)"
+                                                class="fa fa-thumbs-o-up pointer"></i>&nbsp;&nbsp;{{sub.Likes}}&nbsp;&nbsp;
+                                            <i (click)="giveResponse('GiveSubDislikes',sub,item)"
+                                                class="fa fa-thumbs-o-down pointer"></i>&nbsp;&nbsp;{{sub.Dislikes}}&nbsp;&nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>

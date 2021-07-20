@@ -1,0 +1,509 @@
+<br>
+<div *ngIf="isSpinnerActive">
+  <div class="spinner-inner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+    <div class="bounce4"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-3" *ngIf="loggedInuserDetails.Role=== 1||loggedInuserDetails.Role=== 3 && loggedInuserDetails.Level=='L1' ">
+    <button type="button" class="btn btn-outline-success" (click)="openmodal()">
+      <i class="fa fa-plus"></i> Create New</button>
+  </div>
+  <div class="col-sm-6" *ngIf="!isShow">
+    <div class="icon-addon addon-md">
+      <input class="form-control" type="text" [(ngModel)]="term" id="keyword" placeholder="Search By Project Name... ">
+      <i class="fa fa-search"></i>
+    </div>
+  </div>
+</div>
+<div bsModal #createProject="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel"
+  s aria-hidden="true">
+  <form #projectCreateForm="ngForm">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"> Create New Project</h4>
+          <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose(projectCreateForm)" />
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <strong for="projectName">
+                <span class="required">*</span>Project Name :</strong>
+              <input type="text" #projectName="ngModel" (blur)="projectName.valid ? getProjectValidation(projectInsertModal.ProjectName) : ClearAvailableMessage()"
+                [(ngModel)]="projectInsertModal.ProjectName" class="form-control" id="projectname" name="projectname" required
+                [class.error]="projectName.invalid && projectName.touched" [class.has-success]="projectName.valid" pattern="^[^-\s][a-zA-Z0-9 ]*">
+              <span [hidden]="isProjectAvailable" class="text-danger">{{showAvailable}}</span>
+              <span [hidden]="!isProjectAvailable" class="text-success">{{showAvailable}}</span>
+            </div>
+            <div class="col-sm-3">
+              <strong for="ProjectType">
+                <span class="required">*</span>Project Type :</strong>
+              <select type="text" #projectType="ngModel" [(ngModel)]="projectInsertModal.ProjectType" class="form-control" id="projectType"
+                name="projectType" required [class.error]="projectType.invalid && projectType.touched" [class.has-success]="projectType.valid">
+                <option value="">--select--</option>
+                <option class='option' *ngFor='let projType of projTypeInfo;trackBy: trackByFn' [value]="projType.value">{{projType.value}}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <strong for="Rate">
+                <span class="required">*</span>Rate :</strong>
+              <input type="number" #rate="ngModel" [(ngModel)]="projectInsertModal.Rate" class="form-control" id="rate" name="rate" required
+                pattern="^[^-\s][0-9 ]*" [class.error]="rate.invalid && rate.touched" [class.has-success]="rate.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <strong for="Rate">
+                <span class="required">*</span>Avg Cost(Sq.Ft) :</strong>
+              <input type="number" #avgrate="ngModel" [(ngModel)]="projectInsertModal.AvgRate" class="form-control" id="avgrate" name="avgrate"
+                required pattern="^[^-\s][0-9 ]*" [class.error]="rate.invalid && rate.touched" [class.has-success]="rate.valid">
+            </div>
+            <div class="col-sm-3">
+              <strong for="ReraApproval">
+                <span class="required">*</span>Rera Approval :</strong>
+              <select type="text" #reraApproval="ngModel" [(ngModel)]="projectInsertModal.ReraApproval" class="form-control" id="reraApproval"
+                name="reraApproval" required [class.error]="reraApproval.invalid && reraApproval.touched" [class.has-success]="reraApproval.valid">
+                <option value="">--select--</option>
+                <option class='option' *ngFor='let Approval of reraApprovalType;trackBy: trackByFn' [value]="Approval.value">
+                  {{Approval.value}}</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <strong for="ReraRegistrationNo">
+                <span class="required" *ngIf="projectInsertModal.ReraApproval==='YES'">*</span>Rera Registration No:
+              </strong>
+              <input type="text" #reraRegistrationNo="ngModel" [(ngModel)]="projectInsertModal.ReraRegistrationNo" class="form-control"
+                id="reraRegistrationNo" name="reraRegistrationNo" required pattern="^[^-\s][a-zA-Z0-9 ]*" [class.error]="reraRegistrationNo.invalid && reraRegistrationNo.touched"
+                [class.has-success]="reraRegistrationNo.valid" *ngIf="projectInsertModal.ReraApproval==='YES'">
+              <input type="text" #reraRegistrationNo="ngModel" [(ngModel)]="projectInsertModal.ReraRegistrationNo" class="form-control"
+                id="reraRegistrationNo" name="reraRegistrationNo" pattern="^[^-\s][a-zA-Z0-9 ]*" [class.error]="reraRegistrationNo.invalid && reraRegistrationNo.touched"
+                [class.has-success]="reraRegistrationNo.valid" *ngIf="projectInsertModal.ReraApproval==='' || projectInsertModal.ReraApproval==='NO' ">
+            </div>
+            <div class="col-sm-3">
+              <strong for="totalBuilding">
+                <span class="required">*</span>Total Building :</strong>
+              <input type="text" #totalBuilding="ngModel" [(ngModel)]="projectInsertModal.TotalBuilding" class="form-control" id="totalBuilding"
+                name="totalBuilding" required pattern="^[^-\s][0-9 ]*" [class.error]="totalBuilding.invalid && totalBuilding.touched"
+                [class.has-success]="totalBuilding.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <strong for="noOfFlat">
+                <span class="required">*</span>No. Of Flat :</strong>
+              <input type="text" #noofBuilding="ngModel" [(ngModel)]="projectInsertModal.NoOfFlat" class="form-control" id="noOfFlat" name="noOfFlat"
+                required pattern="^[^-\s][0-9 ]*" [class.error]="noofBuilding.invalid && noofBuilding.touched" [class.has-success]="noofBuilding.valid">
+            </div>
+            <div class="col-sm-3">
+              <strong for="address1">
+                <span class="required">*</span>Address 1 :</strong>
+              <input type="text" #address1="ngModel" [(ngModel)]="projectInsertModal.Address1" class="form-control" id="address1" name="address1"
+                required [class.error]="address1.invalid && address1.touched" [class.has-success]="address1.valid" pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*">
+            </div>
+            <div class="col-sm-3">
+              <strong for="address2">Address 2 :</strong>
+              <input type="text" #address2="ngModel" [(ngModel)]="projectInsertModal.Address2" class="form-control" id="address2" name="address2"
+                [class.error]="address2.invalid && address2.touched" [class.has-success]="address2.valid" pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*">
+            </div>
+            <div class="col-sm-3">
+              <strong for="landmark">Landmark :</strong>
+              <input type="text" #landmark="ngModel" [(ngModel)]="projectInsertModal.Landmark" class="form-control" id="landmark" name="landmark"
+                pattern="^[^-\s][a-zA-Z0-9 ]*" [class.error]="landmark.invalid && landmark.touched" [class.has-success]="landmark.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <strong for="location">Location :</strong>
+              <input type="text" #location="ngModel" [(ngModel)]="projectInsertModal.Location" class="form-control" id="location" name="location"
+                pattern="^[^-\s][a-zA-Z0-9 ]*" [class.error]="location.invalid && location.touched" [class.has-success]="location.valid">
+            </div>
+            <div class="col-sm-3">
+              <strong for="city">
+                <span class="required">*</span>City :</strong>
+              <input type="text" #city="ngModel" [(ngModel)]="projectInsertModal.City" class="form-control" id="city" name="city" required
+                pattern="^[^-\s][a-zA-Z ]*" [class.error]="city.invalid && city.touched" [class.has-success]="city.valid">
+            </div>
+            <div class="col-sm-3">
+              <strong for="state">
+                <span class="required">*</span>State :</strong>
+              <input type="text" #state="ngModel" [(ngModel)]="projectInsertModal.State" class="form-control" id="state" name="state" required
+                pattern="^[^-\s][a-zA-Z ]*" [class.error]="state.invalid && state.touched" [class.has-success]="state.valid">
+            </div>
+            <div class="col-sm-3">
+              <strong for="country">
+                <span class="required">*</span>Country :</strong>
+              <input type="text" #country="ngModel" [(ngModel)]="projectInsertModal.Country" class="form-control" id="country" name="country"
+                required pattern="^[^-\s][a-zA-Z ]*" [class.error]="country.invalid && country.touched" [class.has-success]="country.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <strong for="pinCode">Pincode :</strong>
+              <input type="text" #pincode="ngModel" [(ngModel)]="projectInsertModal.PinCode" class="form-control" id="pinCode" name="pinCode"
+                pattern="\d{6}" [class.error]="pincode.invalid && pincode.touched" [class.has-success]="pincode.valid" minlength=06
+                maxlength=06>
+            </div>
+            <div class="col-sm-9" *ngIf="loggedInuserDetails.Role===1&& loggedInuserDetails.Level==='L1'">
+              <div class="card mt-2">
+                <div class="card-header">
+                  <h5>Link Projects</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <strong>
+                        Execution Project :</strong>
+                      <select class="form-control" [disabled]="isEdit" name="ProjectName" [(ngModel)]="projectInsertModal.ProjectName" #ProjectName="ngModel"
+                        [class.error]="ProjectName.invalid && (ProjectName.dirty || ProjectName.touched)">
+                        <option value="">---Select---</option>
+                        <option *ngFor="let item of phase2Project;trackBy: trackByFn" [value]="item.ProjectId" [hidden]="item.ProjectName === 'Common'">
+                          {{item.ProjectName}}</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>
+                        DND Project :</strong>
+                      <select class="form-control" name="Phase3" [disabled]="isEdit" [(ngModel)]="projectInsertModal.Dnd" #Phase3="ngModel" [class.error]="Phase3.invalid && (Phase3.dirty || Phase3.touched)">
+                        <option value="">---Select---</option>
+                        <option *ngFor="let item of DNDProject;trackBy: trackByFn" [value]="item.ProjectId" [hidden]="item.ProjectName === 'Common'">
+                          {{item.ProjectName}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="modal-footer row justify-content-md-center">
+            <button type="button" class="btn btn-primary center-block" [disabled]="!projectCreateForm.form.valid ||!isProjectAvailable"
+              (click)="OnInsertBtnClick(projectInsertModal,projectCreateForm)">
+              <i class="fa fa-paper-plane"></i> Create Project </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<br />
+<div class="table-responsive scrollbar" id="style-2" *ngIf="!isShow">
+  <table class="table table-bordered table-hover  table-striped table-sm text-nowrap" *ngIf="!isSpinnerActive">
+    <thead class="thead-light">
+      <tr class="text-center">
+        <th>Project Id</th>
+        <th>Project Name </th>
+        <th>Project Type</th>
+        <th>Rate</th>
+        <th>Rera Approval</th>
+        <th>Rera Number</th>
+        <th>Total Building </th>
+        <th>No. Of Flat</th>
+        <th>Location</th>
+        <th>City</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let project of showProject|filter:term | paginate: { itemsPerPage: 12, currentPage: p };trackBy: trackByFn">
+        <td>
+          <button type="button" class="btn btn-sm btn-link" (click)="emitProjectID(project)">{{project.ProjectId}}</button>
+        </td>
+        <td>{{project.ProjectName}}</td>
+        <td>{{project.ProjectType}}</td>
+        <td>{{project.Rate}}</td>
+        <td>{{project.ReraApproval}}</td>
+        <td>{{project.ReraRegistrationNo}}</td>
+        <td>{{project.TotalBuilding}}</td>
+        <td>{{project.NoOfFlat}}</td>
+        <td>{{project.Location}}</td>
+        <td>{{project.City}}</td>
+        <td>
+          <button type="button" ngbTooltip="Create Payment Milestone For {{project.ProjectName}}" class="btn btn-outline-success btn-sm"
+            (click)="OpenForm(project,'open')">
+            <i class="fa fa-plus"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <tfoot class="pull-right">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </tfoot>
+</div>
+
+<div class="container-fluid" *ngIf="isShow">
+  <button type="button" ngbTooltip="Go Back" class="btn btn-outline-success btn-sm" (click)="OpenForm('hide','')">
+    <i class="fa fa-arrow-left"></i>
+  </button>
+  <div class="card card-alignment">
+    <div class="row">
+
+      <div class="col-sm-9">
+        <div class="table-responsive scrollbar" id="style-2">
+          <table class="table table-bordered table-hover  table-striped table-sm text-nowrap" *ngIf="!isSpinnerActive">
+            <thead class="thead-light">
+              <tr class="text-center">
+                <!-- <th>Project Id</th> -->
+                <th>Project Name </th>
+                <th>Milestone Name</th>
+                <th>Percentage(%)</th>
+                <th>Details</th>
+                <th>CreatedOn</th>
+                <!-- <th>Action</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let details of showmilestone|filter:term | paginate: { itemsPerPage: 12, currentPage: p1};trackBy: trackByFn">
+                <td>{{details.ProjectName}}</td>
+                <td>{{details.stages}}</td>
+                <td>{{details.Percentage}}</td>
+                <td style="text-align:left;">
+                  <span data-toggle="tooltip" title="{{details.Details?details.Details:''}}">{{details.Details ? ((details.Details.length>60) ? (details.Details | slice:0:60)+'...' : details.Details)
+                    :''}}
+                  </span>
+                </td>
+                <td>{{details.CreatedOn |date:"d MMM y"}}</td>
+                <!-- <td></td> -->
+              </tr>
+            </tbody>
+          </table>
+          <tfoot class="pull-right">
+            <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+          </tfoot>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card mb-3">
+          <div class="card-header setcolor text-center">
+            <h4 class="text-white">Create Payment Milestone</h4>
+          </div>
+          <div class="card-body">
+            <form #CreateForm="ngForm">
+              <div class="form-group">
+                <label for="exampleInputEmail1">
+                  <span class="text-danger">*</span>Project Name</label>
+                <input type="text" class="form-control" [disabled]="true" name="ProjectName" [(ngModel)]="paymentInsertModal.ProjectName"
+                  #ProjectName="ngModel" [class.error]="ProjectName.invalid && (ProjectName.dirty || ProjectName.touched)"
+                  [class.has-success]="ProjectName.valid" placeholder="Project Name">
+                <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">
+                  <span class="text-danger">*</span>Milestone Name</label>
+                <input type="text" class="form-control" name="MilestoneName" (blur)="MilestoneNameValidation(paymentInsertModal.MilestoneName)"
+                  [(ngModel)]="paymentInsertModal.MilestoneName" #MilestoneName="ngModel" [class.error]="MilestoneName.invalid && (MilestoneName.dirty || MilestoneName.touched)"
+                  placeholder="Milestone Name" [class.has-success]="MilestoneName.valid" required>
+                <strong [hidden]="isNameAvailable" class="text-danger">{{showMsg}}</strong>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">
+                  <span class="text-danger">*</span>Percentage(%)</label>
+                <input type="number" class="form-control" name="Percentage" [(ngModel)]="paymentInsertModal.Percentage" #Percentage="ngModel"
+                  [class.error]="Percentage.invalid && (Percentage.dirty || Percentage.touched)" placeholder="Percentage" [class.has-success]="Percentage.valid"
+                  required>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Details</label>
+                <textarea rows="4" class="form-control" placeholder="Details" name="Details" [(ngModel)]="paymentInsertModal.Details" #Details="ngModel"
+                  [class.error]="Details.invalid && Details.touched" [class.has-success]="Details.valid"></textarea>
+              </div>
+              <div class="col-sm-12 text-center">
+                <button type="submit" class="btn btn-primary" [disabled]="!isNameAvailable || CreateForm.invalid" (click)="InsertPaymentMilestone(CreateForm)">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="!isSpinnerActive" bsModal #updateProjectModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+  aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+  <form #projectForm="ngForm">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title updatetitle pull-left">Update Project</h4>
+          <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="OnCloseBtnClick(projectForm,projectCreateForm)" />
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <strong for="ProjectName">
+                <span class="required">*</span>Project Name :</strong>
+              <input type="text" #projectName="ngModel" [(ngModel)]="projectModal.ProjectName" [disabled]="true || disableFieldsBylogin"
+                class="form-control" id="ProjectName" name="ProjectName" required [class.error]="projectName.invalid && projectName.touched"
+                [class.has-success]="projectName.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <strong for="ProjectType">
+                <span class="required">*</span>Project Type:</strong>
+              <select type="text" #projectType="ngModel" [(ngModel)]="projectModal.ProjectType" [disabled]="true|| disableFieldsBylogin"
+                class="form-control" id="ProjectType" name="ProjectType" required [class.error]="projectType.invalid && projectType.touched"
+                [class.has-success]="projectType.valid">
+                <option value="">--select--</option>
+                <option class='option' *ngFor='let projType of projTypeInfo;trackBy: trackByFn' [value]="projType.value">{{projType.value}}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <strong for="Rate">
+                <span class="required">*</span>Rate :</strong>
+              <input type="text" #rate="ngModel" [(ngModel)]="projectModal.Rate" [disabled]="true || disableFieldsBylogin" class="form-control"
+                id="Rate" name="Rate" required pattern="\d*" [class.error]="rate.invalid && rate.touched" [class.has-success]="rate.valid">
+            </div>
+            <div class="col-sm-4">
+              <strong for="Rate">
+                <span class="required">*</span>Avg Cost :</strong>
+              <input type="text" #avgRate="ngModel" [(ngModel)]="projectModal.AvgRate" [disabled]="true || disableFieldsBylogin" class="form-control"
+                id="avgRate" name="avgRate" required pattern="\d*" [class.error]="avgRate.invalid && avgRate.touched" [class.has-success]="avgRate.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <strong for="ReraApproval">
+                <span class="required">*</span>Rera Approval :</strong>
+              <select type="text" #reraApproval="ngModel" [(ngModel)]="projectModal.ReraApproval" class="form-control" [disabled]="disableFieldsBylogin"
+                id="ReraApproval" name="ReraApproval" required [class.error]="reraApproval.invalid && reraApproval.touched"
+                [class.has-success]="reraApproval.valid">
+                <option value="">--select--</option>
+                <option class='option' *ngFor='let Approval of reraApprovalType;trackBy: trackByFn' [value]="Approval.value">
+                  {{Approval.value}}</option>
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <strong for="ReraRegistrationNo">
+                <span class="required" *ngIf="projectModal.ReraApproval==='YES'">*</span>Rera Registration No. :
+              </strong>
+              <input type="text" #reraRegistrationNo="ngModel" [(ngModel)]="projectModal.ReraRegistrationNo" class="form-control" id="ReraRegistrationNo"
+                name="ReraRegistrationNo" pattern="[a-zA-Z0-9 ]*" [disabled]="disableFieldsBylogin" [class.error]="reraRegistrationNo.invalid && reraRegistrationNo.touched"
+                [class.has-success]="reraRegistrationNo.valid" *ngIf="projectModal.ReraApproval==='NO' || projectModal.ReraApproval===''">
+
+              <input type="text" #reraRegistrationNo="ngModel" [(ngModel)]="projectModal.ReraRegistrationNo" class="form-control" id="ReraRegistrationNo"
+                name="ReraRegistrationNo" required pattern="[a-zA-Z0-9 ]*" [disabled]="disableFieldsBylogin" [class.error]="reraRegistrationNo.invalid && reraRegistrationNo.touched"
+                [class.has-success]="reraRegistrationNo.valid" *ngIf="projectModal.ReraApproval==='YES'">
+            </div>
+            <div class="col-sm-4">
+              <strong for="TotalBuilding">
+                <span class="required">*</span>Total Building :</strong>
+              <input type="text" #totalBuilding="ngModel" [(ngModel)]="projectModal.TotalBuilding" class="form-control" id="TotalBuilding"
+                name="TotalBuilding" required pattern="^[^-\s][0-9 ]*" [disabled]="disableFieldsBylogin" [class.error]="totalBuilding.invalid && totalBuilding.touched"
+                [class.has-success]="totalBuilding.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <strong for="NoOfFlat">
+                <span class="required">*</span>No. Of Flat :</strong>
+              <input type="text" #noofBuilding="ngModel" [(ngModel)]="projectModal.NoOfFlat" class="form-control" id="NoOfFlat" [disabled]="disableFieldsBylogin"
+                name="NoOfFlat" required pattern="^[^-\s][0-9 ]*" [class.error]="noofBuilding.invalid && noofBuilding.touched"
+                [class.has-success]="noofBuilding.valid">
+            </div>
+            <div class="col-sm-4">
+              <strong for="Address1">
+                <span class="required">*</span>Address 1 :</strong>
+              <input type="text" #address1="ngModel" [(ngModel)]="projectModal.Address1" class="form-control" id="Address1" [disabled]="disableFieldsBylogin"
+                name="Address1" required [class.error]="address1.invalid && address1.touched" [class.has-success]="address1.valid"
+                pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*">
+            </div>
+            <div class="col-sm-4">
+              <strong for="Address2">Address 2 :</strong>
+              <input type="text" #address2="ngModel" [(ngModel)]="projectModal.Address2" class="form-control" id="Address2" [disabled]="disableFieldsBylogin"
+                name="Address2" [class.error]="address2.invalid && address2.touched" [class.has-success]="address2.valid" pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <strong for="Landmark">Landmark :</strong>
+              <input type="text" #landmark="ngModel" [(ngModel)]="projectModal.Landmark" class="form-control" id="Landmark" [disabled]="disableFieldsBylogin"
+                name="Landmark" pattern="^[^-\s][a-zA-Z0-9 ]*" [class.error]="landmark.invalid && landmark.touched" [class.has-success]="landmark.valid">
+            </div>
+            <div class="col-sm-4">
+              <strong for="Location">Location :</strong>
+              <input type="text" #location="ngModel" [(ngModel)]="projectModal.Location" class="form-control" id="Location" [disabled]="disableFieldsBylogin"
+                name="Location" pattern="^[^-\s][a-zA-Z0-9 ]*" [class.error]="location.invalid && location.touched" [class.has-success]="location.valid">
+            </div>
+            <div class="col-sm-4">
+              <strong for="City">
+                <span class="required">*</span>City :</strong>
+              <input type="text" #city="ngModel" [(ngModel)]="projectModal.City" [disabled]="true || disableFieldsBylogin" class="form-control"
+                id="City" name="City" required pattern="^[^-\s][a-zA-Z ]*" [class.error]="city.invalid && city.touched" [class.has-success]="city.valid">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <strong for="State">
+                <span class="required">*</span>State :</strong>
+              <input type="text" #state="ngModel" [(ngModel)]="projectModal.State" [disabled]="true || disableFieldsBylogin" class="form-control"
+                id="State" name="State" required pattern="^[^-\s][a-zA-Z ]*" [class.error]="state.invalid && state.touched"
+                [class.has-success]="state.valid">
+            </div>
+            <div class="col-sm-4">
+              <strong for="Country">
+                <span class="required">*</span>Country :</strong>
+              <input type="text" #country="ngModel" [(ngModel)]="projectModal.Country" class="form-control" id="Country" [disabled]="disableFieldsBylogin"
+                name="Country" required pattern="^[^-\s][a-zA-Z ]*" [class.error]="country.invalid && country.touched" [class.has-success]="country.valid">
+            </div>
+            <div class="col-sm-4">
+              <strong for="PinCode">Pincode :</strong>
+              <input type="text" #pincode="ngModel" [(ngModel)]="projectModal.PinCode" class="form-control" id="PinCode" [disabled]="disableFieldsBylogin"
+                name="PinCode" placeholder="enter 6 digit pincode" pattern="\d{6}" [class.error]="pincode.invalid && pincode.touched"
+                [class.has-success]="pincode.valid" minlength=06 maxlength=06>
+            </div>
+          </div>
+          <br>
+          <div class="card" *ngIf="loggedInuserDetails.Role=== 1&& loggedInuserDetails.Level==='L1'">
+            <div class="card-header">
+              <h5>{{title}}</h5>
+            </div>
+            <div class="card-body">
+              <form #linkForm="ngForm">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <strong>
+                      Execution Project :</strong>
+                    <select class="form-control" name="ProjectName" required [(ngModel)]="linkProjectModel.ProjectName" [disabled]="isEdit" #ProjectName="ngModel"
+                      [class.error]="ProjectName.invalid && (ProjectName.dirty || ProjectName.touched)">
+                      <option value="">---Select---</option>
+                      <option *ngFor="let item of phase2Project;trackBy: trackByFn" [value]="item.ProjectId" [hidden]="item.ProjectName === 'Common'">
+                        {{item.ProjectName}}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <strong>
+                      DND Project :</strong>
+                    <select class="form-control" name="Phase3" [disabled]="isEdit" required [(ngModel)]="linkProjectModel.Dnd" #Phase3="ngModel"
+                      [class.error]="Phase3.invalid && (Phase3.dirty || Phase3.touched)">
+                      <option value="">---Select---</option>
+                      <option *ngFor="let item of DNDProject;trackBy: trackByFn" [value]="item.ProjectId" [hidden]="item.ProjectName === 'Common'">
+                        {{item.ProjectName}}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-2" *ngIf="!isEdit">
+                    <button type="button" class="btn btn-primary btn-sm mt-3" (click)="InsertProjectLink(linkForm)">
+                      <i class="fa fa-link" aria-hidden="true"></i> Link Project
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="modal-footer row justify-content-md-center" *ngIf="loggedInuserDetails.Role == 1||loggedInuserDetails.Role == 3 && loggedInuserDetails.Level=='L1' ">
+          <button type="button" class="btn btn-primary center-block" [disabled]="!projectForm.form.valid" (click)="OnUpdateBtnClick(projectModal,projectForm)">
+            <i class="fa fa-edit"></i>Update Details</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

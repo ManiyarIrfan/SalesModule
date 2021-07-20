@@ -1,0 +1,33 @@
+.btnstyle {
+    border-radius: 4px !important;
+    padding: 6px 16px;
+    margin: 2px;
+}
+
+.responseMsg {
+    margin: 0.41em 20px 1px 1px;
+    font-size: 17px;
+    font-weight: 450;
+}
+
+.font13 {
+    font-size: 13px;
+}
+
+.btnpost {
+    background-color: #f0483e;
+    color: #ffffff;
+}
+ul {
+    list-style-type: none;
+}
+
+.mml1 {
+    margin-left: -1em;
+}
+
+@media (min-width: 280px) and (max-width: 500px) {
+    .nxtline {
+        margin-right: 7em;
+    }
+}

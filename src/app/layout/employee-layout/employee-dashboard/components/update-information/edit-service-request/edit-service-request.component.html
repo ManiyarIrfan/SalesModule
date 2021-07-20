@@ -1,0 +1,376 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<br />
+<form #ServiceReportForm="ngForm" (keydown)="enterClick($event,searchText)" *ngIf="!isSpinnerActive">
+    <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="selectTab($event)">
+        <mat-tab label="View SR">
+            <div class="row mt-2">
+                <div class="col-sm-7" *ngIf="loggedInuserDetails.TenantId ===0">
+                </div>
+                <div class="col-sm-1" *ngIf="loggedInuserDetails.TenantId ===0">
+                    <button type="button" class="btn btn-primary btn-sm pull-right" (click)="filterData('All')">
+                        All<span class="badge badge-danger ml-2">{{showCount.All}}</span>
+                        <span class="sr-only">All</span>
+                    </button>
+                </div>
+                <div class="col-sm-1" *ngIf="loggedInuserDetails.TenantId ===0">
+                    <button type="button" class="btn btn-primary btn-sm pull-right" (click)="filterData('New')">
+                        New<span class="badge badge-danger ml-2">{{showCount.New}}</span>
+                        <span class="sr-only">New</span>
+                    </button>
+                </div>
+                <div class="col-sm-1" *ngIf="loggedInuserDetails.TenantId ===0">
+                    <button type="button" class="btn btn-primary btn-sm pull-right" (click)="filterData('Resolved')">
+                        Resolved<span class="badge badge-danger ml-2">{{showCount.Resolved}}</span>
+                        <span class="sr-only">Resolved</span>
+                    </button>
+                </div>
+                <div class="col-sm-1" *ngIf="loggedInuserDetails.TenantId ===0">
+                    <button type="button" class="btn btn-primary btn-sm pull-right" (click)="filterData('Assigned')">
+                        Assigned <span class="badge badge-danger ml-2">{{showCount.Assigned}}</span>
+                        <span class="sr-only">Assigned</span>
+                    </button>
+                </div>
+                <div class="col-sm-1" *ngIf="loggedInuserDetails.TenantId ===0">
+                    <button type="button" class="btn btn-primary btn-sm pull-right" (click)="filterData('Duplicate')">
+                        Duplicate <span class="badge badge-danger ml-2">{{showCount.Duplicate}}</span>
+                        <span class="sr-only">Duplicate</span>
+                    </button>
+                </div>
+                <div class="col-sm-12 table-responsive scrollbar" id="Style-2">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th>Issue ID </th>
+                                <th>CreatedOn </th>
+                                <th>CreatedBy </th>
+                                <th>Module </th>
+                                <th>Project Name</th>
+                                <th>Flat Number</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Image</th>
+                            </tr>
+                            <tr *ngIf="showServiceRequest && showServiceRequest.length >= 1 ">
+                                <td>
+                                    <input class="name-width" type="number" name="searchIssueId" [(ngModel)]="filterDataModel.IssueId" (keyup)="filterLeadData()">
+                                </td>
+                                <td></td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchCreatedBy" [(ngModel)]="filterDataModel.CreatedBy" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchModuleName" [(ngModel)]="filterDataModel.ModuleName" (keyup)="filterLeadData()">
+                                </td>
+                                <td colspan="2">
+
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchIssueSubject" [(ngModel)]="filterDataModel.IssueSubject" (keyup)="filterLeadData()">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchIssueStatus" [(ngModel)]="filterDataModel.IssueStatus" (keyup)="filterLeadData()">
+                                </td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let report of showServiceRequest | filter:search | paginate: { itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn">
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-link" (click)="emitIssueID(report,ServiceReportForm)">{{report.IssueId}}</button>
+                                </td>
+                                <td>{{report.IssueDate | date:'d MMM y'}}</td>
+                                <td>{{report.CreatedBy}}</td>
+                                <td>{{report.ModuleName}}</td>
+                                <td>{{report.ProjectName?report.ProjectName:'NA'}}</td>
+                                <td>{{report.Building}} {{report.Flat}}</td>
+                                <td>{{report.IssueSubject}}</td>
+                                <td>
+                                    <span [ngClass]="{'badge-danger':report.IssueStatus==='New','badge-info':report.IssueStatus==='Assigned',
+                                    'badge-success':report.IssueStatus==='Resolved','badge-warning':report.IssueStatus==='Duplicate'
+                                     }">
+                                        {{report.IssueStatus}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="btn btn-sm btn-link" *ngIf="report.ImageUrl" (click)="gridViewImage(report.ImageUrl)"><i class="fa fa-file-image-o"
+                                            id="gridViewImageBtn"></i></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot class="pull-right" *ngIf="showServiceRequest.length > 10">
+                        <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                    </tfoot>
+                    <div class="text-center mt-2" *ngIf="showServiceRequest.length === 0 ">
+                        <strong>
+                            <span class="required"> Data Not Found.</span>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Create/Update SR">
+            <br>
+            <fieldset class="scheduler-border">
+                <div class="row mt-3">
+                    <div class="col-sm-3" *ngIf="!isShowFields">
+                        <div class="form-group">
+                            <strong>
+                                <span class="required">*</span>ID :</strong>
+                            <input type="text" class="form-control" name="EntityId" id="EntityId" [disabled]="true" [(ngModel)]="sessionModel.EntityId">
+                        </div>
+                    </div>
+                    <div class="col-sm-3" *ngIf="isShowFields">
+                        <div class="form-group">
+                            <strong>
+                                Search Related to Lead/Enquiry :</strong>
+                            <input class="form-control" name="search" [(ngModel)]="searchText" type="text" id="search" placeholder="Search By Id Or Name Or Email Or Mobile" #search="ngModel" autocomplete="off" autofocus>
+                            <h4 class="listnotfound">{{showInvalidCustomerSearchError}}</h4>
+                            <div class="search-result" [hidden]="!flag">
+                                <ul>
+                                    <li *ngFor="let cust of customers;trackBy: trackByFn ">
+                                        <a (click)="onselectCustomer(cust)">{{cust.UserId}}-{{cust.Name}} -
+                                            -{{cust.MobileNo}}-{{cust.Email}}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <strong>
+                                <span class="required">*</span>Project Name :</strong>
+                            <select class="form-control" id="projectName" name="projectName" [class.error]="projectName.invalid && (projectName.dirty || projectName.touched)" [class.has-success]="projectName.valid && (projectName.dirty || projectName.touched)" required [disabled]="!isEditFields"
+                                [(ngModel)]="reportIssueModel.ProjectName" #projectName="ngModel">
+                                <option value="">---Select---</option>
+                                <option value="Not Related To Project">Not Related To Project</option>
+                                <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn"
+                                    [hidden]="item.ProjectName === 'Common'">
+                                    {{item.ProjectName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <strong>Building Name :</strong>
+                            <input type="text" class="form-control" id="Building" name="Building" #Building="ngModel" [(ngModel)]="reportIssueModel.Building" [disabled]="!isEditFields" [class.error]="Building.invalid && (Building.dirty || Building.touched)" [class.has-success]="Building.valid && (Building.dirty || Building.touched)"
+                                pattern="^[^-\s][a-zA-Z0-9 ]*" placeholder="Enter Building Name... ">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <strong>Flat No :</strong>
+                            <input type="text" class="form-control" id="Flat" name="Flat" [class.error]="Flat.invalid && (Flat.dirty || Flat.touched)" [disabled]="!isEditFields" [class.has-success]="Flat.valid && (Flat.dirty || Flat.touched)" #Flat="ngModel" [(ngModel)]="reportIssueModel.Flat"
+                                pattern="^[^-\s][a-zA-Z0-9 ]*" placeholder="Enter Flat Number... ">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <strong>
+                                <span class="required">*</span>Subject :</strong>
+                            <input type="text" class="form-control" id="IssueSubject" name="IssueSubject" [class.error]="IssueSubject.invalid && (IssueSubject.dirty || IssueSubject.touched)" [disabled]="!isEditFields" [class.has-success]="IssueSubject.valid && (IssueSubject.dirty || IssueSubject.touched)"
+                                placeholder="Enter Subject... " required [(ngModel)]="reportIssueModel.IssueSubject" #IssueSubject="ngModel">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <strong>
+                                <span class="required">*</span>Issue Date :</strong>
+                            <input type="date" class="form-control" id="IssueDate" name="IssueDate" [class.error]="IssueDate.invalid && (IssueDate.dirty || IssueDate.touched)" [disabled]="!isEditFields" [class.has-success]="IssueDate.valid && (IssueDate.dirty || IssueDate.touched)"
+                                required [(ngModel)]="reportIssueModel.IssueDate" #IssueDate="ngModel" [max]="getToday()">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group" *ngIf="isShowFields">
+                            <strong>
+                                <span class="required">*</span>Issue Type :</strong>
+                            <select class="form-control" name="IssueType" id="IssueType" [class.error]="IssueType.invalid && (IssueType.dirty || IssueType.touched)" [disabled]="!isEditFields" [class.has-success]="IssueType.valid && (IssueType.dirty || IssueType.touched)" required
+                                [(ngModel)]="reportIssueModel.IssueType" #IssueType="ngModel">
+                                <option class='option' *ngFor='let Issue of showIssueTypeInfo;trackBy: trackByFn'
+                                    [value]="Issue.value">
+                                    {{Issue.value}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group" *ngIf="!isShowFields">
+                            <strong>
+                                <span class="required">*</span>Issue Type :</strong>
+                            <select class="form-control" name="IssueType" id="IssueType" [class.error]="IssueType.invalid && (IssueType.dirty || IssueType.touched)" [disabled]="!isEditFields" [class.has-success]="IssueType.valid && (IssueType.dirty || IssueType.touched)" required
+                                [(ngModel)]="reportIssueModel.IssueType" #IssueType="ngModel">
+                                <option class='option' *ngFor='let Issue of issueTypeInfo;trackBy: trackByFn'
+                                    [value]="Issue.value">
+                                    {{Issue.value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <strong>Upload Image :</strong>
+                            </div>
+                            <div class="col-sm-12">
+                                <tru-file-upload class="ui-fileupload" [disabled]="!isEditFields" [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png'" [(inputFiles)]="uploadServiceRequestImages" multiple="multiple" style="    border: 0px solid #c8c8c8;">
+                                </tru-file-upload>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3" *ngIf="!isShowFields">
+                        <div class="form-group">
+                            <strong>
+                                <span class="required">*</span>Issue Status :</strong>
+                            <select class="form-control" name="IssueStatus" id="IssueStatus" [class.error]="IssueStatus.invalid && (IssueStatus.dirty || IssueStatus.touched)" [(ngModel)]="reportIssueModel.IssueStatus" #IssueStatus="ngModel" [disabled]="loggedInuserDetails.Level==='L3' || !isEditFields"
+                                [class.has-success]="IssueStatus.valid && (IssueStatus.dirty || IssueStatus.touched)">
+                                <option value="">---Select---</option>
+                                <option class='option' *ngFor='let status of issueStatusInfo;trackBy: trackByFn'
+                                    [value]="status.value">
+                                    {{status.value}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" *ngIf="!isShowFields && loggedInuserDetails.TenantId===0">
+                        <div class="form-group">
+                            <strong>
+                                <span class="required">*</span>Assigned To :</strong>
+                            <select class="form-control" name="AssignedTo" id="AssignedTo" [class.error]="AssignedTo.invalid && (AssignedTo.dirty || AssignedTo.touched)" [(ngModel)]="reportIssueModel.AssignedTo" #AssignedTo="ngModel" [disabled]="loggedInuserDetails.Level==='L3' || !isEditFields"
+                                [class.has-success]="AssignedTo.valid && (AssignedTo.dirty || AssignedTo.touched)">
+                                <option value="">---Select---</option>
+                                <option class='option' *ngFor='let status of getEmployeeList;trackBy: trackByFn'
+                                    [value]="status.value">
+                                    {{status.key}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1" *ngIf="!isShowFields">
+                        <div class="form-group">
+                            <strong>View Image :</strong>
+                            <div class="col-sm-8">
+                                <button type="button" class="btn btn-sm btn-link" (click)="viewImage(imageUrlPath)" id="viewimageBtn">
+                                    <i class="fas fa-images"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <strong>
+                                <span class="required">*</span>Edit Issue Details :</strong>
+                            <textarea class="form-control" name="Details" id="Details" rows="4" [class.error]="Details.invalid && (Details.dirty || Details.touched)" [class.has-success]="Details.valid && (Details.dirty || Details.touched)" #Details="ngModel" placeholder="Enter To Edit Issue Details... "
+                                [disabled]="!isEditFields" required [(ngModel)]="updateIssueModel.Details"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 text-margin" *ngIf="!isShowFields">
+                        <div class="form-group">
+                            <strong>Previous Issue Details :</strong>
+                            <textarea class="form-control" rows="5" name="Details1" id="Details1" [class.error]="Details1.invalid && (Details1.dirty || Details1.touched)" readonly #Details1="ngModel" required [(ngModel)]="reportIssueModel.Details" [class.has-success]="Details1.valid && (Details1.dirty || Details1.touched)"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <button type="button" *ngIf="isShowFields" class="btn btn-primary center-block" 
+                    [disabled]="!ServiceReportForm.valid " 
+                    (click)="OnSubmitBtnClick(ServiceReportForm,reportIssueModel,updateIssueModel,uploadServiceRequestImages);
+                     submitButton.disabled = true" #submitButton>
+                        <i class="fa fa-paper-plane"></i> Submit Issue</button>
+                    <button type="button" *ngIf="!isShowFields" class="btn btn-primary center-block" [disabled]="!ServiceReportForm.valid || !isEditFields" (click)="OnUpdateBtnClick(ServiceReportForm,reportIssueModel,updateIssueModel)">
+                        <i class="fa fa-edit"></i> Update Issue</button> &nbsp; &nbsp;
+                    <button type="button" *ngIf="!isShowFields" class="btn btn-primary center-block" (click)="CreateNewIssue(ServiceReportForm)">
+                        <i class="fa fa-plus"></i> Create New Issue</button>
+                </div>
+                <br />
+            </fieldset>
+        </mat-tab>
+    </mat-tab-group>
+</form>
+
+
+<div bsModal #RaiseRequestModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <h5 class="heading lead text-center"> <strong><b> Raise a request</b></strong> </h5>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <!--Body-->
+            <div class="modal-body text-center">
+                <i class="fa fa-check-square fa-4x mb-3 animated rotateIn bodycolor " aria-hidden="true"></i><br />
+                <strong> <b> We have received your complaint</b> </strong> <br /><br />
+                <strong> Your ticket number is <b> {{data}}.</b> </strong><br />
+                <strong> A Confirmation email has been sent.</strong><br /><br />
+                <strong> Our support team will send you an update within <b>24 working hours.</b></strong> <br /><br />
+                <div class="row justify-content-md-center">
+                    <button type="button" class="btn btn-primary btn-md" (click)="RaiseRequestModel.hide()">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div bsModal #showServiceRequestImageModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center">Service Request Image</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <div [hidden]="!isLoading">
+                    <p id="loading">
+                        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                    </p>
+                </div>
+                <div>
+                    <div *ngIf="isShowDeleteImageButton">
+                        <carousel>
+                            <slide *ngFor="let imgs of images;trackBy: trackByFn">
+                                <img [src]="imgs" class="img" alt="image slide">
+                                <div class="carousel-caption" *ngIf="!isShowFields && isShowDeleteButtonOnGrid && isEditFields">
+                                    <button class="btn btn-danger" value={{imgs}} (click)="onItemDeleted($event.target.value)"><i class="far fa-times-circle"></i>
+                                        Delete</button>
+                                </div>
+                            </slide>
+                        </carousel>
+                    </div>
+                    <div *ngIf="!isShowDeleteImageButton">
+                        <h4 class="notfoundmsg">{{imageNotAvailable}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div bsModal #confirmDeleteModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static" [config]="{backdrop: 'static'}" data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered  modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <i class="fa fa-warning"></i>
+                    </div>
+                    <div class="col-sm-11">
+                        <h5>Do you really want to delete this Image?</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" (click)="confirmDeleted()"><i class="fa fa-check"></i>
+                    Yes</button>
+                <button type="button" class="btn btn-danger" (click)="notConfirm()"><i class="fa fa-times"></i>
+                    No</button>
+            </div>
+        </div>
+    </div>
+</div>

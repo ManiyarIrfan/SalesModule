@@ -1,0 +1,54 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~ngx-bar-rating/themes/br-stars-theme";
+@import "~ngx-bar-rating/themes/br-square-theme";
+
+html,
+body {
+  height: 96%; // overflow: hidden;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif, -webkit-body;
+}
+.ngx-pagination a,
+.ngx-pagination button {
+  font-weight: 400;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: calc(2.85rem + -3px);
+}
+// .form-control {
+//   border: 1px solid #6d6d6d !important ;
+//   border-radius: 15px !important;
+//   font-weight: 450 !important;
+// }
+.form-control {
+  border: 1px solid #d2d2d2bd !important;
+  border-radius: 4px !important;
+  font-weight: 450 !important;
+}
+.breadcrumb {
+  //background-color: #197a8ae0 !important;
+  border-radius: 1.5rem !important;
+}
+
+::ng-deep {
+  option {
+    font-size: 18px !important;
+    padding: 10px !important;
+  }
+  body .ui-fileupload .ui-fileupload-buttonbar {
+    background-color: #ffffff00 !important;
+    padding: 0.2em !important;
+    border: 1px solid #c8c8c800 !important;
+    color: #333;
+    border-bottom: 0;
+  }
+  body .ui-fileupload .ui-fileupload-content {
+    background-color: #fff0 !important;
+    padding: 0.571em 1em;
+    border: 1px solid #c8c8c800 !important;
+    color: #333;
+  }
+}

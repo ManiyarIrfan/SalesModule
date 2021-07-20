@@ -1,0 +1,96 @@
+<div class="container clearfix">
+    <div class="Group-list" id="people-list">
+        <div class="search mt-1">
+            <h4 class="text-white"><i class="fa fa-users pr-3"></i> Groups</h4>
+        </div>
+        <div class="grouscroll">
+            <div class="channelItem" *ngFor="let item of GroupList; trackBy: trackByFn;" (click)="viewGroup(item)">
+                <div class="userProfileImages" *ngIf="item.UserProfilePic.split(', ').length > 0">
+                    <div>
+                        <img *ngIf="item.UserProfilePic.split(', ')[0]" src="{{item.UserProfilePic.split(', ')[0]}}" />
+                        <img *ngIf="item.UserProfilePic.split(', ')[1]" src="{{item.UserProfilePic.split(', ')[1]}}" />
+                    </div>
+                    <div>
+                        <img *ngIf="item.UserProfilePic.split(', ')[2]" src="{{item.UserProfilePic.split(', ')[2]}}" />
+                        <img *ngIf="item.UserProfilePic.split(', ')[3]" src="{{item.UserProfilePic.split(', ')[3]}}" />
+                    </div>
+                </div>
+                <div>
+                    <h5 class="channelName">{{item.GroupName}}</h5>
+                    <h5 class="channelMsgPlaceholder">
+                        {{item.LastMsg ? ((item.LastMsg.length >20) ? (item.LastMsg | slice:0:20)+'...' : item.LastMsg) :''}}
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="people-list" id="people-list">
+        <div class="search">
+            <input width="100%" autocomplete="off" type="text" placeholder="Search Recipients" name="test"
+                [(ngModel)]="searchPosts" />
+            <i class="fa fa-search"></i>
+        </div>
+        <ul class="list">
+            <span class="pb-4">Total Members : {{UserDetails.length}}</span>
+            <hr>
+            <div class="people-scroll">
+                <li class="clearfix" *ngFor="let item of UserDetails | filter:searchPosts ;trackBy: trackByFn;">
+                    <span *ngIf="item.TProfile===null">A</span>
+                    <img *ngIf="item.TProfile!==null" width="30px" height="30px" class="rounded-circle"
+                        src="{{item.TProfile}}" alt="avatar" />
+                    <div class="about">
+                        <div class="name text-dark pointer pl-2">{{item.TUserName | titlecase}}</div>
+                        <!-- <div class="status">
+                        <i class="fa fa-circle online"></i> online
+                    </div> -->
+                    </div>
+                </li>
+            </div>
+        </ul>
+    </div>
+
+    <div class="chat">
+        <div class="chat-header clearfix" *ngFor="let item of GroupDetails;trackBy: trackByFn;">
+            <img width="40px" height="40px" class="rounded-circle" src="{{item.GroupProfilePic}}" alt="avatar" />
+            <div class="chat-about">
+                <div class="chat-with">{{item.GroupName}}</div>
+                <!-- <div class="chat-num-messages">already 1 902 messages</div> -->
+            </div>
+            <!-- <i class="fa fa-star"></i> -->
+        </div>
+        <div class="chat-history" #scrollMe>
+            <ul style=" list-style-type: none;">
+                <div *ngFor="let chat of ChatDetails;trackBy: trackByFn;">
+                    <li class="clearfix" *ngIf="chat.Reply==='ReplyFrom'">
+                        <div class="message-data align-right">
+                            <!-- <span class="message-data-time">10:10 AM, Today</span> &nbsp; &nbsp; -->
+                            <span class="message-data-time">{{chat.Timeelapsed}}</span> &nbsp; &nbsp;
+                            <!-- <span class="message-data-name">{{chat.UserName | titlecase}}</span>&nbsp; -->
+                            <i class="fa fa-circle me"></i>
+                        </div>
+                        <div class="message other-message float-right text-dark">
+                            {{chat.Message}}
+                        </div>
+                    </li>
+                    <li *ngIf="chat.Reply==='ReplyTo'">
+                        <div class="message-data">
+                            <span class="message-data-name"><i class="fa fa-circle online"></i>
+                                {{chat.UserName | titlecase}}</span>
+                            <span class="message-data-time">{{chat.Timeelapsed}}</span>
+                        </div>
+                        <div class="message my-message">
+                            {{chat.Message}}
+                        </div>
+                    </li>
+                </div>
+            </ul>
+        </div>
+        <div class="chat-message clearfix">
+            <input width="90%" class="Inputcs" id="message-to-send" placeholder="Type your message"
+                [(ngModel)]="ChatMessage" autocomplete="off" name="message" #message="ngModel" type="text" />
+            <!-- <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp; -->
+            <!-- <i class="fa fa-file-image-o"></i> -->
+            <button (click)="sendMessage(ChatMessage)" [disabled]="!ChatMessage">Send</button>
+        </div>
+    </div>
+</div>

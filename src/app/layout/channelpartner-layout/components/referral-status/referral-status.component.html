@@ -1,0 +1,259 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <span class="required">{{NoDataFoundMessage}}</span>
+    <form *ngIf="!showDataNotFoundMessage">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="icon-addon addon-md">
+                        <input type="text" class="form-control search" autocomplete="off" [(ngModel)]="Search" name="search" placeholder="Search By Lead Name, Mobile No, Email...">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </div>
+                <div class="col-sm-2" *ngIf="loggedInuserDetails.UserType === 'ChannelPartner'">
+                    <select class="form-control" name="status"(change)="filterData($event.target.value)" [(ngModel)]="searchData" #status="ngModel">
+                        <option *ngFor="let item of list;trackBy: trackByFn" [value]="item.key">
+                            {{item.value}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType === 'ChannelPartner'"></div>
+                <div class="col-sm-5" *ngIf="loggedInuserDetails.UserType !== 'ChannelPartner'"></div>
+                <div class="col-sm-1" *ngIf="loggedInuserDetails.Level=='L1' ||loggedInuserDetails.Level=='L2'">
+                    <button type="button" class="btn btn-primary" (click)="collapsed = !collapsed">
+                        <i class="fa fa-download"></i>
+                        &nbsp;Import</button>
+                </div>
+                <div class="col-sm-1" *ngIf="loggedInuserDetails.Level=='L1' ||loggedInuserDetails.Level=='L2'">
+                    <button type="button" class="btn btn-primary" (click)="exportEvent(Search)">
+                        <i class="fa fa-upload"></i>
+                        &nbsp;Export</button>
+                </div>
+            </div>
+            <br>
+            <div class="table-responsive scrollable" id="style-2">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap" #table>
+                    <thead class="thead-light">
+                        <tr class="text-center">
+                            <th>Lead Id</th>
+                            <th>Lead Name </th>
+                            <th *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">Referred By </th>
+                            <th *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">CP Assigned</th>
+                            <th>Created Date </th>
+                            <th>Status</th>
+                            <th>Email</th>
+                            <th>Mobile No</th>
+                            <th>Preferred City</th>
+                            <th>Preferred Location</th>
+                            <th>Preferred Project</th>
+                            <th>Requirement</th>
+                            <th>Budget</th>
+                            <th>Sales Assigned</th>
+                            <th>Incentive</th>
+                            <th>Preferred Date</th>
+                            <th>Preferred Time</th>
+                            <th *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">Source</th>
+                            <th *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">FtoF</th>
+                            <th *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">Site Visit</th>
+                            <th>Possession</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                        <tr *ngFor=" let referral of referralDetails| filter:Search| paginate: {id:'lead-Details-pagination',itemsPerPage:13, currentPage: p };trackBy: trackByFn">
+                            <td>{{referral.TReferralId}}</td>
+                            <td>
+                                <button class="pointer btn   btn-sm" (click)="updateCpDetails(referral)">
+                                    <i class="fa fa-eye"></i>
+                                    {{referral.Name |titlecase}}</button>
+                            </td>
+                            <td *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                                {{referral.ReferralBy |titlecase}}</td>
+                            <td *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                                {{referral.BrokerAssinged |titlecase}}</td>
+                            <td>{{referral.CreatedOn|date:"d MMM y"}}</td>
+                            <td>
+                                <span [ngStyle]="{'background-color': referral.ReferralStatus=='New'? 'green' : 'red','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{referral.ReferralStatus}}</span>
+                            </td>
+                            <td>{{referral.Email}}</td>
+                            <td>{{referral.MobileNo}}</td>
+                            <td>{{referral.PreferredCity |titlecase}}</td>
+                            <td>{{referral.PreferredLocation |titlecase}}</td>
+                            <td>{{referral.PreferredProject |titlecase}}</td>
+                            <td>{{referral.Bhk}}</td>
+                            <td>{{referral.Budget}}</td>
+                            <td>{{referral.SalesAgentAssinged}}</td>
+                            <td>{{referral.IncentivePraposed}}</td>
+                            <td>{{referral.PreferredDate|date:"d MMM y"}}</td>
+                            <td>{{referral.PreferredTime}}</td>
+                            <td>{{referral.Source}}</td>
+                            <td>{{referral.Face2Face}}</td>
+                            <td>{{referral.NoOfSiteVisit}}</td>
+                            <td>{{referral.Possession}}</td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="loggedInuserDetails.UserType ==='CRO'">
+                        <tr *ngFor="let referral of referralDetails| filter:Search| paginate: {id:'lead-Details-pagination',itemsPerPage:13, currentPage: p };trackBy: trackByFn;">
+                            <td>{{referral.ReferralId}}</td>
+                            <td>{{referral.Name |titlecase}}</td>
+                            <td>{{referral.CreatedOn|date:"d MMM y"}}</td>
+                            <td>
+                                <span [ngStyle]="{'background-color': referral.ReferralStatus=='New'? 'green' : 'red','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{referral.ReferralStatus}}</span>
+                            </td>
+                            <td>{{referral.Email}}</td>
+                            <td>{{referral.MobileNo}}</td>
+                            <td>{{referral.PreferredCity |titlecase}}</td>
+                            <td>{{referral.PreferredLocation |titlecase}}</td>
+                            <td>{{referral.PreferredProject |titlecase}}</td>
+                            <td>{{referral.Bhk}}</td>
+                            <td>{{referral.Budget}}</td>
+                            <td>{{referral.SalesAgentAssinged}}</td>
+                            <td>{{referral.IncentivePraposed}}</td>
+                            <td>{{referral.PreferredDate|date:"d MMM y"}}</td>
+                            <td>{{referral.PreferredTime}}</td>
+                            <td>{{referral.Possession}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <tfoot class="pull-right">
+                <pagination-controls id="lead-Details-pagination" (pageChange)="p = $event"></pagination-controls>
+            </tfoot>
+        </div>
+    </form>
+
+    <br />
+    <div class="col-sm-12" *ngIf="!collapsed">
+        <fieldset class="scheduler-border">
+            <div class="col-sm-12">
+                <br />
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong>Sample Excel :</strong>
+                        <a href="assets\ExcelSheet.xlsx" target="_blank">
+                            <button type="button" class="btn btn-primary" target="_blank">Open Excel Sheet</button>
+                        </a>
+                    </div>
+                    <div class="col-sm-3">
+                        <strong>Upload Excel :</strong>
+                        <tru-file-upload [accept]="'.xlsx,.xls,.xltx,.xlt,.xltm'" [(inputFiles)]="importLeadExcel" multiple="multiple">
+                        </tru-file-upload>
+                    </div>
+                    <div class="col-sm-5" id="importButton">
+                        <button type="button" class="btn btn-primary" (click)="InsertExcel(importLeadExcel)">
+                            <i class="fa fa-edit"></i> Upload </button>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <div class="alert alert-success" role="alert" *ngIf="showSuccessfullImportMessage!==null">
+                        <h4>
+                            <i class="fa fa-check"></i>{{showSuccessfullImportMessage}}</h4>
+                    </div>
+                    <div class="alert alert-warning" role="alert" *ngIf="showUnsuccessfullImportMessage!==null">
+                        <h4>
+                            <i class="fa fa-times-circle"></i>{{showUnsuccessfullImportMessage}}</h4>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div bsModal #showChannelPartnerModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel"
+    s aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center">Lead Details</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onCloseBtn()" />
+            </div>
+            <div class="modal-body">
+                <form #updateCpLeadForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <fieldset class="scheduler-border">
+                                    <legend class="scheduler-border">
+                                        <strong>Details</strong>
+                                    </legend>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Lead Id:</strong>
+                                            <label>{{cpLeadDetails.ReferralId}}</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <strong>Lead Name:</strong>
+                                            <label>{{cpLeadDetails.Name}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>MobileNo:</strong>
+                                            <label>{{cpLeadDetails.MobileNo}}</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <strong>Email:</strong>
+                                            <label>{{cpLeadDetails.Email}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <strong for="reassignBroker"> CP Assigned:</strong>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <select type="text" #reassignBroker="ngModel" [disabled]="!reAssignCp" [(ngModel)]="cpLeadDetails.BrokerAssingedId" class="form-control"
+                                                        id="reassignBroker" name="reassignBroker" required [class.error]="reassignBroker.invalid && reassignBroker.touched"
+                                                        [class.has-success]="reassignBroker.valid">
+                                                        <option value="">--select--</option>
+                                                        <option class='option' *ngFor='let Cpname of reportedBy;trackBy: trackByFn' [value]="Cpname.BrokerId">{{Cpname.Name}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row justify-content-md-center">
+                                        <button type="button" class="btn btn-primary" (click)="updateCpStatus(cpLeadDetails,updateCpLeadForm)" [disabled]="!updateCpLeadForm.form.valid">
+                                            <i class="fa fa-edit"></i> Update Details</button>
+                                    </div>
+                                    <br>
+                                </fieldset>
+                            </div>
+                            <!-- <div class="col-sm-7">
+                                <fieldset class="scheduler-border">
+                                    <legend class="scheduler-border">
+                                        <strong>Interaction Details</strong>
+                                    </legend>
+                                    <ol>
+                                        <li *ngFor="let interact of interactionModel | paginate: { id:'lead-interaction-pagination',itemsPerPage: 5, currentPage: q };trackBy: trackByFn">
+                                            <i class="fa fa-book"></i> {{interact.Details}}
+                                            <br />
+                                            <span class="text-muted">
+                                                <strong>Created By:-</strong>
+                                                {{interact.CreatedBy}} ||
+                                                <strong>Created On:-</strong>
+                                                {{interact.CreatedOn}} ||
+                                                <strong>Status:-</strong>
+                                                {{interact.InteractionType}} </span>
+                                            <hr>
+                                        </li>
+                                    </ol>
+                                    <tfoot *ngIf="interactionModel.length >5">
+                                        <pagination-controls id="lead-interaction-pagination" (pageChange)="q= $event">
+                                        </pagination-controls>
+                                    </tfoot>
+                                </fieldset>
+                            </div> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

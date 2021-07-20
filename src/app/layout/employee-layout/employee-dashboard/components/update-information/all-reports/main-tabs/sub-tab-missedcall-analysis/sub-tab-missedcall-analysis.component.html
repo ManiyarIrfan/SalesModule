@@ -1,0 +1,55 @@
+<form #missedCallForm="ngForm">
+  <div class="row">
+    <div class="form-group col-sm-3">
+      <select class="form-control" id="type" name="type" placeholder="--- Select Type ---" [(ngModel)]="directionvalue"
+        required #type="ngModel" (change)="getMissedCallAnalysis(directionvalue)"
+        [class.error]="type.invalid && type.touched" [class.has-success]="type.valid">
+        <option *ngFor="let type of Direction; trackBy: trackByFn;" [value]="type.key">{{type.value}}</option>
+      </select>
+    </div>
+    <div class="col-sm-3">
+      <div class="col-sm-1" *ngIf="getMissedCallData.length > 0">
+        <button type="button" class="btn btn-primary" (click)="exportEvent()">
+          <i class="fa fa-upload"></i> &nbsp; Export</button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row" *ngIf="isLoading">
+      <div class="col-sm-12 text-center">
+        <p class="loading">
+          <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+        </p>
+      </div>
+    </div>
+    <!-- Missed Call Details -->
+    <div class="row col-sm-7" *ngIf="!isLoading">
+      <strong>
+        <span class="text-danger" *ngIf="getMissedCallData.length===0  && directionvalue !=='select'">No Data
+          Found</span>
+      </strong>
+      <div class="table-responsive" *ngIf="getMissedCallData.length>0">
+        <table class="table table-striped table-bordered table-sm" #table>
+          <thead class="thead-light sticky">
+            <tr class="text-center">
+              <th>Sr. No.</th>
+              <th>Employee</th>
+              <th>Total Calls</th>
+              <th>Employee Missed</th>
+              <th>Customer Missed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-center" *ngFor=" let TableData of getMissedCallData; trackBy: trackByFn;let i=index;">
+              <td>{{i+1}}</td>
+              <td>{{TableData.EmpName | titlecase}}</td>
+              <td>{{TableData.Total_Calls}}</td>
+              <td>{{TableData.Emp_Missed}}</td>
+              <td>{{TableData.Customer_Missed}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</form>

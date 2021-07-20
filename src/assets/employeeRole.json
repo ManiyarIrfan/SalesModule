@@ -1,0 +1,210 @@
+{
+    "Employee": [
+        {
+            "1": {
+                "Tabs": [
+                    "DashBoard",
+                    "View Profile",
+                    "Lead Generation",
+                    "Lead Dashboard",
+                    "Project Availability",
+                    "Project Status",
+                    "Order",
+                    "CP Payment Status",
+                    "SR",
+                    "Idea Box",
+                    "Project",
+                    "Admin Panel",
+                    "Opportunity Details",
+                    "All Enquiry",
+                    "Enquiry Details",
+                    "Pre Sales Dashboard",
+                    "File Management",
+                    "Reports",
+                    "Daily Reports",
+                    "Training",
+                    "Issue Track",
+                    "Payment Receipt"
+                ]
+            }
+        },
+        {
+            "2": {
+                "Tabs": [
+                    "DashBoard",
+                    "Project Availability",
+                    "Opportunity Details",
+                    "Project Status",
+                    "Order",
+                    "CP Payment Status",
+                    "SR",
+                    "Idea Box",
+                    "Project",
+                    "File Management",
+                    "File Management",
+                    "Payment Receipt"
+                ]
+            }
+        },
+        {
+            "3": {
+                "Tabs": [
+                    "DashBoard",
+                    "Enquiry Details",
+                    "Lead Dashboard",
+                    "Project Availability",
+                    "Project Status",
+                    "Order",
+                    "SR",
+                    "Idea Box",
+                    "Lead Generation",
+                    "Opportunity Details",
+                    "File Management",
+                    "Reports",
+                    "Daily Reports",
+                    "PowerSalesDashboard",
+                    "CpDetails",
+                    "CRO Dashboard",
+                    "Admin"
+                ]
+            }
+        },
+        {
+            "4": {
+                "Tabs": [
+                    "DashBoard",
+                    "View Profile",
+                    "Lead Generation",
+                    "Lead Dashboard",
+                    "Project Availability",
+                    "Project Status",
+                    "Order",
+                    "CP Payment Status",
+                    "SR",
+                    "Idea Box",
+                    "Project",
+                    "File Management",
+                    "Reports"
+                ]
+            }
+        },
+        {
+            "5": {
+                "Tabs": [
+                    "All Enquiry",
+                    "Enquiry Details",
+                    "Opportunity Details",
+                    "Pre Sales Dashboard",
+                    "SR",
+                    "Idea Box",
+                    "File Management",
+                    "Reports",
+                    "Daily Reports",
+                    "Training",
+                    "Order",
+                    "Schedule"
+                ]
+            }
+        },
+        {
+            "6": {
+                "Tabs": [
+                    "PowerSalesDashboard",
+                    "CRO Dashboard",
+                    "CpDetails",
+                    "Lead Generation",
+                    "Lead Dashboard",
+                    "Project Availability",
+                    "Project Status",
+                    "Order",
+                    "CP Payment Status",
+                    "SR",
+                    "Idea Box",
+                    "Project",
+                    "Enquiry Details",
+                    "Opportunity Details",
+                    "File Management",
+                    "Reports",
+                    "Daily Reports"
+                ]
+            }
+        },
+        {
+            "7": {
+                "Tabs": [
+                    "Scheduled SV",
+                    "Lead Generation",
+                    "Enquiry Details",
+                    "Opportunity Details",
+                    "Daily Reports",
+                    "Idea Box"
+                ]
+            }
+        },
+        {
+            "8": {
+                "Tabs": [
+                    "Reports",
+                    "Idea Box"
+                ]
+            }
+        },
+        {
+            "9": {
+                "Tabs": [
+                    "DashBoard",
+                    "Enquiry Details",
+                    "Opportunity Details",
+                    "Reports",
+                    "Daily Reports",
+                    "Order",
+                    "Idea Box"
+                ]
+            }
+        },
+        {
+            "11": {
+                "Tabs": [
+                    "All Enquiry",
+                    "Enquiry Details",
+                    "Opportunity Details",
+                    "DashBoard",
+                    "Pre Sales Dashboard",
+                    "Reports",
+                    "Admin Panel",
+                    "Daily Reports",
+                    "File Management",
+                    "Order",
+                    "SR",
+                    "Idea Box",
+                    "DPM Admin",
+                    "Training"
+                ]
+            }
+        },
+        {
+            "20": {
+                "Tabs": [
+                    "PowerSalesDashboard",
+                    "CRO Dashboard",
+                    "CpDetails",
+                    "Order",
+                    "Project Availability",
+                    "Order",
+                    "CP Payment Status",
+                    "Lead Generation",
+                    "Daily Reports",
+                    "Idea Box"
+                ]
+            }
+        },
+        {
+            "21": {
+                "Tabs": [
+                    "Daily Reports",
+                    "Idea Box"
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+.img {
+    display: block;
+    width: 100%;
+    height: 440px;
+}
+.font {
+    font-size: 40px;
+}
+
+#fontlrg {
+    font-size: 26px;
+}
+#fontsm {
+    font-size: 15px;
+}
+
+.rowmargin {
+    margin: 9px;
+}
+.container-fluid {
+    padding-right: 3px !important;
+    padding-left: 3px !important;
+    margin-top: -2em;
+}
+.card-body {
+    padding: 13px 7px 1px 7px !important;
+    margin-bottom: -7px;
+}
+
+.col-ml {
+    margin-left: 1.55em;
+}
+
+.cardchanges {
+    zoom: 95%;
+}
+.card {
+    margin-bottom: 0.5em;
+}
+
+@media only screen and (max-device-width: 600px) {
+    .col-ml {
+        margin-left: 1px;
+    }
+
+    .mobielcss {
+        margin-left: 0em;
+    }
+   
+}
+@media only screen and (min-device-width: 601px) {
+    .mobielcss {
+        margin-left: -3.5em;
+    }
+}

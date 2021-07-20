@@ -1,0 +1,12 @@
+ .searchscroll{    
+    overflow: auto;
+    height: 100px;
+ } 
+
+li:hover {
+    background: #404040d9;
+    color: white;
+    border-radius: 10px;
+    padding-left: 5px;
+    transition: 1ms;
+ }

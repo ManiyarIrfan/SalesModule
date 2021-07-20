@@ -1,0 +1,18 @@
+<!-- <app-header></app-header>
+ <app-sidebar></app-sidebar> 
+<section class="main-container">
+    <router-outlet></router-outlet>
+</section> -->
+<app-header></app-header>
+<!-- <app-sidebar (collapsedEvent)="receiveCollapsed($event)"></app-sidebar> -->
+<section class="main-container" [ngClass]="{collapsed: collapedSideBar}">
+    <mat-card>
+        <router-outlet></router-outlet>
+    </mat-card>
+</section>
+<div id="speaker">
+    <a><img id="soundon" src="https://cdn4.iconfinder.com/data/icons/game-ui-pack-02/500/sound_on-512.png" (click)="speakerOn()"></a>
+    <a><img id="soundoff" src="https://image.flaticon.com/icons/svg/1198/1198598.svg" (click)="speakerOff()"></a>
+</div>
+
+<!-- <app-feedback></app-feedback> -->

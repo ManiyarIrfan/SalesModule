@@ -1,0 +1,373 @@
+<p-tabView>
+    <div class="row">
+        <div class="col-sm-2 pt-1">
+            <h5>{{reportType}}</h5>
+        </div>
+        <div class="col-sm-2 pb-1" *ngIf="reportType === 'Calls'">
+            <select class="form-control" id="callType" name="callType" #callType="ngModel" [(ngModel)]="status"
+                (change)="getConversationDetails($event.target.value)" [class.has-success]="callType.valid">
+                <option *ngFor="let item of callTypeList;trackBy: trackByFn;" [value]="item.key">
+                    {{item.value}}</option>
+            </select>
+        </div>
+        <div class="col-sm-2 pb-1" *ngIf="reportType === 'SiteVisits'">
+            <select class="form-control" id="siteVisit" name="siteVisit" #siteVisit="ngModel" [(ngModel)]="status"
+                (change)="getConversationDetails($event.target.value)" [class.has-success]="siteVisit.valid">
+                <option *ngFor="let item of siteVisitTypeList;trackBy: trackByFn;" [value]="item.key">
+                    {{item.value}}</option>
+            </select>
+        </div>
+        <div class="col-sm-2 pb-1" *ngIf="reportType === 'FollowUps'">
+            <select class="form-control" id="followUpType" name="followUpType" #followUpType="ngModel"
+                [(ngModel)]="status" (change)="getConversationDetails($event.target.value)"
+                [class.has-success]="followUpType.valid">
+                <option *ngFor="let item of followUpTypeList;trackBy: trackByFn;" [value]="item.key">
+                    {{item.value}}</option>
+            </select>
+        </div>
+        <div class="col-sm-5 pb-1"></div>
+        <div class="col-sm-3 pb-1">
+            <button type="button" class="btn btn-primary rounded pull-right" (click)="exportEvent()"
+                [disabled]="conversationDetailsList.length === 0">
+                Export &nbsp;<i class="fa fa-upload"></i></button>
+            <h5 class="countpad pull-right"><span class="badge badge-dark px-2 py-1">Count:
+                    {{conversationDetailsList.length}}</span>
+            </h5>
+        </div>
+    </div>
+    <div *ngIf="isLoading">
+        <p class="loading">
+            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+        </p>
+    </div>
+    <span class="required" *ngIf="NodataFound">Data Not Available</span>
+    <div class="table-responsive scroll-bar" *ngIf="!isLoading && !NodataFound">
+        <table class="table table-bordered table-hover table-sm text-nowrap tableFixHead">
+            <thead class="thead-light">
+                <tr class="text-center">
+                    <th>Sr No</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th *ngIf="reportType === 'Calls'">Duration</th>
+                    <th>Presales Name</th>
+                    <th *ngIf="reportType === 'Calls'">Activity Date</th>
+                    <th *ngIf="reportType === 'Calls'">Recording</th>
+                    <th *ngIf="reportType === 'SiteVisits'">Project</th>
+                    <th *ngIf="reportType === 'SiteVisits'">Sales Name</th>
+                    <th *ngIf="reportType === 'SiteVisits'">Created On</th>
+                    <th *ngIf="reportType !== 'Calls'">Scheduled On</th>
+                    <th *ngIf="reportType === 'Calls'">Call Attended By</th>
+                    <th *ngIf="reportType !== 'Calls' && status !== 'Canceled'">Conducted On</th>
+                    <th *ngIf="reportType !== 'Calls' && status === 'Canceled'">Canceled On</th>
+                    <th *ngIf="loggedInuserDetails.Role===11 && reportType === 'Calls'">Score</th>
+                    <th *ngIf="loggedInuserDetails.Role===11 && reportType === 'Calls'">Action</th>
+                    <th *ngIf="loggedInuserDetails.Role===11 && reportType === 'Calls'">Tagging</th>
+                    <th *ngIf="reportType === 'SiteVisits'">BookingStatus</th>
+                </tr>
+                <tr>
+                    <td colspan="3"> </td>
+                    <td class="text-center">
+                        <input autocomplete="off" class="text-width" type="text" name="Status"
+                            [(ngModel)]="filterDataModel.Status" (keyup)="filterLeadData()">
+                    </td>
+
+                    <td class="text-center" *ngIf="reportType === 'Calls'">
+                        <input autocomplete="off" class="text-width" type="text" name="duration"
+                            [(ngModel)]="filterDataModel.Duration" (keyup)="filterLeadData()">
+                    </td>
+                    <td>
+                        <input autocomplete="off" class="text-width" type="text" name="agentName"
+                            [(ngModel)]="filterDataModel.AgentName" (keyup)="filterLeadData()">
+                    </td>
+                    <!-- <td class="text-center" *ngIf="reportType === 'Calls' && loggedInuserDetails.Role!==5">
+                        <input class="text-width" type="text" name="preferredProject"
+                            [(ngModel)]="filterDataModel.AgentName" (keyup)="filterLeadData()">
+                    </td>
+                    <td class="text-center" *ngIf="reportType === 'FollowUps'">
+                        <input class="text-width" type="text" name="preferredProject"
+                            [(ngModel)]="filterDataModel.AgentName" (keyup)="filterLeadData()">
+                    </td> -->
+                    <!-- <td colspan="2"></td> -->
+                    <td class="text-center" *ngIf="reportType === 'SiteVisits'">
+                        <input autocomplete="off" class="text-width" type="text" name="preferredProject"
+                            [(ngModel)]="filterDataModel.PreferredProject" (keyup)="filterLeadData()">
+                    </td>
+
+                    <td class="text-center" *ngIf="reportType === 'SiteVisits'">
+                        <input autocomplete="off" class="text-width" type="text" name="salesAgentAssigned"
+                            [(ngModel)]="filterDataModel.SalesAgentAssigned" (keyup)="filterLeadData()">
+                    </td>
+                    <td class="text-center" *ngIf="reportType === 'SiteVisits'">
+                        <input autocomplete="off" class="text-width" type="text" name="createdOn"
+                            [(ngModel)]="filterDataModel.CreatedOn" (keyup)="filterLeadData()">
+                    </td>
+                    <td class="text-center" *ngIf="reportType === 'SiteVisits'">
+                        <input autocomplete="off" class="text-width" type="text" name="siteVisitSchedule"
+                            [(ngModel)]="filterDataModel.SiteVisitSchedule" (keyup)="filterLeadData()">
+                    </td>
+                    <td class="text-center" *ngIf="reportType === 'SiteVisits'">
+                        <input autocomplete="off" class="text-width" type="text" name="siteVisitConduct"
+                            [(ngModel)]="filterDataModel.ConductedOn" (keyup)="filterLeadData()">
+                    </td>
+
+                    <td class="text-center" *ngIf="reportType === 'SiteVisits'">
+                        <input autocomplete="off" class="text-width" type="text" name="BookingStatus"
+                            [(ngModel)]="filterDataModel.BookingStatus" (keyup)="filterLeadData()">
+                    </td>
+                    <td *ngIf="reportType === 'Calls'"> </td>
+                    <!-- <td *ngIf="reportType !== 'Calls' && status !== 'Canceled'"></td> -->
+                    <td *ngIf="reportType === 'Calls'"></td>
+                    <td class="text-center" *ngIf="reportType === 'Calls'">
+                        <input autocomplete="off" class="text-width" type="text" name="callAttendedBy"
+                            [(ngModel)]="filterDataModel.callAttendedBy" (keyup)="filterLeadData()">
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center pointer"
+                    *ngFor="let item of conversationDetailsList ;trackBy: trackByFn;let i = index;">
+                    <td>{{i+1}}</td>
+                    <td (click)="getDetails(item)">
+                        {{item.TReferralId}}</td>
+                    <td class="text-left pl-2" (click)="getDetails(item)">
+                        {{item.LeadName ? (item.LeadName | titlecase) : item.Name | titlecase}}</td>
+                    <td (click)="getDetails(item)">
+                        {{item.Status? (item.Status | titlecase) : item.FollowUpStatus | titlecase}}</td>
+                    <td (click)="getDetails(item)" *ngIf="reportType === 'Calls'">{{item.Duration}}</td>
+                    <td class="text-left pl-2" (click)="getDetails(item)">
+                        {{item.AgentName | titlecase }}</td>
+                    <td (click)="getDetails(item)" *ngIf="reportType === 'Calls'">{{item.StartTime}}</td>
+                    <td *ngIf="reportType === 'Calls'">
+                        <!-- <audio controls controlsList="nodownload" #audioOption>
+                            <source src="{{ ::finalUrl }}" type="audio/mpeg" />
+                        </audio> -->
+                        <a href="{{item.CallURL}}" download target="_blank" class="downloadIcon" *ngIf="item.CallURL">
+                            <i class="fas fa-download"></i></a>
+                    </td>
+                    <!-- SiteVisit -->
+                    <td (click)="getDetails(item)" *ngIf="reportType === 'SiteVisits'">
+                        {{item.PreferredProject | titlecase}}</td>
+                    <td class="text-left pl-2" (click)="getDetails(item)" *ngIf="reportType === 'SiteVisits'">
+                        {{item.SalesAgentAssigned | titlecase}}</td>
+                    <td (click)="getDetails(item)" *ngIf="reportType === 'SiteVisits'">
+                        {{item.CreatedOn ? (item.CreatedOn | date:'dd/MM/yyyy hh:mm a') :''}}</td>
+                    <td (click)="getDetails(item)" *ngIf="reportType !== 'Calls'">
+                        {{item.FollowUpTime ? item.FollowUpTime : item.SiteVisitSchedule }}</td>
+                    <td (click)="getDetails(item)" *ngIf="reportType === 'Calls'">
+                        {{item.callAttendedBy ? item.callAttendedBy : item.callAttendedBy }}</td>
+                    <td (click)="getDetails(item)" *ngIf="reportType !== 'Calls'">
+                        {{item.FollowUpConducted ? (item.FollowUpConducted | date:'dd/MM/yyyy hh:mm a') :
+                        item.ConductedOn | date:'dd/MM/yyyy hh:mm
+                        a'}}
+                    </td>
+                    <td *ngIf="loggedInuserDetails.Role===11 && reportType === 'Calls' ">
+                        <span class="badge badge-info" *ngIf="item.AvgRating">{{item.AvgRating}} / 100</span>
+                    </td>
+                    <td (click)="getDetails(item)" *ngIf="reportType === 'SiteVisits'">
+                        {{item.BookingStatus | titlecase}}
+                    </td>
+
+                    <td *ngIf="loggedInuserDetails.Role===11 && reportType === 'Calls'">
+                        <button type="button" class="btn btn-link btn-sm"
+                            (click)="openRatingPopup(conversationDetailsList[i])">
+                            <i class="fa fa-edit"></i>
+                            Edit</button>
+                    </td>
+                    <td *ngIf="loggedInuserDetails.Role===11 && reportType === 'Calls'">
+                        <button type="button" class="btn btn-link btn-sm"
+                            (click)="openCallNotesPopup(conversationDetailsList[i])">
+                            <i class="fa fa-comment"></i>
+                            Profiling
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <tfoot class="pull-right" *ngIf="conversationDetailsList.length > 8">
+            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        </tfoot> -->
+    </div>
+    <div bsModal #callRatingPopup="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+        aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+        <form #AdminPanelForm="ngForm">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title title pull-left">Call Analysis Rating</h4>
+                        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+                    </div>
+                    <div class="modal-body" style="height: 550px;">
+                        <div class="table-responsive" *ngIf="finalDetails.length>0">
+                            <table class="table table-bordered table-striped table-sm text-nowrap" cellsspacing="0"
+                                width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>
+                                            <span class="pull-left">Components</span>
+                                            <span style="margin-left: 19rem;">Score</span>
+                                            <span style="margin-left: 1.8rem;">Points</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let snapshot of finalDetails;trackBy: trackByFn; let i=index">
+                                        <td>{{snapshot.RatingOn}}</td>
+                                        <td>
+                                            <div
+                                                *ngFor="let data of snapshot.SubData;trackBy: trackByFn; let j = index;">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <span class="pull-left">{{data.SubRatingOn}}</span>&nbsp;
+                                                    </div>
+                                                    <div class="col-sm-3"></div>
+                                                    <div class="col-sm-1">
+                                                        <span>{{data.Points}}</span>
+                                                    </div>
+                                                    <div class="col-sm-2 pull-right">
+                                                        <input type="tel" (input)="validation(data)"
+                                                            [(ngModel)]="data.rating" name="rating{{i}}{{j}}"
+                                                            class="form-control input-size" min=0 />
+                                                        <div *ngIf="result">
+                                                            <strong class="text-danger"
+                                                                *ngIf="result===data.CRSubMasterId">{{ErrorMessage}}</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remark</td>
+                                        <td><textarea class="form-control" rows="2" name="remark" #remark="ngModel"
+                                                [(ngModel)]="RatingModel.Remark"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Auto Fail</td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <span class="pull-left">Rude to the Customer</span>
+                                                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                        class="example-radio-group" name="autoFail1"
+                                                        [(ngModel)]="RatingModel.AutoFail1">
+                                                        <mat-radio-button class="example-radio-button pull-left ml-2"
+                                                            *ngFor="let status of booleanStatus" [value]="status.value">
+                                                            {{status.key}}
+                                                        </mat-radio-button>
+                                                    </mat-radio-group>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <span class="pull-left">Wrong Commitment</span>
+                                                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                        class="example-radio-group" name="autoFail2"
+                                                        [(ngModel)]="RatingModel.AutoFail2">
+                                                        <mat-radio-button class="example-radio-button pull-left ml-2"
+                                                            *ngFor="let status of booleanStatus" [value]="status.value">
+                                                            {{status.key}}
+                                                        </mat-radio-button>
+                                                    </mat-radio-group>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-md-center">
+                        <button type="button" class="btn btn-primary" (click)="InsertUpdaterating()"
+                            [disabled]="ErrorMessage">
+                            <i class="fa fa-paper-plane">&nbsp;</i>Submit</button>
+                        <div class="row">
+                            <div class="col-sm-12" align="center">
+                                <div [hidden]="!isSpinner">
+                                    <p class="loading">
+                                        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+    <div bsModal cdkDrag #showOnCallNotesPopup="bs-modal" class="modal fade" role="dialog"
+        [config]="{backdrop: 'static'}" data-keyboard="true" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+        <form #callInteractionForm="ngForm">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="col-sm-4 text-left">
+                            <h4 class="modal-title">
+                                {{this.conversationDetail.TReferralId}}&nbsp; {{this.conversationDetail.LeadName
+                                |titlecase}}&nbsp; <span *ngIf="conversationDetail.UserType === 'Enquiry'">Status
+                                    :{{this.conversationDetail.LeadStatus}}</span>
+                            </h4>
+                        </div>
+                        <!-- <div class="col-sm-2 text-left" style="margin-left:40px;">
+                            <h4 class="modal-title">
+                                <span *ngIf="conversationDetail.UserType === 'Enquiry'">Status
+                                    :{{this.conversationDetail.LeadStatus}}</span>
+                            </h4>
+                        </div> -->
+                        <div class="col-sm-6">
+                            <h4 class="modal-title">
+                                <span
+                                    *ngIf="conversationDetail.StatusChangeReason !== ' ' || conversationDetail.StatusChangeReason !== null">Remark:{{this.conversationDetail.StatusChangeReason}}</span>
+                            </h4>
+                        </div>
+                        <div class="col-sm-2" style="margin-top: 0px;">
+                            <h4>
+                                <img class="close-button" id="cross" src="assets/images/crossnew.png" alt="X"
+                                    (click)="this.showOnCallNotesPopup.hide()" />
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 py-2">
+                                <h5 class="text-left pl-2">Call Observations</h5>
+                                <br />
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="tag-height scrollbar" id="style-2">
+                                            <div class="row">
+                                                <div class="col-sm-6 option"
+                                                    *ngFor="let checkList of callCheckList;trackBy:trackByFn;let i=index;">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <strong class="Tag">{{i+1}})&nbsp;</strong>
+                                                            <strong class="Tagtwo">{{checkList.Tag}}</strong>
+                                                        </div>
+                                                        <div class="col-sm-1">:</div>
+                                                        <div class="col-sm-4">
+                                                            <strong class="Answer">{{checkList.Answer}}</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-md-center">
+                            <button type="button" class="btn btn-primary"
+                                (click)="this.showOnCallNotesPopup.hide()">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+</p-tabView>

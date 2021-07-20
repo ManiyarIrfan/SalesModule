@@ -1,0 +1,79 @@
+<div>
+    <div class="card-header">
+        <div class="row">
+            <strong>
+                <h5>Sales Performance</h5>
+            </strong>
+            <div class="col-sm-1">
+                <button [disabled]="!enabledButtonExport" type="button" class="btn btn-primary" (click)="exportEvent()">
+                    <i class="fa fa-upload"></i>
+                    Export</button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div [hidden]="!isLoading">
+        <p class="loading">
+            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+        </p>
+    </div>
+    <h5 class="pull-right" *ngIf="data.length > 0"><span class="badge badge-dark">Count :
+            {{data.length}}</span> </h5>    
+    <div class="table-responsive scrollb" [hidden]="isLoading" id="style-2">
+        <table class="table table-bordered table-hover  table-sm text-nowrap tableFixHead" *ngIf="data.length>0">
+            <thead class="table-light">
+                <tr class="text-center">
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Total <br>Calls</th>
+                    <th>Total <br>Talktime</th>
+                    <th>Average <br>Talktime</th>
+                    <th>Total <br>Outgoing</th>
+                    <th>Outgoing <br>Answered</th>
+                    <th>Total <br>Incoming</th>
+                    <th>Incoming <br>Answered</th>
+                    <th>Total <br>Answered</th>
+                    <th>FollowUps <br>Scheduled</th>
+                    <th>FollowUps <br>Conducted</th>
+                    <th>SiteVisit <br>Scheduled</th>
+                    <th>SiteVisit <br>Conducted</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="notFound" class="notfoundmsgreport"> Data Not Available</tr>
+                <tr class="text-center" *ngFor="let Record of data;">
+                    <td>{{Record.Name | titlecase}}</td>
+                    <td>{{Record.Team}}</td>
+                    <td>{{Record.Total_Calls}}</td>
+                    <td>{{Record.Total_Talktime}}</td>
+                    <td>{{Record.AverageTalkTime | number : '1.0-2'}}</td>
+                    <td>{{Record.Total_Outgoing}}</td>
+                    <td>{{Record.Outgoing_Answered}}</td>
+                    <td>{{Record.Total_Incoming}}</td>
+                    <td>{{Record.Incoming_Answered}}</td>
+                    <td>{{Record.Total_Answered}}</td>
+                    <td>{{Record.FollowUps_Scheduled}}</td>
+                    <td>{{Record.FollowUps_Conducted}}</td>
+                    <td>{{Record.SiteVisit_Scheduled}}</td>
+                    <td>{{Record.SiteVisit_Conducted}}</td>
+                </tr>
+                <tr class="table-light text-center" *ngFor="let Record of totalvalue;trackBy: trackByFn;">
+                    <td></td>
+                    <td>Total</td>
+                    <td>{{Record.Total_Calls}}</td>
+                    <td>{{Record.Total_Talktime}}</td>
+                    <td>{{Record.AverageTalkTime | number : '1.0-2'}}</td>
+                    <td>{{Record.Total_Outgoing}}</td>
+                    <td>{{Record.Outgoing_Answered}}</td>
+                    <td>{{Record.Total_Incoming}}</td>
+                    <td>{{Record.Incoming_Answered}}</td>
+                    <td>{{Record.Total_Answered}}</td>
+                    <td>{{Record.FollowUps_Scheduled}}</td>
+                    <td>{{Record.FollowUps_Conducted}}</td>
+                    <td>{{Record.SiteVisit_Scheduled}}</td>
+                    <td>{{Record.SiteVisit_Conducted}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

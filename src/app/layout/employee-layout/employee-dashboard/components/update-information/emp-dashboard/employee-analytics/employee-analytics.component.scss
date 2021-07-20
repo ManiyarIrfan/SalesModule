@@ -1,0 +1,130 @@
+.chart {
+  height: 400px;
+}
+
+.col-sm-3,
+.col-sm-4 {
+  margin-right: 0.4em;
+}
+
+@media (min-width: 576px) {
+  .col-sm-3 {
+    flex: 0 0 25%;
+    max-width: 24%;
+  }
+}
+
+@media (min-width: 576px) {
+  .col-sm-4 {
+    flex: 0 0 33.33333333%;
+    max-width: 31.333333%;
+  }
+}
+.modal-header {
+  background-color: #33b5e5;
+  cursor: pointer;
+}
+
+.card-header {
+  background-color: rgb(10, 123, 157);
+  color: white;
+  font-weight: 500;
+}
+
+.heading {
+  font-size: 1.1rem;
+  margin-top: 10px;
+  color: white;
+  font-weight: 450;
+}
+.cp-lead{
+  font-size: 0.7rem;
+  margin-top: 10px;
+  color: white;
+  font-weight: 450;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 1000px;
+    max-height: 1100px;
+  }
+}
+
+.modal-title {
+  text-align: center;
+}
+
+.exception {
+  padding-top: 50px;
+}
+
+.fontSize {
+  font-size: 2.2rem;
+}
+
+.modal-title {
+  margin-left: 367px;
+  color: white;
+  font-size: 19px;
+  font-weight: 400;
+}
+
+.btn-sm {
+  font-size: initial;
+}
+.modal-title {
+  margin-bottom: 0;
+  line-height: 0.5;
+}
+.tablemargin {
+  margin-bottom: -7em;
+}
+
+.calendercss {
+  width: 14em;
+}
+.name-width {
+  border-radius: 10px;
+}
+
+label {
+  display: block;
+  font-size: 85.5%;
+  color: #212529;
+  white-space: pre-wrap;
+  margin-top: 0;
+  margin-bottom: 0rem;
+  overflow: hidden;
+}
+.col-width {
+  width: 91%;
+}
+.col-width-half {
+  width: 60%;
+}
+
+.scrollheight {
+  height: 400px;
+}
+
+.fix {
+  bottom: 0;
+  min-height: 10px;
+  max-height: 12px;
+}
+
+.sticky-col {
+  position: sticky;
+  position: -webkit-sticky;
+  background-color: #b4b4b4;
+}
+.Talktime
+{
+  font-size:16px;
+}
+.count
+{
+  font-size:32px;
+  padding-top:7px;
+}

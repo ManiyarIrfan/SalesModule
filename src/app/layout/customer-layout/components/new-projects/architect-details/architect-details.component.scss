@@ -1,0 +1,59 @@
+.profile-card__img {
+  width: 125px;
+  margin-top: -2em;
+  // margin-left: 9em;
+}
+.cardforLayout {
+  margin-left: 18px;
+  border: 1px solid #c3bdbd;
+  background-image: linear-gradient(to right, #e5e6e6 9%, #d1e4eb85 100%);
+  border-radius: 6px;
+  border-bottom: solid 4px rgba(78, 78, 78, 0.493);
+  position: relative;
+  width: 450px;
+}
+.margin-bottom {
+  padding-top: 20px;
+}
+
+mat-checkbox ::ng-deep .mat-checkbox-inner-container {
+  width: 19px;
+  height: 19px;
+}
+.fontweight {
+  font-weight: 500;
+  padding-right: 4px;
+}
+.HtextSize {
+  font-size: 17px;
+  padding-right: 4px;
+}
+::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle,
+.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple,
+.mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
+  background-color: #3f788f;
+}
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #367891;
+}
+::ng-deep .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #367891;
+}
+.btn-color {
+  color: #fff;
+  background-color: #099cbd;
+  border-color: #099cbd;
+  margin-left: 10px;
+}
+.btn-custom {
+  color: #fff;
+  background-color: #2885c7;
+  border-color: #1d94af;
+  margin-bottom: 8px;
+  margin-top: -22px;
+}
+.btnPos {
+  margin-left: 280px;
+}

@@ -1,0 +1,98 @@
+<div>
+    <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive,collapsed: collapsed}">
+        <div class="list-group">
+            <div *ngIf="menuItems">
+                <div class="nested-menu" *ngFor="let mainMenu of menuItems.menu">
+                    <a *ngIf="mainMenu.sub !== null && mainMenu.name===usertype" class="list-group-item"
+                        (click)="addExpandClass(mainMenu)">
+                        <span [hidden]="isPlusActive" (click)="isLoggedIncheck(mainMenu)">
+                            <i class="fa fa-plus-circle"></i>&nbsp; {{ mainMenu.name }}
+                            <!-- <i[ngClass]="{isplusActive ? fa fa-plus-circle : fa fa-minus-circle}"></i>&nbsp; {{ mainMenu.name }}  -->
+                        </span>
+                        <span [hidden]="!isPlusActive" (click)="isLoggedIncheck(mainMenu)">
+                            <i class="fa fa-minus-circle"></i>&nbsp; {{ mainMenu.name }}
+                            <!-- <i[ngClass]="{isplusActive ? fa fa-plus-circle : fa fa-minus-circle}"></i>&nbsp; {{ mainMenu.name | translate }}  -->
+                        </span>
+                    </a>
+                    <a class="list-group-item" [routerLink]="mainMenu.redirectUrl"
+                        [routerLinkActive]="['router-link-active']" *ngIf="mainMenu.sub === null">
+                        <span> <i class="fa fa-home"></i>&nbsp; {{ mainMenu.name }}</span>
+                    </a>
+                    <li class="nested" [class.expand]="showMenu === mainMenu">
+                        <ul class="submenu" *ngFor="let subMenu of mainMenu.sub">
+                            <li>
+                                <a [routerLink]="subMenu.redirectUrl" [routerLinkActive]="['router-link-active']">
+                                    <span>{{ subMenu.name }}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+            </div>
+            <div class="header-fields">
+                <input type="button" class="btn btn-sm btn-link" *ngIf="!isShowLoggedinBtn" value="Login"
+                    [routerLink]="['/login']">
+                <input type="button" class="btn btn-sm btn-link" *ngIf="!isShowLoggedinBtn" value="SignUp"
+                    [routerLink]="['/signup']">
+                <div class="nested-menu" *ngIf="isShowLoggedinBtn">
+                    <a class="list-group-item" (click)="addExpandClass('profile')">
+                        <span>
+                            <i class="fa fa-user"></i>&nbsp;
+                            {{loggedInuserDetails.Firstname+" "+loggedInuserDetails.LastName}}</span>
+                    </a>
+                    <li class="nested" [class.expand]="showMenu === 'profile'">
+                        <ul class="submenu">
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <span>
+                                        <i class="fa fa-fw fa-user"></i> {{ 'Profile' }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <span>
+                                        <i class="fa fa-fw fa-envelope"></i> {{ 'Inbox' }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <span>
+                                        <i class="fa fa-fw fa-gear"></i> {{ 'Settings' }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a (click)="onLoggedout()">
+                                    <span>
+                                        <i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+            </div>
+        </div>
+        <div class="toggle-button pointer" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+            <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
+            <span>{{ 'Collapse Sidebar'  }}</span>
+        </div>
+    </nav>
+</div>
+<!-- <div bsModal #customerAuthModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true" style="height:700px;position:absolute !important;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <button type="button" class="btn btn-link text-right" style="color:black;margin-right:10px;" data-dismiss="modal" (click)="close()">x</button>
+            <div class="modal-body" style="text-align: center;">
+                <i class="fa fa-warning" style="font-size:30px;color:red"></i>
+                <h4 class="modal-title pull-center">{{showHeader}}</h4>
+                <br/>
+                <h6 class="text-muted">{{showMessage}}</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="goRegister()">Register</button>
+                <button type="button" class="btn btn-success" (click)="redirectToLogin()">Login</button>
+            </div>
+        </div>
+    </div>
+</div> -->

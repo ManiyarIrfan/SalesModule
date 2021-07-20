@@ -1,0 +1,110 @@
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="page-title-box">
+                    <div class="pull-right">
+                        <ol class="breadcrumb-data">
+                            <li class="breadcrumbitem">
+                                <a href="">Home</a>
+                            </li>
+                            <li class="breadcrumbitem active">
+                                <a href="">Upload Documents</a>
+                            </li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title pt-2">Upload Documents</h4>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="main py-2">
+            <div class="row pl-3">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-7 card p-3">
+                    <form #UploadDocForm="ngForm">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>
+                                            Property Name
+                                            <span class="required">*</span>
+                                            <span class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="PropertyName" id="PropertyName"
+                                            #PropertyName="ngModel" required [(ngModel)]="uploadDocModel.PropertyName"
+                                            [class.error]="PropertyName.invalid && (PropertyName.dirty || PropertyName.touched)"
+                                            [class.has-success]="PropertyName.valid && (PropertyName.dirty || PropertyName.touched)"
+                                            required>
+                                            <option value="">Select Property</option>
+                                            <!-- <option value="Not Related To Project">Not Related To Project</option> -->
+                                            <option *ngFor="let item of selectedProjects;trackBy: trackByFn"
+                                                [hidden]="item.ProjectName === 'Common'" [value]="item.ProjectId">
+                                                {{item.ProjectName}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>Upload Document <span class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <app-community-file-upload [disabledBtn]="filesModel.length > 0"
+                                            [Type]="'Button'" [text]="'Select File'"
+                                            (getuploadedFile)="receiveimage($event)"
+                                            (removeFile)="$event===true ? this.filesModel=[] :this.filesModel"
+                                            [UploadDone]="filesModel">
+                                        </app-community-file-upload>
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>
+                                            Document Name <span class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input class="form-control textareaheight" name="DocName" #DocName="ngModel"
+                                            id="DocName" [(ngModel)]="uploadDocModel.DocName"
+                                            placeholder="Enter Document Name" autocomplete="off"
+                                            [class.error]="DocName.invalid && (DocName.dirty || DocName.touched)"
+                                            [class.has-success]="DocName.valid && (DocName.dirty || DocName.touched)"
+                                            required pattern="^[^-\s][a-zA-Z0-9,.=() ]*">
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>
+                                            Remark <span class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <textarea class="form-control textareaheight" name="Remark" #Remark="ngModel"
+                                            id="Remark" rows="6" autocomplete="off" [(ngModel)]="uploadDocModel.Remark"
+                                            placeholder="Enter Remark"
+                                            [class.error]="Remark.invalid && (Remark.dirty || Remark.touched)"
+                                            [class.has-success]="Remark.valid && (Remark.dirty || Remark.touched)"
+                                            required pattern="^[^-\s][a-zA-Z0-9,.=() ]*"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-12">
+                                        <mat-divider class="py-2"></mat-divider>
+                                        <button type="button" class="btn pull-right btn-primary px-3 py-2 ml-2 mr-2"
+                                            [disabled]="!UploadDocForm.valid || uploadDocModel.btnFlag"
+                                            (click)="onUpload(UploadDocForm)">
+                                            Submit
+                                        </button>
+                                        <button (click)="goBacktoHome()"
+                                            class="btn btn-light px-3 py-2 pull-right">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

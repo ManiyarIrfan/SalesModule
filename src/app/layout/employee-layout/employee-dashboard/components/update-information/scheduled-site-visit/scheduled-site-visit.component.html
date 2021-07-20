@@ -1,0 +1,152 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<br />
+<form #frontDeskForm="ngForm" (keydown)="enterClick($event,searchText)">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-5">
+            <div class="icon-addon addon-md">
+                <input class="form-control" name="test" [(ngModel)]="searchText" type="text" id="keyword" placeholder="Search By Name Or Email Or Mobile Number... " autocomplete="off" required autofocus>
+                <i class="fa fa-search"></i>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-primary" (click)="searchEnquiry(searchText)" [disabled]="!frontDeskForm.valid"> <i class="fa fa-search"></i> Search</button>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-6">
+            <div *ngIf="!isSpinnerActive">
+                &nbsp;
+                <div class="marginb"> <span *ngIf="enquiryException" class="required">No Data Found in Enquiry</span></div>
+                <div class="card cardfortable">
+                    <div class="title textweight text-center">
+                        <span>Presales Bucket</span>
+                    </div>
+                    <div class="table-responsive " *ngIf=" !enquiryException">
+                        <table class="table table-bordered table-hover 
+              table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>Enquiry Id</th>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Pre-Sales Agent</th>
+                                    <th>Sales Agent</th>
+                                </tr>
+                                <tbody>
+                                    <tr class="pointer" (click)="generateOpportunity(enquiryDetails)" *ngFor="let enquiryDetails of getAllPresalesLead 
+                    | paginate: {id:'enquiryDetails-pagination', 
+                    itemsPerPage: 14, currentPage: p1 };trackBy: trackByFn ">
+                                        <td>{{enquiryDetails.TEnquiryId}}</td>
+                                        <td>{{enquiryDetails.FirstName}} {{enquiryDetails.LastName}}</td>
+                                        <td> <span id="greenBtn" *ngIf="enquiryDetails.EnquiryStatus == 'incoming' || enquiryDetails.EnquiryStatus == 'prospect' || enquiryDetails.EnquiryStatus == 'Incoming' || enquiryDetails.EnquiryStatus == 'Prospect' ">{{enquiryDetails.EnquiryStatus}}</span>
+                                            <span id="yellowBtn" *ngIf="enquiryDetails.EnquiryStatus == 'hot' || enquiryDetails.EnquiryStatus == 'warm' || enquiryDetails.EnquiryStatus == 'Hot' || enquiryDetails.EnquiryStatus == 'Warm'">{{enquiryDetails.EnquiryStatus}}</span>
+                                            <span id="redBtn" *ngIf="enquiryDetails.EnquiryStatus == 'lost' || enquiryDetails.EnquiryStatus == 'unqualified'|| enquiryDetails.EnquiryStatus == 'cold' || enquiryDetails.EnquiryStatus == 'Lost' || enquiryDetails.EnquiryStatus == 'Unqualified'|| enquiryDetails.EnquiryStatus == 'Cold'">{{enquiryDetails.EnquiryStatus}}</span>
+                                        </td>
+                                        <td>{{enquiryDetails.PresalesAgentAssigned ? enquiryDetails.PresalesAgentAssigned : 'NA'}}</td>
+                                        <td>{{enquiryDetails.SalesAgentAssigned?enquiryDetails.SalesAgentAssigned:'NA'}}</td>
+                                    </tr>
+                                </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="getAllPresalesLead.length >14">
+                            <pagination-controls id="enquiryDetails-pagination" (pageChange)="p1 = $event"></pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div *ngIf="!isSpinnerActive">
+                &nbsp;
+                <div class="marginb"> <span *ngIf="referralException" class="required">No Data Found in Referral</span></div>
+                <div class="card cardfortable">
+                    <div class="title textweight text-center">
+                        <span>Sales Bucket</span>
+                    </div>
+                    <div class="table-responsive" *ngIf="!referralException">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Lead Id</th>
+                                    <th>Lead Name</th>
+                                    <th>Status</th>
+                                    <th>Pre-Sales Agent</th>
+                                    <th>Sales Agent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="pointer" (click)="openReassignModel(Referral)" *ngFor="let Referral of showReferral | paginate: { itemsPerPage: 14, currentPage: p1 };trackBy: trackByFn ">
+                                    <td>{{Referral.TReferralId}}</td>
+                                    <td>{{Referral.Name}}</td>
+                                    <td> <span [ngStyle]="{'background-color': Referral.ReferralStatus=='New'? 'green' : 'red','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{Referral.ReferralStatus}}</span>
+                                    </td>
+                                    <td>{{Referral.PresalesAgentAssigned?Referral.PresalesAgentAssigned:'NA'}}</td>
+                                    <td>{{Referral.SalesAgentAssigned}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="showReferral.length>14">
+                            <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div bsModal #leadDetailsModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #leadDetailspopForm="ngForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">Reassign Sales Agent </h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="leadDetailsModel.hide()" />
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="remark">Lead Id:</strong>
+                            <input class="form-control" id="leadid" name="leadid" [(ngModel)]="refModel.ReferralId" [disabled]=true>
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="remark">Lead Name:</strong>
+                            <input class="form-control" id="leadName" name="leadName" [(ngModel)]="refModel.Name" [disabled]=true>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="remark">Preferred Project:</strong>
+                            <select class="form-control" id="preferredproject" name="preferredproject" [(ngModel)]="refModel.PreferredProjectId">
+                <option value="">---Select---</option>
+                <option class='option' *ngFor='let proj of selectedProjectNames;trackBy: trackByFn' [value]="proj.ProjectId">
+                  {{proj.ProjectName}}
+                </option>
+              </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="remark">Current Sales Agent Name:</strong>
+                            <select class="form-control" id="salesAgentAssinged" name="salesAgentAssinged" [(ngModel)]="refModel.SalesAgentAssignedId">
+                <option value="">---Select---</option>
+                <option class='option' *ngFor='let element of employeeName;trackBy: trackByFn' [value]="element.EmployeeId">
+                  {{element.Name}}
+                </option>
+              </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer row justify-content-md-center">
+                    <button type="button" class="btn btn-primary" (click)="reassignSalesForReferral(refModel)" [disabled]="!leadDetailspopForm.form.valid">
+            <i class="fa fa-edit"></i> Save and Start SiteVisit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,36 @@
+<div class="responsive-image header-height_sub">
+    <div class="main-container">
+        <header class="subheader_pad">
+            <h2 class="text-white">Projects</h2>
+        </header>
+    </div>
+</div>
+<div class="main-container">
+    <div class="row mt-3">
+        <div class="col-sm-12 mb-3 mt-2">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let item of ProjectDetails;">
+                    <div class="card mb-5">
+                        <img src="https://images.unsplash.com/photo-1597047084897-51e81819a499?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
+                            alt="">
+                        <div class="card-info">
+                            <h2>{{item.ProjectName}}</h2>
+                            <h6
+                                [ngClass]="{'redc':item.ProjectType ===  'Commercial' , 'yellox':item.ProjectType === 'IT','ornagc':item.ProjectType === 'Plots','bluec':item.ProjectType === 'Residential' ||   'Residentiak' }">
+                                {{item.ProjectType}}</h6>
+                            <h5>{{item.Address1}}</h5>
+                            <div class="icons">
+                                <i class="fas fa-location-arrow"> <span>&nbsp;{{item.Location}}</span></i><br>
+                                <span class="paddleft12">&nbsp;{{item.City}}</span><br>
+                                <span class="paddleft12">&nbsp;{{item.State}} {{item.PinCode}}</span>
+                            </div>
+                            <!-- <span class="from">From</span> -->
+                            <span class="price"><i class="fas fa-rupee-sign"></i>{{item.Rate}}</span>
+                            <!-- <span class="person">per person</span> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

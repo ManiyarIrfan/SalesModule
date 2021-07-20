@@ -1,0 +1,203 @@
+audio {
+  height: 35px;
+}
+
+h6 {
+  margin-top: 10px;
+}
+.pointer {
+  cursor: pointer;
+}
+.text-width {
+  width: 100%;
+  border-radius: 2px;
+  border: 1px solid #d6d6d6;
+}
+::ng-deep .br-stars {
+  position: relative;
+  margin: 0px 0 !important;
+}
+
+ol {
+  // max-width: 350px;
+  counter-reset: my-awesome-counter;
+  list-style: none;
+  padding-left: 40px;
+}
+ol li {
+  margin: 0 0 0.5rem 0;
+  counter-increment: my-awesome-counter;
+  position: relative;
+}
+ol li::before {
+  content: counter(my-awesome-counter);
+  color: #ffffff;
+  font-size: 1rem;
+  //font-weight: bold;
+  position: absolute;
+  --size: 26px;
+  left: calc(-1 * var(--size) - 10px);
+  line-height: var(--size);
+  width: var(--size);
+  height: var(--size);
+  top: 0;
+  //transform: rotate(-10deg);
+  background: #05799c;
+  border-radius: 50%;
+  text-align: center;
+  box-shadow: 1px 1px 0 #999;
+}
+::ng-deep .br-stars .br-unit {
+  height: 22px;
+  width: 22px;
+}
+.input-size {
+  width: 58% !important;
+  height: calc(1.5em + 0rem + 2px) !important;
+}
+@media (min-width: 1200px) {
+  .modal-xl {
+    max-width: 1000px !important;
+  }
+}
+.scroll-bar {
+  overflow: auto;
+  max-height: 500px;
+}
+.tag-height scrollbar
+{
+  height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+.countpad {
+  padding: 6px 15px 0px 0px;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: calc(2.5rem + -3px);
+}
+
+.btn-pading {
+  padding-top: 27px;
+}
+
+.text-center {
+  color: green;
+  text-align: center;
+}
+.Answer
+{
+  color:black;
+  // background-color: cadetblue;
+  font-size:medium;
+}
+.Tagtwo
+{
+  font-size:medium;
+}
+
+//  .hr {
+//     margin: 20px 0;
+//     border: 1px solid #f00;
+// }
+
+.Tag
+{
+  color:black;
+  font-size:medium;
+}
+.fontsize {
+  font-size: large;
+}
+
+.fontsizecolor {
+  font-size: large;
+  color: #cc0000;
+}
+
+.btn-link {
+  padding-top: 0;
+}
+.modal-header {
+  padding: 1rem 1rem !important;
+}
+
+.modal-title {
+  color: white;
+  line-height: 0.5;
+}
+.badge {
+  font-size: 17px;
+}
+
+.tag-height {
+  height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.option {
+  height: 35px;
+  padding: 1px 20px;
+}
+
+#model-content {
+  width: 77em;
+}
+
+::ng-deep body .ui-dropdown-panel .ui-dropdown-items .ui-dropdown-item,
+body .ui-dropdown-panel .ui-dropdown-items .ui-dropdown-item-group {
+  margin: 0px;
+  padding: 0.429em 0.857em;
+  position: relative;
+  z-index: 999;
+  width: 100% !important;
+}
+
+::ng-deep .ui-select-choices {
+  position: fixed;
+  z-index: 1;
+  top: auto;
+  left: auto;
+  display: block;
+  position: relative;
+  background: rgb(255, 255, 255);
+}
+
+input[type="radio"] {
+  transform: scale(1.4);
+}
+
+/* styling the spans adjacent to the radio inputs: */
+input[type="radio"] + span {
+  display: inline-block;
+  margin: 0 0.5em;
+}
+/* styling the span following the checked radio: */
+input[type="radio"]:checked + span {
+  background-color: rgb(7, 133, 122);
+  color: white;
+}
+/* defining the height/width for the span-radio: */
+.radio1 {
+  padding-left: 1px;
+}
+.text-size {
+  font-size: 0.9rem;
+  font-weight: bolder;
+}
+.font-size {
+  font-size: medium;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: calc(2.5rem + -3px);
+}
+.close-button {
+  margin: -4% auto ;
+}
+
+
+

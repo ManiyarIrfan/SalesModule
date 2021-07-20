@@ -1,0 +1,155 @@
+@import url(../../../styles/finance.scss);
+
+.tt-logo img {
+    max-width: 55px !important;
+}
+
+.mar8 {
+    margin-top: 8px;
+}
+
+.mar13 {
+    margin-top: 13px;
+}
+.mar16 {
+    margin-top: 16px;
+}
+
+// .padding-header {
+//     padding: 0 150px;
+// }
+
+// @media screen and (min-width: 480px) {
+//     .padding-header {
+//         padding: 0 5px;
+//     }
+
+//     .footer {
+//         padding: 0px 5px;
+//         position: fixed;
+//     }
+// }
+
+@media (min-width: 480px) {
+    .padding-header {
+        padding: 0 5px;
+    }
+
+    .footer {
+        padding: 0px 5px;
+        position: fixed;
+    }
+}
+
+// @media screen and (min-width: 1024px) {
+//     .padding-header {
+//         padding: 0 150px;
+//     }
+// }
+
+.btn-primary {
+    border-color: transparent !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.btn {
+    border-radius: 1px !important;
+}
+
+@media (max-width: 1920px) {
+    .footer {
+        border-top: 1px solid #e8ebf3;
+        bottom: 0;
+        padding: 20px;
+        position: absolute;
+        right: 0;
+        left: 0;
+        color: #7081b9;
+        padding: 10px 150px;
+        position: fixed;
+    }
+}
+.moduleheight {
+    height: 110vh;
+    background: #edf0f5;
+    font-family: "Poppins", sans-serif !important;
+}
+
+::ng-deep {
+    .mat-menu-item-highlighted:not([disabled]),
+    .mat-menu-item.cdk-keyboard-focused:not([disabled]),
+    .mat-menu-item.cdk-program-focused:not([disabled]),
+    .mat-menu-item:hover:not([disabled]) {
+        color: white;
+        background-color: black;
+    }
+    .mat-menu-content:not(:empty) {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+
+    .mat-menu-panel {
+        min-width: 112px;
+        max-width: 300px !important;
+        margin-left: -3em !important;
+    }
+
+    .mat-menu-panel {
+        min-width: 154px;
+        max-width: 280px !important;
+        overflow: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        /* max-height: calc(104vh - 58px); */
+        border-radius: 4px;
+        outline: 0;
+        min-height: 74px;
+        // margin-top: 1.5em !important;
+        margin-top: 1em !important;
+        margin-right: 1em !important;
+    }
+}
+
+// .profile_dropdown:hover {
+//     border: 2px solid #4a54c5;
+//     color: #131313;
+//     border-radius: 5px;
+//     background-color:gray;
+// }
+
+.zoomLayout {
+    zoom: 90%;
+}
+
+#tt-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    // background-color: #444444;
+    background-image: linear-gradient(#232526, #414345) !important;
+    border-bottom: 1px solid #e2e7ea;
+    z-index: 17;
+}
+
+.tt-desktop-menu nav > ul > li > a {
+    font-size: 16px;
+    line-height: 30px;
+    color: #f0efec !important;
+    font-weight: 500;
+    padding: 0px 15px;
+    display: inline-block;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    -webkit-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+}
+
+.tt-desktop-menu nav > ul > li > a span:before {
+    background-color: #252525 !important;
+    -webkit-transition: width 0.2s linear;
+    transition: width 0.2s linear;
+    bottom: -5px !important;
+    height: 3px !important;
+}

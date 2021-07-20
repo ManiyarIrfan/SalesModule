@@ -1,0 +1,56 @@
+<div class="row p-4">
+    <div class="col-sm-12 mb-2">
+        <h5><strong>New Question Or Discussion</strong></h5>
+        <hr>
+    </div>
+    <div class="col-sm-12 p-2">
+        <label for="exampleForm2">Discussion Topic :</label>
+        <input autocomplete="off" required type="text" id="subject" name="subject" #subject="ngModel"
+            class="form-control" [(ngModel)]="newDiscussionModel.Subject">
+    </div>
+    <div class="col-sm-12 p-2">
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="exampleForm2">Project :</label>
+                <select class="browser-default custom-select" [(ngModel)]="newDiscussionModel.ProjectId"
+                    name="ProjectId" [class.error]="ProjectId.invalid && ProjectId.touched"
+                    [class.has-success]="ProjectId.valid" #ProjectId="ngModel">
+                    <option selected>Select Project</option>
+                    <option *ngFor="let item of ProjectsNames;trackBy:trackByFn;" [value]="item.ProjectId">
+                        {{item.ProjectName}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <label for="exampleForm2">Field Type :</label>
+                <select class="browser-default custom-select">
+                    <option selected>Select Filed Type</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 p-2">
+        <label for="exampleForm2">Discussion :</label>
+        <ckeditor [(ngModel)]="newDiscussionModel.Message" [config]="ckeConfig" debounce="500" name="Message"
+            #myckeditor>
+        </ckeditor>
+    </div>
+    <div class="col-sm-5 mt-2 mb-2">
+        <app-community-file-upload [Type]="'NewDiscussion'" (getuploadedFile)="receiveimage($event)" [UploadDone]="UploadDone">
+        </app-community-file-upload>
+    </div>
+    <div class="col-sm-7 mt-2  mb-2">
+        <button (click)="insertDiscussion(newDiscussionModel)" type="button"
+            [disabled]="!newDiscussionModel.Message || !newDiscussionModel.Subject || disableButton"
+            class="btn btnstyle btnpost btn-sm pull-right">
+            &nbsp;&nbsp;Post&nbsp;&nbsp;
+        </button>
+        <button type="button" class="btn btnstyle  btn-sm pull-right">
+            Cancel
+        </button>
+        <span class="pull-right responseMsg {{messageRes['css']}}">{{messageRes['msg']}}</span>
+    </div>
+</div>

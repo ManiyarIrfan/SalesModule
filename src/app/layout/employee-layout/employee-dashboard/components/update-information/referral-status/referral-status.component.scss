@@ -1,0 +1,252 @@
+.custom-day {
+    text-align: center;
+    padding: 0.185rem 0.25rem;
+    display: inline-block;
+    height: 2rem;
+    width: 2rem;
+}
+.SVHOT {
+    //color: rgb(245, 9, 9);
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(355, 92%, 53%);
+}
+.svs {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: rgb(255, 251, 15);
+}
+.svd {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(131, 85%, 49%);
+}
+.Lost {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: rgb(117, 61, 122);
+}
+.New {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(324, 76%, 6%);
+}
+.Negotiation{
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(357, 67%, 56%);
+}
+.Booked {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(241, 78%, 49%);
+}
+.warm {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(17, 83%, 50%);
+}
+.cold {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(184, 73%, 46%);
+}
+.EOISubmitted{
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(347, 76%, 52%);
+}
+.AssignedtoPresales{
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsla(197, 89%, 17%, 0.281);
+}
+.ContactEstablish{
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsla(160, 100%, 54%, 0.897);
+}
+.custom-day.range,
+.custom-day:hover {
+    background-color: rgb(2, 117, 216);
+    color: white;
+}
+
+.custom-day.faded {
+    background-color: rgba(2, 117, 216, 0.5);
+}
+
+.modal-content {
+    width: 150%;
+}
+
+.bdyalign {
+    line-height: 2.5;
+}
+
+.icon-addon.addon-md .fa,
+.icon-addon .fa {
+    top: 28px !important;
+}
+
+.modal-header {
+    background-color: #33b5e5;
+}
+
+.modal-title {
+    color: white;
+}
+
+.far {
+    font-size: 20px;
+}
+
+.fa {
+    font-size: 20px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.padding_Btn {
+    padding-top: 22px;
+}
+
+.badge-danger {
+    color: white;
+    padding: 4px;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: red;
+}
+
+.badge-warning {
+    color: white;
+    padding: 4px;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: orangered;
+}
+
+.badge-success {
+    color: white;
+    padding: 4px;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: green;
+}
+
+.badge-default {
+    color: white;
+    padding: 4px;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: grey;
+}
+
+.badge-primary {
+    color: white;
+    padding: 4px;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: blue;
+}
+
+.badge-info {
+    color: white;
+    padding: 4px;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #2BBBAD;
+}
+
+.fontsize {
+    font-size: larger;
+}
+
+.fontsizecolor {
+    font-size: larger;
+    color: #cc0000;
+}
+
+@media (min-width: 500px) {
+    .modal-lg {
+        max-width: 600px;
+    }
+}
+
+.heading {
+    margin-left: unset;
+}
+
+.confirmModel {
+    max-width: 400px;
+}
+
+.time {
+    padding: 0.8em !important;
+}
+
+.id-width {
+    min-width: 70px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.name-width {
+    min-width: 100px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.btn {
+    border-radius: 20px;
+}
+
+.modal-title {
+    margin-left: 335px;
+    color: white;
+}
+
+.modal-title {
+    margin-left: 360px;
+    color: white;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1px;
+}
+
+// .modal-header {
+//   height: 10px;
+// }

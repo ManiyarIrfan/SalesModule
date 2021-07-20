@@ -1,0 +1,192 @@
+<form #AgreementStatusForm="ngForm">
+    <div class="row">
+        <div class="col-sm-3">
+            <strong for="BookingDate"> Booking Date :</strong>
+            <input [disabled]="isDisableOnSearchOrder" type="date" dateFormatPipe [max]="getToday()" class="form-control" id="BookingDate"
+                name="BookingDate" [(ngModel)]="orderModel.BookingDate" [class.error]="bookingDate.invalid && bookingDate.touched"
+                [class.has-success]="bookingDate.valid" #bookingDate="ngModel">
+        </div>
+        <div class="col-sm-3">
+            <strong for="AgreementStatus">
+                <span class="required">*</span> Agreement Status :</strong>
+            <select type="text" class="form-control" id="AgreementStatus" name="AgreementStatus" [(ngModel)]="agreementStatusModel.AgreementStatus"
+                placeholder="Enter Agreed Status..." [class.error]="AgreementStatus.invalid && AgreementStatus.touched" [class.has-success]="AgreementStatus.valid"
+                #AgreementStatus="ngModel" (change)="onChangeAgreementStatus($event.target.value)" required [disabled]="disableFields">
+                <option value="">---Select Agreement Status---</option>
+                <option *ngFor="let status of AgreementStatusList" [value]="status.value">{{status.value}}</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <strong for="AgreementDate">
+                <span class="required" *ngIf="Mandetory">*</span>
+                Registration Date :</strong>
+            <input type="date" [max]="getToday()" [disabled]="disableFields" class="form-control" id="AgreementDate" name="AgreementDate"
+                [(ngModel)]="agreementStatusModel.AgreementDate" [class.error]="AgreementDate.invalid && AgreementDate.touched"
+                [class.has-success]="AgreementDate.valid" #AgreementDate="ngModel" [required]="Mandetory">
+        </div>
+        <div class="col-sm-3">
+            <strong for="RegistrationNo">
+                <span class="required" *ngIf="Mandetory">*</span>Registration Number :</strong>
+            <input type="text" class="form-control" id="RegistrationNo" name="RegistrationNo" [disabled]="disableFields" [(ngModel)]="agreementStatusModel.RegistrationNo"
+                placeholder="Enter Registration Number..." #RegistrationNo="ngModel" pattern="^[^-\s][a-zA-Z0-9 ]*" [class.error]="RegistrationNo.invalid && RegistrationNo.touched"
+                [class.has-success]="RegistrationNo.valid" [required]="Mandetory">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <strong for="CorrespondenceAddress"> Correspondence Address :</strong>
+            <textarea type="text" class="form-control input-underline textarea-lg" id="CorrespondenceAddress" name="CorrespondenceAddress"
+                [(ngModel)]="agreementStatusModel.CorrespondenceAddress" placeholder="Enter Correspondence Address..." #CorrespondenceAddress="ngModel"
+                [class.error]="CorrespondenceAddress.invalid && CorrespondenceAddress.touched" [class.has-success]="CorrespondenceAddress.valid"></textarea>
+        </div>
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="col-sm-4 mt-4">
+                    <strong>Upload Agreement :</strong>
+                </div>
+                <div class="col-sm-8 mt-4">
+                    <tru-file-upload [accept]="'.png,.PNG,.jpeg,.JPEG,.jpg,.JPG,.tiff,.TIFF,.tif,.TIF,.pdf,.PDF,.doc,.DOC'" [(inputFiles)]="uploadFileAgreement"
+                        [multiple]="false">
+                    </tru-file-upload>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="col-sm-4 mt-4">
+                    <strong>Upload NOC :</strong>
+                </div>
+                <div class="col-sm-8 mt-4">
+                    <tru-file-upload [accept]="'.png,.PNG,.jpeg,.JPEG,.jpg,.JPG,.tiff,.TIFF,.tif,.TIF,.pdf,.PDF,.doc,.DOC'" [(inputFiles)]="uploadFileNOC"
+                        [multiple]="false">
+                    </tru-file-upload>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="col-sm-4 mt-4">
+                    <strong>Upload Parking Location :</strong>
+                </div>
+                <div class="col-sm-8 mt-4">
+                    <tru-file-upload [accept]="'.png,.PNG,.jpeg,.JPEG,.jpg,.JPG,.tiff,.TIFF,.tif,.TIF,.pdf,.PDF,.doc,.DOC'" [(inputFiles)]="uploadFileParkLocation"
+                        [multiple]="false">
+                    </tru-file-upload>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <strong for="parking">Parking 1 :</strong>
+            <input class="form-control" id="Parking" name="Parking" [(ngModel)]="agreementStatusModel.ParkingId1" #Parking="ngModel"
+                [class.error]="Parking.invalid && Parking.touched" pattern="\d*" [class.has-success]="Parking.valid">
+        </div>
+        <div class="col-sm-3">
+            <strong for="parkLocation">ParkLocation:</strong>
+            <input type="text" #parkLocation="ngModel" class="form-control" id="parkLocation" name="parkLocation" [(ngModel)]="agreementStatusModel.Location1"
+                placeholder="Location..." [class.error]="parkLocation.invalid && parkLocation.touched" [class.has-success]="parkLocation.valid">
+        </div>
+        <div class="col-sm-3">
+            <strong for="parkingno">Parking 2 :</strong>
+            <input class="form-control" id="parkingno" name="parkingno" [(ngModel)]="agreementStatusModel.ParkingId2" #parkingno="ngModel"
+                [class.error]="parkingno.invalid && parkingno.touched" pattern="\d*" [class.has-success]="parkingno.valid">
+        </div>
+        <div class="col-sm-3">
+            <strong for="parkingLocation">Parking Location:</strong>
+            <input type="text" #parkingLocation="ngModel" class="form-control" id="parkingLocation" name="parkingLocation" [(ngModel)]="agreementStatusModel.Location2"
+                placeholder="Location..." [class.error]="parkingLocation.invalid && parkingLocation.touched" [class.has-success]="parkingLocation.valid">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <strong for="Remarks">Remarks :</strong>
+            <textarea type="text" rows="7" #remarks="ngModel" class="form-control" id="Remarks" name="Remarks" [(ngModel)]="agreementStatusModel.newRemarks"
+                placeholder="Enter Remarks..." [class.error]="remarks.invalid && remarks.touched" [class.has-success]="remarks.valid"></textarea>
+        </div>
+        <div class="col-sm-6">
+            <strong for="preRemarks">Previous Remarks :</strong>
+            <textarea type="text" rows="7" #preRemarks="ngModel" class="form-control" id="preRemarks" name="preRemarks" [(ngModel)]="agreementStatusModel.Remarks"
+                placeholder="Previous Remarks..." [disabled]="true"></textarea>
+        </div>
+        <div class="col-sm-3">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">
+                    View Documents
+                </legend>
+                <ul class="list-group" *ngIf="orderModel.AgreementFile!==null || orderModel.NOCFile!==null || orderModel.ParkingFile!==null">
+                    <li class="list-group-item" *ngIf="orderModel.AgreementFile!==null">
+                        <section class="pull-left" ngbTooltip="view document" placement="top" (click)="OpenFile(orderModel.AgreementFile)">
+                            <img class="responsive img-size" src="../../../../../../../assets/images/archives.png" alt="Agreement" /> &nbsp;
+                            <strong>Agreement</strong>
+                        </section>
+                    </li>
+                    <li class="list-group-item" *ngIf="orderModel.NOCFile!==null">
+                        <section class="pull-left" ngbTooltip="view document" placement="top" (click)="OpenFile(orderModel.NOCFile)">
+                            <img class="responsive img-size" src="../../../../../../../assets/images/archives.png" alt="NOC" /> &nbsp;
+                            <strong>NOC</strong>
+                        </section>
+                    </li>
+                    <li class="list-group-item" *ngIf="orderModel.ParkingFile!==null">
+                        <section class="pull-left" ngbTooltip="view document" placement="top" (click)="OpenFile(orderModel.ParkingFile)">
+                            <img class="responsive img-size" src="../../../../../../../assets/images/archives.png" alt="Parking" /> &nbsp;
+                            <strong>Parking</strong>
+                        </section>
+                    </li>
+                </ul>
+                <div class="col-sm-12 text-center" *ngIf="orderModel.AgreementFile===null && orderModel.NOCFile===null && orderModel.ParkingFile===null">
+                    <strong class="text-danger">No Documents Uploaded</strong>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <br />
+    <div class="row justify-content-md-center">
+        <!-- <h6 class="notfoundmsg">Please Fill All Mandatory Fields ( with * marks) To Enable Button.</h6> -->
+        <!-- <button type="button" id="submit" name="submit" value="Submit" class="btn btn-primary"
+            *ngIf="agreementStatusModel.AgreementStatus==='Registration Done'" (click)="updateAgreementDetails()"
+            [disabled]="!AgreementStatusForm.form.valid ">Update</button> -->
+        <button type="button" id="submit" name="submit" value="Submit" class="btn btn-primary" (click)="OnUpdateBtnClick()" [disabled]="!AgreementStatusForm.form.valid ">Update</button>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-sm-12">
+            <div [hidden]="!isLoadingAgreementSubmitMessage">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row justify-content-md-center">
+        <div class="alert alert-success" *ngIf="showAgreementSuccessfullMessage!==''" role="alert">
+            <h4>
+                <i class="fa fa-check"></i> {{showAgreementSuccessfullMessage}}</h4>
+        </div>
+        <div class="alert alert-warning" *ngIf="showAgreementUnSuccessfullMessage!==''" role="alert">
+            <h4>
+                <i class="fa fa-times-circle"></i> {{showAgreementUnSuccessfullMessage}}</h4>
+        </div>
+    </div>
+</form>
+
+<!-- Modal Pop up For Agreement Details -->
+<!-- <div bsModal #confirmAgeementModal="bs-modal" cdkDrag class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">
+                    <strong>Are You Sure ?</strong> </h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="confirmAgeementModal.hide()" />
+            </div>
+            <div class="modal-body text-center">
+                <h4> <strong> Amount : {{orderDetails.IncentiveValue}} &#8377; will be transferred to CP/CRO's wallet
+                        and available for online transfer to his/her bank account. </strong></h4>
+                <h4><strong>You want to proceed with this transaction? </strong></h4>
+                <button class="btn btn-success btn-md" (click)="OnUpdateBtnClick()">Confirm</button>
+                <button class="btn btn-danger btn-md" (click)="confirmAgeementModal.hide()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div> -->

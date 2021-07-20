@@ -1,0 +1,293 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<form #referralGenerationForm="ngForm" (keydown.enter)="$event.preventDefault()" *ngIf="!isSpinnerActive">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4 class="heading">Lead Information</h4> <br>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <strong for="refFirst">
+                                <span class="required">*</span>Lead Name :</strong>
+                            <input type="text" class="form-control" id="refFirst" name="refFirst" #refFirst="ngModel"
+                                [class.error]="refFirst.invalid && refFirst.touched"
+                                [class.has-success]="refFirst.valid" pattern="^[a-zA-Z ]*"
+                                [(ngModel)]="refModel.refFirst" placeholder="Enter Name..." required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="refMobileNo">
+                                <span class="required">*</span>Mobile Number :</strong>
+                            <input type="tel" (blur)="getMobileValidation(refModel.refMobileNo)"
+                                [class.error]="refMobileNo.invalid && refMobileNo.touched"
+                                [class.has-success]="refMobileNo.valid" pattern="^\d{10}$"
+                                [ngClass]="isMobileAvailable?'textBox':''" class="form-control input-underline"
+                                id="refMobileNo" name="refMobileNo" required [(ngModel)]="refModel.refMobileNo"
+                                placeholder="Enter Mobile Number..." #refMobileNo="ngModel" minlength=10 maxlength=10>
+                            <div *ngIf="refMobileNo.errors && (refMobileNo.dirty || refMobileNo.touched)"
+                                class="alert alert-danger">
+                                <div [hidden]="!refMobileNo.errors.required">
+                                    mobile number is required!
+                                </div>
+                                <div [hidden]="!refMobileNo.errors.pattern">
+                                    Please select valid mobile number!
+                                </div>
+                            </div>
+                            <span [hidden]="isMobileAvailable" class="text-danger">{{showmobile}}</span>
+                            <!-- <span [hidden]="!isMobileAvailable" class="green">{{showmobile}}</span> -->
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="refLandline">Alternate Mobile Number :</strong>
+                            <input type="tel" class="form-control" id="refLandline" name="refLandline"
+                                pattern="^[0-9, ]+( [0-9, ]+)*$"
+                                [class.error]="refLandline.invalid && refLandline.touched"
+                                [class.has-success]="refLandline.valid" [(ngModel)]="refModel.refLandline"
+                                placeholder="Enter Alternate Mobile Number..." #refLandline="ngModel">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="refEmail">
+                                <span class="required">*</span>Email ID :</strong>
+                            <input type="email" (blur)="getEmailValidation(refModel.refEmail)"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$"
+                                class="form-control input-underline" id="refEmail" name="refEmail"
+                                [class.error]="refEmail.invalid && refEmail.touched"
+                                [class.has-success]="refEmail.valid" [ngClass]="isEmailAvailable?'textBox':''" required
+                                [(ngModel)]="refModel.refEmail" placeholder="email@abc.com" #refEmail="ngModel">
+                            <div *ngIf="refEmail.errors && (refEmail.dirty || refEmail.touched)"
+                                class="alert alert-danger">
+                                <div [hidden]="!refEmail.errors.required">
+                                    email is required!
+                                </div>
+                                <div [hidden]="!refEmail.errors.pattern">
+                                    Please enter valid email!
+                                </div>
+                            </div>
+                            <span [hidden]="isEmailAvailable" class="required">{{showemail}}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="refOccupation">Occupation :</strong>
+                            <select type="text" class="form-control" id="refOccupation" name="refOccupation"
+                                [(ngModel)]="refModel.refOccupation" placeholder="Enter Preferred Communication...">
+                                <option value="">--select--</option>
+                                <option *ngFor="let occupation of OccupationInfo;trackBy: trackByFn"
+                                    [value]="occupation.value">
+                                    {{occupation.value}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="possession">
+                                <span class="required"></span>Possession :</strong>
+                            <input type="text" class="form-control" id="possession" name="possession"
+                                [class.error]="possession.invalid && possession.touched"
+                                [class.has-success]="possession.valid" [(ngModel)]="refModel.Possession"
+                                placeholder="Enter possession eg.1month" #possession="ngModel"
+                                pattern="^[^-\s][a-zA-Z0-9 ]*">
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="refCity">
+                                <span class="required">*</span>City :</strong>
+                            <input type="text" class="form-control" id="refCity" name="refCity"
+                                [class.error]="refCity.invalid && refCity.touched" [class.has-success]="refCity.valid"
+                                pattern="^[^-\s][a-zA-Z ]*" [(ngModel)]="refModel.refCity" placeholder="Enter City..."
+                                required #refCity="ngModel">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h4 class="heading">Requirement : </h4>
+                <br>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="requireType">
+                                <span class="required">*</span>Type Of Requirement :</strong>
+                            <select class="form-control" id="requireType" name="requireType"
+                                [class.error]="requireType.invalid && requireType.touched"
+                                [class.has-success]="requireType.valid" [(ngModel)]="refModel.requireType" required
+                                #requireType="ngModel" (click)="onChangeSelect($event.target.value)"
+                                placeholder="Type Of Requirement">
+                                <option value="">--select--</option>
+                                <option *ngFor="let type of RequirementInfo;trackBy: trackByFn" [value]="type.value">
+                                    {{type.value}}
+                                </option>
+                            </select>
+                        </div>
+                        <ng-container>
+                            <div class="col-sm-6" *ngIf="refModel.requireType==='Residential'">
+                                <strong for="bhk">
+                                    <span class="required">*</span>BHK/Other Options:</strong>
+                                <select class="form-control" id="bhk" name="bhk" [(ngModel)]="refModel.bhk"
+                                    placeholder="BHK" required #option="ngModel"
+                                    [class.error]="option.invalid && option.touched" [class.has-success]="option.valid">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let type of BhkInfo;trackBy: trackByFn" [value]="type.value">
+                                        {{type.value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </ng-container>
+                        <ng-container>
+                            <div class="col-sm-6" *ngIf="refModel.requireType==='Commercial'">
+                                <strong for="comm_options">
+                                    <span class="required">*</span>Options :</strong>
+                                <select class="form-control" id="comm_options" name="comm_options"
+                                    [(ngModel)]="refModel.comm_options" placeholder="Options" required #option="ngModel"
+                                    [class.error]="option.invalid && option.touched" [class.has-success]="option.valid">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let type of CommercialInfo;trackBy: trackByFn" [value]="type.value">
+                                        {{type.value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </ng-container>
+                        <ng-container>
+                            <div class="col-sm-6" *ngIf="refModel.requireType==='IT Park'">
+                                <strong for="it_options">
+                                    <span class="required">*</span>Options :</strong>
+                                <select class="form-control" id="it_options" name="it_options"
+                                    [(ngModel)]="refModel.it_options" placeholder="Options" required #option="ngModel"
+                                    [class.error]="option.invalid && option.touched" [class.has-success]="option.valid">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let type of IT_ParkInfo;trackBy: trackByFn" [value]="type.value">
+                                        {{type.value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="budget">
+                                <span class="required">*</span>Budget : (In Lacs)</strong>
+                            <select type="text" class="form-control" id="budget" name="budget"
+                                [class.error]="budget.invalid && budget.touched" [class.has-success]="budget.valid"
+                                [(ngModel)]="refModel.budget" placeholder="Enter Budget..." required #budget="ngModel">
+                                <option value="">--select--</option>
+                                <option *ngFor="let budgets of BudgetInfo;trackBy: trackByFn" [value]="budgets.value">
+                                    {{budgets.value}} &#8377;
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="preCity">
+                                <span class="required">*</span>Preferred City :</strong>
+                            <select type="text" class="form-control" id="preCity" name="preCity"
+                                [class.error]="preCity.invalid && preCity.touched" [class.has-success]="preCity.valid"
+                                pattern="[a-zA-Z ]*" [(ngModel)]="refModel.preCity" required #preCity="ngModel"
+                                (change)="GetPreferedAreaByCity($event.target.value)" placeholder="Preferred City">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of preferredCityInfo;trackBy: trackByFn" [value]="item.value">
+                                    {{item.value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="preArea">
+                                <span class="required">*</span>Preferred Area</strong>
+                            <select type="text" class="form-control" id="preArea" name="preArea" required
+                                [(ngModel)]="refModel.PreferredArea"
+                                (change)="GetPreferedProjectByArea($event.target.value)" placeholder="Preferred Area">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of PreferredAreaInfo;trackBy: trackByFn"
+                                    [value]="item.Location">
+                                    {{item.Location}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="preProject">
+                                <span class="required">*</span>Preferred Project :</strong>
+                            <select type="text" class="form-control" id="preProject" name="preProject" required
+                                [(ngModel)]="refModel.PreferredProject" placeholder="Preffered Project">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of PreferredProjectInfo;trackBy: trackByFn"
+                                    [value]="item.ProjectName">
+                                    {{item.ProjectName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <strong for="refAddress1">Other Info :</strong>
+                                <textarea type="text" class="form-control" id="refAddress1" name="refAddress1"
+                                    [(ngModel)]="refModel.refAddress1" #refAddress1="ngModel"
+                                    pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*"
+                                    [class.error]="refAddress1.invalid && refAddress1.touched"
+                                    [class.has-success]="refAddress1.valid"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <h4 class="heading">Site Visit :</h4>
+                <div class="form-group">
+                    <strong for="visitSite">Do you want to Schedule site visit : </strong>
+                    <strong class="radio-inline">
+                        <input type="radio" name="visitSite" (click)="changeVisitSite('yes')"
+                            [(ngModel)]="refModel.visitSite" value="yes" checked>Yes
+                    </strong>
+                    <strong class="radio-inline">
+                        <input type="radio" name="visitSite" (click)="changeVisitSite('no')"
+                            [(ngModel)]="refModel.visitSite" value="no">No
+                    </strong>
+                </div>
+                <ng-container *ngIf="showGroup">
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <strong for="preDate">
+                                <span class="required">*</span>Preferred Date :</strong>
+                            <input class="form-control" required name='preDate' id='preDate' type='date' dateFormatPipe
+                                max='2050-01-01' [min]="getToday()" [(ngModel)]="refModel.preDate"
+                                pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                                #predate="ngModel" [class.error]="predate.invalid && predate.touched"
+                                [class.has-success]="predate.valid">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <strong for="preTime">Preferred Time :</strong>
+                            <input class="form-control" value="{{selectedTime}}" name="time1" id="time1" min="08:00:AM"
+                                max="20:00:PM" (click)="openClock()" />
+                            <span class="hours">Office hours: 8AM to 8PM</span>
+                        </div>
+                    </div>
+                </ng-container>
+                <div align="center">
+                    <h6 class="notfoundmsg">Please Fill All Mandatory Fields ( with * marks) To Enable Button.
+                    </h6>
+                    <button type="button" (click)="OnInsertBtnClick(refModel,referralGenerationForm)"
+                        [disabled]="!referralGenerationForm.form.valid || !isMobileAvailable || !isEmailAvailable"
+                        class="btn btn-primary">
+                        <i class="fa fa-paper-plane"></i> Submit</button>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

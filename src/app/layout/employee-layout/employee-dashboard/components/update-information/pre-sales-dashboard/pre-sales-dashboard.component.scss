@@ -1,0 +1,114 @@
+.heading {
+  font-size: 1.1rem;
+  margin-top: 10px;
+  color: white;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 1000px;
+    max-height: 1000px;
+  }
+}
+
+.center {
+  margin: 0;
+  background-color: transparent;
+  text-align: center;
+  margin-top: 20px;
+  float: none;
+}
+
+.custom-day {
+  text-align: center;
+  padding: 0.185rem 0.25rem;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+}
+
+.custom-day.focused {
+  background-color: #e6e6e6;
+}
+
+.custom-day.range,
+.custom-day:hover {
+  background-color: rgb(2, 117, 216);
+  color: white;
+}
+
+.custom-day.faded {
+  background-color: rgba(2, 117, 216, 0.5);
+}
+
+.modal-header {
+  background-color: #33b5e5;
+  cursor: pointer;
+}
+
+.modal-title {
+  margin-left: 335px;
+  color: white;
+}
+.modal-title {
+  margin-left: 367px;
+  color: white;
+  font-size: 19px;
+  font-weight: 400;
+}
+
+.btn-sm {
+  font-size: initial;
+}
+.modal-title {
+  margin-bottom: 0;
+  line-height: 0.5;
+}
+.col-sm-3,
+.col-sm-4,
+.col-sm-2 {
+  margin-right: 0.4em;
+}
+
+@media (min-width: 576px) {
+  .col-sm-3 {
+    flex: 0 0 25%;
+    max-width: 23%;
+  }
+}
+
+@media (min-width: 576px) {
+  .col-sm-4 {
+    flex: 0 0 33.33333333%;
+    max-width: 31.333333%;
+  }
+}
+@media (min-width: 576px) {
+  .col-sm-2 {
+    flex: 0 0 16.66666667%;
+    max-width: 15.666667%;
+  }
+}
+.redColor {
+  color: #cc0000;
+  font-size: 2.8rem;
+}
+.greenColor {
+  color: #007e33;
+  font-size: 2.8rem;
+}
+.orangeColor {
+  color: #ff8800;
+  font-size: 2.8rem;
+}
+.exportbtn {
+  border: 1px solid white;
+  padding: 5px 5px;
+  margin: 2px 5px;
+  border-radius: 14px;
+  vertical-align: middle !important;
+}
+
+.textAlign {
+  vertical-align: middle !important;
+}

@@ -1,0 +1,338 @@
+<div class="row">
+  <div class="container">
+    <ngb-tabset type="pills">
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <b> <i class="fa fa-user"></i>Lead Details</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <hr class="style13">
+          <form #leadDetailsForm="ngForm">
+            <div class="row">
+              <div class="col-sm-6">
+                <strong for="source"><i class="fa fa-id-card"></i> Source :</strong>
+                <input type="text" class="form-control" name="source" id="source" [disabled]="true"
+                  [(ngModel)]="leadinfoDetails.Source">
+              </div>
+              <div class="col-sm-5">
+                <strong for="remark">Sales Agent:</strong>
+                <select class="form-control" id="salesAgentAssinged" name="salesAgentAssinged"
+                  [(ngModel)]="leadinfoDetails.SalesAgentAssignedId" [disabled]="dsbSalesAgent">
+                  <option value="">---Select---</option>
+                  <option class='option' *ngFor='let emp of salesEmployeesName;trackBy: trackByFn;'
+                    [value]="emp.EmployeeId"> {{emp.Name}}</option>
+                </select>
+              </div>
+              <div class="col-sm-1">
+                <br>
+                <button class="btn btn-primary" *ngIf="dsbSalesAgent" (click)="dsbSalesAgent = false"><i
+                    class="fa fa-edit"></i></button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <strong for="stageChanges"><span class="required">*</span>Referral Status</strong>
+                <select class="form-control" id="referralStatusDDL" name="referralStatusDDL"
+                  #referralStatusDDL="ngModel" required [(ngModel)]="leadinfoDetails.ReferralStatus">
+                  <option value="">---Select---</option>
+                  <option class='option' *ngFor='let status of StatusInfo;trackBy: trackByFn;' [value]="status.key">
+                    {{status.value}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6"
+                *ngIf="leadinfoDetails.ReferralStatus ==='Site Visit Scheduled' || leadinfoDetails.ReferralStatus==='Site Visit Done'">
+                <strong for="remark">Project Name:</strong>
+                <select class="form-control" id="projectVisited" name="projectVisited"
+                  [(ngModel)]="leadinfoDetails.ProjectVisited" #projectvisited="ngModel">
+                  <option value="">---Select---</option>
+                  <option class='option' *ngFor='let name of allProjectNames ;trackBy: trackByFn;'
+                    [value]="name.ProjectName"> {{name.ProjectName}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6" *ngIf="leadinfoDetails.ReferralStatus==='Unqualified'">
+                <strong for="stageChanges"><span class="required">*</span>Stage Changes Reason</strong>
+                <select class="form-control" id="stageChanges" name="stageChanges" required
+                  [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                  [class.error]="stagechanges.invalid && stagechanges.touched" [class.has-success]="stagechanges.valid">
+                  <option value="">--Select a Reason--</option>
+                  <option class='option' *ngFor='let stage of unqualifiedStatusInfo ;trackBy: trackByFn;'
+                    [value]="stage.key"> {{stage.value}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6" *ngIf="leadinfoDetails.ReferralStatus==='Lost'">
+                <strong for="stageChanges"><span class="required">*</span>Stage Changes Reason</strong>
+                <select class="form-control" id="stageChanges" name="stageChanges" required
+                  [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                  [class.error]="stagechanges.invalid && stagechanges.touched" [class.has-success]="stagechanges.valid">
+                  <option value="">--Select a Reason--</option>
+                  <option class='option' *ngFor='let stage of lostStatusInfo ;trackBy: trackByFn;' [value]="stage.key">
+                    {{stage.value}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6" *ngIf="leadinfoDetails.ReferralStatus==='Warm'">
+                <strong for="stageChanges"><span class="required">*</span>Stage Changes Reason</strong>
+                <select class="form-control" id="stageChanges" name="stageChanges" required
+                  [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                  [class.error]="stagechanges.invalid && stagechanges.touched" [class.has-success]="stagechanges.valid">
+                  <option value="">--Select a Reason--</option>
+                  <option class='option' *ngFor='let stage of warmStatusInfo ;trackBy: trackByFn;' [value]="stage.key">
+                    {{stage.value}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6" *ngIf="leadinfoDetails.ReferralStatus==='Cold'">
+                <strong for="stageChanges"><span class="required">*</span>Stage Changes Reason</strong>
+                <select class="form-control" id="stageChanges" name="stageChanges" required
+                  [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                  [class.error]="stagechanges.invalid && stagechanges.touched" [class.has-success]="stagechanges.valid">
+                  <option value="">--Select a Reason--</option>
+                  <option class='option' *ngFor='let stage of coldStatusInfo ;trackBy: trackByFn;' [value]="stage.key">
+                    {{stage.value}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6" *ngIf="leadinfoDetails.ReferralStatus==='Assigned to Presales'">
+                <strong for="Name">PreSales Employee List:</strong>
+                <select class="form-control" id="Name" name="Name" #Name="ngModel"
+                  [(ngModel)]="leadinfoDetails.PresalesAgentAssigned" [class.error]="Name.invalid && Name.touched"
+                  [class.has-success]="Name.valid">
+                  <option value="">---select---</option>
+                  <option *ngFor="let item of selectedPreSalesEmployeeName" [value]="item.EmployeeId">
+                    {{item.Name}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6" *ngIf="leadinfoDetails.ReferralStatus==='Booked'">
+                <strong for="remark"><span class="required">*</span>Project, Flat Details :</strong>
+                <textarea type="text" required class="form-control" id="remark" name="remark" #remark="ngModel"
+                  [(ngModel)]="leadinfoDetails.remarks"></textarea>
+              </div>
+            </div>
+          </form>
+          <div class="row justify-content-md-center">
+            <Strong *ngIf="gotoOrderBtn&& leadinfoDetails.ReferralStatus=='Booked'" class="required">To
+              Create Booking form Click On "Create Order"
+              Form'</Strong> </div>
+          <br />
+          <div class="row justify-content-md-center">
+            <button type="button" class="btn btn-sm btn-primary"
+              *ngIf="gotoOrderBtn && leadinfoDetails.ReferralStatus=='Booked'"
+              (click)="goToLeadDetailsTab('order')">Create
+              Order</button>&nbsp;&nbsp;
+            <button type="button" class="btn btn-sm btn-primary"
+              (click)="updateLeadDetails(leadinfoDetails,leadDetailsForm)" [disabled]="!leadDetailsForm.form.valid">
+              <i class="fa fa-edit"></i> Save Details</button>&nbsp;&nbsp;
+            <button type="button" class="btn btn-sm btn-primary" (click)="goToLeadDetailsTab('opportunity')">Go to Lead
+              Details</button>
+          </div>
+          <br />
+          <div class="row justify-content-md-center">
+            <div class="alert alert-info" role="alert" *ngIf="LeadshowSuccessfullMessage!==''">
+              <h4> {{LeadshowSuccessfullMessage}}</h4>
+            </div>
+            <div class="alert alert-info" role="alert" *ngIf="LeadshowNotSuccessfullMessage!==''">
+              <h4> {{LeadshowNotSuccessfullMessage}}</h4>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <b> <i class="fa fa-pen-square"></i> Add a note</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <hr class="style13">
+          <form #interactionForm="ngForm">
+            <div class="col-sm-12" style="margin-top: -1em">
+              <textarea rows="4" class="form-control" placeholder="Note/Agenda" id="interactionDetails"
+                name="interactionDetails" [(ngModel)]="interactionModel.Details" required #interactionDetails="ngModel"
+                [class.error]="interactionDetails.invalid && interactionDetails.touched"
+                [class.has-success]="interactionDetails.valid"></textarea>
+              <br>
+              <div class=" row justify-content-md-center">
+                <button class="btn btn-sm btn-primary" [disabled]="!interactionForm.form.valid"
+                  (click)="onInteractionSubmit(interactionModel,interactionForm)">
+                  <i class="fa fa-edit"></i> Save Note</button> &nbsp;&nbsp;
+                <button type="button" class="btn btn-sm btn-primary" (click)="goToLeadDetailsTab('opportunity')">Go
+                  to Lead Details</button>
+              </div>
+              <br />
+              <div class="row justify-content-md-center">
+                <div class="alert alert-info" role="alert" *ngIf="InteractionshowSuccessfullMessage!==''">
+                  <h4> {{InteractionshowSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-info" role="alert" *ngIf="InteractionshowNotSuccessfullMessage!==''">
+                  <h4> {{InteractionshowNotSuccessfullMessage}}</h4>
+                </div>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+      </ngb-tab>
+      <!-- call -->
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <b> <i class="fa fa-phone"></i> Call</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <hr class="style13">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="row">
+                  <div class="col-sm-5" id="countryCode">
+                    <strong>Alternate No:</strong>
+                  </div>
+                  <div class="col-sm-7">
+                    <select class="form-control" id="alternateNo" name="alternateNo"
+                      (change)="onChangeCountryForAlternateNo($event.target)">
+                      <option value="">--Select--</option>
+                      <option *ngFor="let select of alternateNo ;trackBy: trackByFn;" [value]="select">
+                        {{select}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <button class="btn btn-success" [disabled]="disableCallBtn" ngbTooltip="To: {{To}} || From: {{from}}"
+                  placement="top" (click)="onDialCall()"> <i class="fa fa-phone"></i> Call Now</button>
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-sm btn-primary" (click)="goToLeadDetailsTab('opportunity')">See
+                  Details</button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <!--  Followup Request -->
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <b> <i class="fa fa-clock-o"></i> Followup Request</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <hr class="style13">
+          <form #FollowUpForm="ngForm">
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="col-sm-3">
+                  <strong>
+                    <span class="required">*</span>FollowUp Date</strong>
+                  <input class="form-control " type="date" name="date" id="date" required
+                    [(ngModel)]="leadinfoDetails.FollowUpDate" [disabled]="disableFollowUp" [min]="getToday()"
+                    [class.error]="Date.invalid && Date.touched" min='1990-01-01' [class.has-success]="Date.valid"
+                    #Date="ngModel"
+                    pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))">
+                </div>
+                <div class="col-sm-3">
+                  <strong>Time</strong>
+                  <p-calendar name="followuptime" id="followuptime" #followupTime="ngModel"
+                    [(ngModel)]="leadFollowUPTime" [disabled]="disableFollowUp" [timeOnly]="true">
+                  </p-calendar>
+                </div>
+                <div class="col-sm-3">
+                  <strong>Status</strong>
+                  <input type="text" class="form-control" [disabled]="true" name="fstatus" id="fstatus"
+                    [(ngModel)]="leadinfoDetails.FollowUpStatus" />
+                </div>
+              </div>
+              <br />
+              <textarea rows="4" class="form-control" placeholder="Agenda/Notes" id="agenda" name="agenda"
+                #Agenda="ngModel" [disabled]="disableFollowUp" [class.error]="Agenda.invalid && Agenda.touched"
+                [class.has-success]="Agenda.valid" [(ngModel)]="leadinfoDetails.Agenda"></textarea>
+              <br />
+              <div class=" row justify-content-md-center">
+                <button class="btn btn-sm btn-primary" (click)="onFollowupCreate(leadinfoDetails,interactionForm)"
+                  [disabled]="!FollowUpForm.form.valid" ngbTooltip="For Cancel FollowUp Click on 'Go To Lead Details'">
+                  <i class="fa fa-edit"></i> Save FollowUp</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-sm btn-primary" (click)="goToLeadDetailsTab('opportunity')">Go
+                  to Lead Details</button>
+              </div>
+              <br />
+              <div class="row justify-content-md-center">
+                <div class="alert alert-info" role="alert" *ngIf="showSuccessfullMessage!==''">
+                  <h4> {{showSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-info" role="alert" *ngIf="showNotSuccessfullMessage!==''">
+                  <h4> {{showNotSuccessfullMessage}}</h4>
+                </div>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+      </ngb-tab>
+      <!-- Create SiteVisit -->
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <b> <i class="fa fa-handshake-o"></i> Create SiteVisit</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <hr class="style13">
+          <form #createSiteVisitForm="ngForm">
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="form-group col-sm-4">
+                  <strong for="preferredProject">Preferred Project</strong>
+                  <select class="form-control" id="preferredProject" name="preferredProject" required
+                    [(ngModel)]="siteVisitModel.PreferredProject" #preferredProject="ngModel"
+                    [class.error]="preferredProject.invalid && preferredProject.touched"
+                    [class.has-success]="preferredProject.valid">
+                    <option value="">--Select--</option>
+                    <option class='option' *ngFor='let proName of allProjectNames;trackBy: trackByFn;'
+                      [hidden]="proName.ProjectName === 'Common'" [value]="proName.ProjectName">
+                      {{proName.ProjectName}} </option>
+                  </select>
+                </div>
+                <div class="form-group col-sm-4">
+                  <strong for="preDate">
+                    <span class="required">*</span>Preferred Date :</strong>
+                  <input name='preDate' class="form-control" [class.error]="predate.invalid && predate.touched"
+                    [class.has-success]="predate.valid" id='preDate' type='date' max="2050-01-01" [min]="getToday()"
+                    [(ngModel)]="siteVisitModel.preDate"
+                    pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                    required #predate="ngModel">
+                </div>
+                <div class="form-group col-sm-4">
+                  <strong for="preTime">
+                    <span class="required">*</span>Preferred Time :</strong><br>
+                  <p-calendar name="preferredtime" id="time" #preferredTime="ngModel"
+                    [(ngModel)]="siteVisitModel.PreferredTime" [timeOnly]="true"></p-calendar><br>
+                  <span class="hours">Office hours: 8AM to 8PM</span>
+                </div>
+              </div>
+              <strong for="sitevisitDetails">Remark :</strong>
+              <textarea rows="4" class="form-control" placeholder="Remark" id="sitevisitDetails" name="sitevisitDetails"
+                [(ngModel)]="siteVisitModel.Details" pattern="[^-\s][a-zA-Z0-9.,() ]*" #sitevisitDetails="ngModel"
+                [class.error]="sitevisitDetails.invalid && sitevisitDetails.touched"
+                [class.has-success]="sitevisitDetails.valid"></textarea>
+            </div>
+            <br />
+            <div class=" row justify-content-md-center">
+              <button class="btn btn-sm btn-primary" (click)="onSiteVisitCreate(siteVisitModel,createSiteVisitForm)"
+                [disabled]="!createSiteVisitForm.form.valid">
+                <i class="fa fa-edit"></i> Save SiteVisit</button>&nbsp;&nbsp;
+              <button type="button" class="btn btn-sm btn-primary" (click)="goToLeadDetailsTab('opportunity')">Go to
+                Lead Details</button>
+            </div>
+            <br />
+            <div class="row justify-content-md-center">
+              <div class="alert alert-info" role="alert" *ngIf="SiteshowSuccessfullMessage!==''">
+                <h4> {{SiteshowSuccessfullMessage}}</h4>
+              </div>
+              <div class="alert alert-info" role="alert" *ngIf="SiteshowNotSuccessfullMessage!==''">
+                <h4> {{SiteshowNotSuccessfullMessage}}</h4>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <b><i class="fa fa-whatsapp"></i> Whatsapp</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <hr class="style13">
+          <app-whatsapp [UserDetails]="leadDetails"></app-whatsapp>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

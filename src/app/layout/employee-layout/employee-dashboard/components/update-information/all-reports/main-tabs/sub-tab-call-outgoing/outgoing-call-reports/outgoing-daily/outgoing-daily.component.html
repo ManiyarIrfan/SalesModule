@@ -1,0 +1,19 @@
+
+<div [hidden]="isBarChartLoading">
+    <div class="card-header">
+      <strong><h5>Outgoing Calls - Daily</h5> </strong>
+    </div><br/>
+</div>
+    <div [hidden]="!isBarChartLoading">
+      <p id="isBarChartLoading">
+          <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+      </p>
+    </div>
+    <div *ngIf="ChartValues">
+        <tru-group-bar-chart [Value]="ChartValues" [id]="'OutgoingDaily'"></tru-group-bar-chart>
+        <!-- <tru-split-bar-chart [chartValues]="ChartValues" id="OutgoingDaily"></tru-split-bar-chart> -->
+    </div>
+    <br/>
+    <br/>
+
+  

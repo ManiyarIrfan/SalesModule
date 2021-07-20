@@ -1,0 +1,147 @@
+<div class="zoomLayout">
+    <header id="tt-header">
+        <div class="container-fluid padding-header">
+            <div class="row tt-row no-gutters">
+                <div class="col-auto">
+                    <a class="mar13 toggle-mobile-menu" (click)="ShowSideBar()">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </a>
+                    <div *ngIf="sidebarFlag">
+                        <tru-sidemenu> </tru-sidemenu>
+                    </div>
+                    <div class="tt-logo mar16">
+                        <a href="https://trurealty.in/" target="_blank"><img src="../../../../assets/images/logo.png"
+                                alt="logo_dark"></a>
+                    </div>
+                    <div class="tt-desktop-menu">
+                        <nav>
+                            <ul>
+                                <li (click)="selectedMenu(item.key)" *ngFor="let item of HomeTabs;">
+                                    <a><span>{{item.key}}</span></a>
+                                </li>
+                                <!-- <li><a><span>Property</span></a></li>
+                                <li><a><span>Profile</span></a></li>
+                                <li><a><span>Support Ticket</span></a></li> -->
+                                <!-- <li>
+                                    <a href="page-single-user.html"><span>Pages</span></a>
+                                    <ul>
+                                        <li><a href="index.html">Home</a></li>                                   
+                                    </ul>
+                                </li> -->
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- tt-search -->
+                    <div class="tt-search">
+                        <!-- toggle -->
+                        <!-- <button class="tt-search-toggle" data-toggle="modal" data-target="#modalAdvancedSearch">
+                            <svg class="tt-icon">
+                                <use xlink:href="#icon-search"></use>
+                            </svg>
+                        </button> -->
+                        <!-- /toggle -->
+                        <!-- <form class="search-wrapper">
+                            <div class="search-form">
+                                <input type="text" class="tt-search__input" placeholder="Search">
+                                <button class="tt-search__btn" type="submit">
+                                    <svg class="tt-icon">
+                                        <use xlink:href="#icon-search"></use>
+                                    </svg>
+                                </button>
+                                <button class="tt-search__close">
+                                    <svg class="tt-icon">
+                                        <use xlink:href="#cancel"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="search-results">
+                                <div class="tt-search-scroll">
+                                    <ul>
+                                        <li>
+                                            <a href="page-single-topic.html">
+                                                <h6 class="tt-title">Rdr2 secret easter eggs</h6>
+                                                <div class="tt-description">
+                                                    Here’s what I’ve found in Red Dead Redem..
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="page-single-topic.html">
+                                                <h6 class="tt-title">Top 10 easter eggs in Red Dead Rede..</h6>
+                                                <div class="tt-description">
+                                                    You can find these easter eggs in Red Dea..
+                                                </div>
+                                            </a>
+                                        </li>                              
+                                    </ul>
+                                </div>
+                                <button type="button" class="tt-view-all" data-toggle="modal"
+                                    data-target="#modalAdvancedSearch">Advanced Search</button>
+                            </div>
+                        </form> -->
+                    </div>
+                </div>
+                <div class="col-auto ml-auto">
+                    <div class="tt-account-btn mar8" *ngIf="this.loggedInuserDetails===null">
+                        <a (click)="login()" class="btn btn-primary">Log in</a>
+                        <a (click)="register()" class="btn btn-secondary">Sign up</a>
+                    </div>
+                    <div class="tt-account-btn mar16" *ngIf="loggedInuserDetails!==null">
+                        <a [matMenuTriggerFor]="menu12">
+                            <img class="rounded-circle" src="{{userProfile}}" width="40px" height="40px" alt="">
+                            <span class="pl-3 text-white"> {{loggedInuserDetails.Firstname | titlecase}}
+                                {{loggedInuserDetails.LastName | titlecase}}</span>
+                        </a>
+                        <mat-menu #menu12="matMenu">
+                            <div class="row p-3 justify-content-center">
+                                <div class="col-sm-4 text-center">
+                                    <img class="rounded-circle" src="{{userProfile}}" width="90px" height="90px" alt="">
+                                </div>
+                                <div class="col-sm-8 centerdata">
+                                    <h5 class="pl-1"><strong> {{loggedInuserDetails.Firstname | titlecase}}
+                                            {{loggedInuserDetails.LastName | titlecase}}</strong></h5>
+                                    <h6 class=" pl-1 text-white">
+                                        <span
+                                            class="badge badge-primary rounded-pill pt-1 pb-1 pl-3 pr-3">{{loggedInuserDetails.UserType}}</span>
+                                    </h6>
+                                </div>
+                                <div class="col-sm-12">
+                                    <hr class="mt-2 mb-2">
+                                </div>
+                                <div class="col-sm-12 profile_dropdown p-2 text-center pointer"
+                                    (click)="this.TabName ='Profile'">
+                                    <h6 class="pull-left"> View Profile</h6>
+                                    <h6 class="pull-right"><i class="fa fa-user-circle"></i></h6>
+                                </div>
+                                <div class="col-sm-12 profile_dropdown p-2 text-center pointer" (click)="logout()">
+                                    <h6 class="pull-left"> Log Out</h6>
+                                    <h6 class="pull-right"><i class="fa fa-sign-out"></i></h6>
+                                </div>
+                            </div>
+                        </mat-menu>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div [ngSwitch]="TabName" class="moduleheight">
+        <div *ngSwitchCase="'Dashboard'">
+            <app-dashboard></app-dashboard>
+        </div>
+        <div *ngSwitchCase="'Property'">
+            <app-property></app-property>
+        </div>
+        <div *ngSwitchCase="'Profile'">
+            <app-profile></app-profile>
+        </div>
+        <div *ngSwitchCase="'Support Ticket'">
+            <app-support-ticket></app-support-ticket>
+        </div>
+        <div *ngSwitchCase="'Documents'">
+            <app-documents></app-documents>
+        </div>
+    </div>
+    <!-- <footer class="footer">
+        &copy; 2021 Tru Finance
+    </footer> -->
+</div>

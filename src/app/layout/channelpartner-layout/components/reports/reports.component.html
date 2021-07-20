@@ -1,0 +1,150 @@
+<!-- <app-page-header [heading]="'Channel Partner Reports'" [icon]="'fa-bar-chart-o'"></app-page-header> -->
+
+<ngb-tabset type="pills" class="nav-pills">
+    <ngb-tab>
+        <ng-template ngbTabTitle>
+            <b>
+                <i class="fa fa-bar-chart"></i> CP/CRO Performance</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+            <div class="divheight">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <Strong>
+                            <span class="required">*</span> Select Dates: </Strong>
+                        <div class="icon-addon addon-md">
+                            <input type="text" class="form-control" id="date" name="Date" ngxDaterangepickerMd
+                                [(ngModel)]="selectedDateRange" (change)="onChangeDate(selectedDateRange)"
+                                [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges"
+                                [linkedCalendars]="true" [showClearButton]="true"
+                                placeholder="Select Dates for Channel Partner Report." autocomplete="off" />
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div *ngIf="!dataNotFoundMessage">
+                    <div *ngIf="showCpReportTable">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>CP_Name</th>
+                                    <th>New</th>
+                                    <th>Contact Establish</th>
+                                    <th>Site Visit Scheduled</th>
+                                    <th>Site Visit Done</th>
+                                    <th>Negotiation</th>
+                                    <th>Registration done</th>
+                                    <th>Other options</th>
+                                    <th>Lost</th>
+                                    <th class="boldTextTable">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let report of reports;trackBy: trackByFn">
+                                    <td> {{report.CP_Name | titlecase}}</td>
+                                    <td>{{report["New"]}}</td>
+                                    <td>{{report["Contact Establish"]}}</td>
+                                    <td>{{report["Site Visit Scheduled"]}}</td>
+                                    <td>{{report["Site Visit Done"]}}</td>
+                                    <td>{{report["Negotiation"]}} </td>
+                                    <td>{{report["Registration done"]}} </td>
+                                    <td>{{report["Other options"]}}</td>
+                                    <td>{{report["Lost"]}}</td>
+                                    <td class="boldTextTable">{{report["count"]}}</td>
+                                </tr>
+                                <tr *ngIf="reports.length>0" class="boldTextTable">
+                                    <td>
+                                        <span>Total Count</span>
+                                    </td>
+                                    <td>{{keysCount["New"]}}</td>
+                                    <td>{{keysCount["Contact Establish"]}}</td>
+                                    <td>{{keysCount["Site Visit Scheduled"]}}</td>
+                                    <td>{{keysCount["Site Visit Done"]}}</td>
+                                    <td>{{keysCount["Negotiation"]}} </td>
+                                    <td>{{keysCount["Registration done"]}} </td>
+                                    <td>{{keysCount["Other options"]}}</td>
+                                    <td>{{keysCount["Lost"]}}</td>
+                                    <td>{{keysCount["count"]}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br />
+                    <tru-split-bar-chart [chartValues]="CpReport" id="Cpreport" *ngIf="CpReport"></tru-split-bar-chart>
+                    <br />
+                </div>
+                <div *ngIf="dataNotFoundMessage">
+                    <span class="required">Data is not available for these Dates.</span>
+                </div>
+            </div>
+
+        </ng-template>
+    </ngb-tab>
+    <ngb-tab>
+        <ng-template ngbTabTitle>
+            <b>
+                <i class="fa fa-line-chart"></i> Duplicate Lead</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+            <div [hidden]="!duplicateSpinner">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+            <div *ngIf="!showDataNotFoundMessage">
+                <div class="card cardfortable">
+                    <div class="title textweight text-center">
+                        <span>Duplicate Enquiry-Referral Details</span>
+                    </div>
+                    <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>1st Created By</th>
+                                    <th>Mobile No</th>
+                                    <th>Enq_Id</th>
+                                    <th>Enq_Name</th>
+                                    <th>Enq_Email</th>
+                                    <th>Enq_CreatedBy</th>
+                                    <th>Enq_CreatedOn</th>
+                                    <th>Enq_Source</th>
+                                    <th>Reff_Id</th>
+                                    <th>Reff_Name</th>
+                                    <th>Reff_Email</th>
+                                    <th>Reff_CreatedBy</th>
+                                    <th>Reff_CreatedOn</th>
+                                    <th>Reff_Source</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let duplicate of allDuplicates  | paginate: { itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn ">
+                                    <td>{{duplicate.FirstLead}}</td>
+                                    <td> {{duplicate.MobileNo}} </td>
+                                    <td>{{duplicate.EnquiryId}}</td>
+                                    <td> {{duplicate.EnqName}} </td>
+                                    <td>{{duplicate.EnqEmail}}</td>
+                                    <td> {{duplicate.EnqCreatedBy}} </td>
+                                    <td>{{duplicate.EnqCreatedOn |date:"d MMM y"}}</td>
+                                    <td> {{duplicate.EnqSource}} </td>
+                                    <td> {{duplicate.ReferralId}} </td>
+                                    <td> {{duplicate.ReffName}} </td>
+                                    <td>{{duplicate.ReffEmail}}</td>
+                                    <td> {{duplicate.ReffCreatedBy}} </td>
+                                    <td>{{duplicate.ReffCreatedOn |date:"d MMM y"}}</td>
+                                    <td> {{duplicate.ReffSource}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="allDuplicates.length>10">
+                            <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <span class="required">{{NoDataFoundMessage}}</span>
+        </ng-template>
+    </ngb-tab>
+</ngb-tabset>

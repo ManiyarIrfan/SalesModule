@@ -1,0 +1,283 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <mat-card>
+        <form #customerForm="ngForm">
+            <div class="row">
+                <div class="col-sm-7">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">{{custModel.Name |titlecase}}'s Details </legend>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="BrokerId">ID : </strong>
+                                    <input type="text" class="form-control" id="custId" [disabled]="true" required
+                                        [(ngModel)]="custModel.CustomerId" name="custId"
+                                        [class.error]="custId.invalid && custId.touched"
+                                        [class.has-success]="custId.valid" #custId="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custEmail">Email Id/User Id :</strong>
+                                    <input type="text" [pattern]="emailPattren" class="form-control" id="custEmail"
+                                        [disabled]="true" required [(ngModel)]="custModel.Email" name="custEmail"
+                                        [class.error]="custEmail.invalid && custEmail.touched"
+                                        [class.has-success]="custEmail.valid" #custEmail="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custTelephoneNo">Contact Number : </strong>
+                                    <input type="tel" pattern="^\d{10}$" class="form-control" id="custTelephoneNo"
+                                        [disabled]="true" required [(ngModel)]="custModel.MobileNo"
+                                        name="custTelephoneNo"
+                                        [class.error]="custTelephoneNo.invalid && custTelephoneNo.touched"
+                                        [class.has-success]="custTelephoneNo.valid" #custTelephoneNo="ngModel"
+                                        minlength=10 maxlength=10>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custAlternativeTelephoneNo">Alternate Number : </strong>
+                                    <input type="tel" pattern="^\d{10}$" class="form-control"
+                                        id="custAlternativeTelephoneNo" [disabled]="!isEdit"
+                                        [(ngModel)]="custModel.AlternateNo" name="custAlternativeTelephoneNo"
+                                        [class.error]="custAlternativeTelephoneNo.invalid && custAlternativeTelephoneNo.touched"
+                                        [class.has-success]="custAlternativeTelephoneNo.valid"
+                                        #custAlternativeTelephoneNo="ngModel" minlength=10 maxlength=10>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custDOB">Date of Birth </strong>
+                                    <input type="date" dateFormatPipe class="form-control" id="custDOB"
+                                        [disabled]="!isEdit" [(ngModel)]="custModel.Dob"
+                                        pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                                        name="custDOB"
+                                        [class.error]="custDOB.invalid && custDOB.touched && custDOB.dirty"
+                                        [class.has-success]="custDOB.valid" #custDOB="ngModel" [max]="getToday()"
+                                        min='1950-01-01'>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custAddressLine1">
+                                        <span class="required">*</span>Address </strong>
+                                    <input type="text" class="form-control addr" ref-textarea id="custAddressLine1"
+                                        [disabled]="!isEdit" required [(ngModel)]="custModel.AddressLine1"
+                                        name="custAddressLine1" rows="2" pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*"
+                                        [class.error]="custAddressLine1.invalid && custAddressLine1.touched"
+                                        [class.has-success]="custAddressLine1.valid" #custAddressLine1="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custCity">
+                                        <span class="required">*</span>City</strong>
+                                    <input type="text" class="form-control" id="custCity" [disabled]="!isEdit" required
+                                        [(ngModel)]="custModel.City" name="custCity"
+                                        [class.error]="custCity.invalid && custCity.touched"
+                                        [class.has-success]="custCity.valid" #custCity="ngModel"
+                                        pattern="^[^-\s][a-zA-Z ]*">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custState">State</strong>
+                                    <input type="text" class="form-control" id="custState" [disabled]="!isEdit"
+                                        [(ngModel)]="custModel.State" name="custState"
+                                        [class.error]="custState.invalid && custState.touched"
+                                        [class.has-success]="custState.valid" #custState="ngModel"
+                                        pattern="^[^-\s][a-zA-Z ]*">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custCountry">Country</strong>
+                                    <input type="text" class="form-control" id="custCountry" [disabled]="!isEdit"
+                                        [(ngModel)]="custModel.Country" name="custCountry"
+                                        [class.error]="custCountry.invalid && custCountry.touched"
+                                        [class.has-success]="custCountry.valid" #custCountry="ngModel"
+                                        pattern="^[^-\s][a-zA-Z ]*">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custPincode">Pincode</strong>
+                                    <input type="tel" pattern="^\d{6}$" class="form-control" minlength=6 maxlength=6
+                                        id="custPincode" [disabled]="!isEdit" [(ngModel)]="custModel.Pincode"
+                                        name="custPincode" [class.error]="custPincode.invalid && custPincode.touched"
+                                        [class.has-success]="custPincode.valid" #custPincode="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="custoccupation">Occupation</strong>
+                                    <select class="form-control" id="custoccupation" [disabled]="!isEdit"
+                                        name="custoccupation"
+                                        [class.error]="custoccupation.invalid && custoccupation.touched"
+                                        [class.has-success]="custoccupation.valid" [(ngModel)]="custModel.Occupation"
+                                        #custoccupation="ngModel">
+                                        <option class='option'
+                                            *ngFor='let occupations of OccupationInfo;trackBy: trackByFn'
+                                            [value]="occupations.value">{{occupations.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="bankname">Bank Name :</strong>
+                                    <input type="text" class="form-control" id="bankname" [disabled]="!isEdit"
+                                        [(ngModel)]="custModel.BankName" name="bankname"
+                                        [class.error]="bankname.invalid && bankname.touched"
+                                        [class.has-success]="bankname.valid" #bankname="ngModel"
+                                        pattern="^[^-\s][a-zA-Z0-9 ]*">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="branchname">Branch :</strong>
+                                    <input type="text" class="form-control" id="branchname" [disabled]="!isEdit "
+                                        [(ngModel)]="custModel.BankBranch" name="branchname"
+                                        [class.error]="branchname.invalid && branchname.touched"
+                                        [class.has-success]="branchname.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                        #branchname="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="accno">AccountNo :</strong>
+                                    <input type="text" class="form-control" id="accno" [disabled]="!isEdit "
+                                        [(ngModel)]="custModel.AccountNo" name="accno"
+                                        [class.error]="accno.invalid && accno.touched" [class.has-success]="accno.valid"
+                                        pattern="^[^-\s][0-9 ]*" #accno="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="ifsccode">IFSC Code :</strong>
+                                    <input type="tel" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="ifsccode"
+                                        [disabled]="!isEdit " [(ngModel)]="custModel.IFSCCode" name="ifsccode"
+                                        #ifsccode="ngModel" [class.error]="ifsccode.invalid && ifsccode.touched"
+                                        [class.has-success]="ifsccode.valid">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <strong for="upicode">UPI Code :</strong>
+                                    <input type="tel" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*" class="form-control"
+                                        id="upicode" [disabled]="!isEdit " [(ngModel)]="custModel.UPICode"
+                                        name="upicode" #upicode="ngModel"
+                                        [class.error]="upicode.invalid && upicode.touched"
+                                        [class.has-success]="upicode.valid">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <button type="button" *ngIf="!isEdit" (click)="OnEditBtnClick()"
+                                    class="btn btn-primary">
+                                    <i class="fa fa-edit"></i> Edit Details</button>
+                                <button type="button" *ngIf="isEdit" (click)="OnUpdateBtnClick()"
+                                    [disabled]="!customerForm.form.valid" class="btn btn-primary">
+                                    <i class="fa fa-edit"></i>
+                                    Update Details</button>
+                                <button  *ngIf="QRCode" type="button" class="btn btn-md btn-custom pull-right" (click)="showQRModal.show()">
+                                    <i class="fa fa-qrcode"></i>&nbsp; Show QR</button>
+                            </div>
+                        </div>
+                        <br>
+                    </fieldset>
+                    <br>
+                    <fieldset class="scheduler-border" *ngIf="loggedInuserDetails.UserType==='Customer'">
+                        <legend class="scheduler-border">
+                            <img style="width: 40px;height: 40px;" class="responsive"
+                                src="../../../../../../../assets/images/archives.png" alt="Folder Image" />&nbsp;My
+                            Documents</legend>
+                        <div class="row one">
+                            <div class="col-sm-2 box" (click)="openfile(getFileURL.Draft)" id="boxpos" align="center">
+                                <img class="responsive img-size" ngbTooltip="click to display files" placement="top"
+                                    src="../../../../../../../assets/images/archives.png" alt="Folder Image" />
+                                <br>
+                                <strong class="foldername">Standard Agreement Draft</strong>
+                            </div>
+                            <div class="col-sm-2 box" *ngIf="getFileURL.AgreementFile!==null" placement="top"
+                                ngbTooltip="click toopen file" (click)="openfile(getFileURL.AgreementFile)" id="boxpos"
+                                align="center">
+                                <img class="responsive img-size" src="../../../../../../../assets/images/archives.png"
+                                    alt="Folder Image" />
+                                <br>
+                                <strong class="foldername">Agreement</strong>
+                            </div>
+                            <div class="col-sm-2 box" *ngIf="getFileURL.NOCFile!==null"
+                                (click)="openfile(getFileURL.NOCFile)" id="boxpos" placement="top"
+                                ngbTooltip="click to display files" align="center">
+                                <img class="responsive img-size" src="../../../../../../../assets/images/archives.png"
+                                    alt="Folder Image" />
+                                <br>
+                                <strong class="foldername">NOC</strong>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <!-- Purchase Flat/Plot Details Component Show -->
+                    <tru-flat-details *ngFor="let flat of flatDetails;trackBy: trackByFn;let i = index" [index]="i"
+                        [projectFlatDetails]="flat" [hidden]="flatDetails.length">
+                    </tru-flat-details>
+
+                    <!-- Search new Flat/Plot Details Component Show -->
+                    <tru-search-project></tru-search-project>
+                </div>
+                <!-- Tru Pay Wallet Card -->
+                <div class="col-sm-5">
+                    <mat-card class="border-card">
+                        <mat-card-header class="cardstyle">
+                            <mat-card-title class="headercard">
+                                <i class="fas fa-wallet"></i> &nbsp; TRU Pay Wallet
+                            </mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <br />
+                            <app-pay-wallet [channelPartnerModel]="custModel" (reloadEvent)="reloadMessage($event)">
+                            </app-pay-wallet>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+        </form>
+    </mat-card>
+</div>
+<!-- ***** Show QR modal Popup ***** -->
+<div bsModal #showQRModal="bs-modal" class="modal fade model" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <img [src]="QRCode" alt="image slide" style="width: 100% !important;" class="img" *ngIf="QRCode">
+            <div class="row justify-content-center" style="padding: 8px;">
+                <strong *ngIf="!QRCode">QR Code is not available.</strong>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 text-center" style="padding: 8px;">
+                    <button type="button" class="btn btn-danger btn-sm" (click)="showQRModal.hide()">
+                        <i class="fa fa-times" aria-hidden="true"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

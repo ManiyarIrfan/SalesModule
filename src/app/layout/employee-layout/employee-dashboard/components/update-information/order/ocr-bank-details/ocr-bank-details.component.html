@@ -1,0 +1,157 @@
+<form #ocrcreateForm="ngForm">
+  <div class="row">
+    <div class="col-sm-3">
+      <strong for="OrderStatus">
+        <span class="required">*</span>Order Status :</strong>
+      <select type="text" class="form-control" id="OrderStatus" name="OrderStatus" [(ngModel)]="ocrModel.OrderStatus"
+        required #orderStatus="ngModel" [class.error]="orderStatus.invalid && orderStatus.touched"
+        [class.has-success]="orderStatus.valid">
+        <option value="">---Select Order Status---</option>
+        <option *ngFor="let status of OrderStatusList" [value]="status.value">{{status.value}}
+        </option>
+      </select>
+    </div>
+    <div class="col-sm-3">
+      <span for="SourceDetails">
+        <strong>Source Details :</strong>
+      </span>
+      <input [disabled]="isFieldDisabled" type="text" class="form-control" id="SourceDetails" name="SourceDetails"
+        placeholder="Enter Source Details..." [(ngModel)]="ocrModel.SourceDetails">
+    </div>
+
+    <div class="col-sm-3">
+      <strong for="Source"> Source of Funding :</strong>
+      <select type="text" class="form-control" id="Source" [disabled]="isFieldDisabled" name="Source"
+        [(ngModel)]="ocrModel.Source" (click)="onChangeSelect($event.target.value)">
+        <option value="">---Select Source---</option>
+        <option *ngFor="let type of SourceInfo" [value]="type.value">{{type.value}}</option>
+      </select>
+    </div>
+
+    <!-- bank  -->
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self + Bank' || ocrModel.Source ==='Bank' && !isFieldDisabled">
+      <strong for="BankName">Bank Name :</strong>
+      <select type="text" class="form-control" id="BankName" name="BankName" [(ngModel)]="ocrModel.BankName"
+        placeholder="Enter Bank Name..." #bankName="ngModel" [class.error]="bankName.invalid && bankName.touched"
+        [class.has-success]="bankName.valid">
+        <option value="">---Select Bank---</option>
+        <option *ngFor="let bank of bankNames" [value]="bank.key">{{bank.value}}</option>
+      </select>
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self + Bank' || ocrModel.Source ==='Bank' && !isFieldDisabled">
+      <strong for="BankExecutiveName">Bank Executive Name :</strong>
+      <input type="text" class="form-control" id="BankExecutiveName" name="BankExecutiveName"
+        [(ngModel)]="ocrModel.BankExecutiveName" placeholder="Enter Bank Executive Name..." #bankExecutiveName="ngModel"
+        pattern="[a-zA-Z ]*" [class.error]="bankExecutiveName.invalid && bankExecutiveName.touched"
+        [class.has-success]="bankExecutiveName.valid">
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self + Bank' || ocrModel.Source ==='Bank'">
+      <strong for="loansanction">Loan Sanction Letter :</strong>
+      <select type="text" class="form-control" id="loansanction" name="loansanction"
+        [(ngModel)]="ocrModel.LoanSanctionLetter" [disabled]="isFieldDisabled" #loansanction="ngModel"
+        (change)="MatchDate(ocrModel)" [class.error]="loansanction.invalid && loansanction.touched"
+        [class.has-success]="loansanction.valid">
+        <option value="">---Select---</option>
+        <option *ngFor="let loan of loanCheckInfo" [value]="loan.key">{{loan.value}}</option>
+      </select>
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self + Bank' || ocrModel.Source ==='Bank' && ocrModel.LoanSanctionLetter==='yes'">
+      <strong for="LoanSanctionDate"> Loan Sanction Date :</strong>
+      <input [disabled]="isFieldDisabled" type="date" max="3000-31-12" [max]="getToday()" class="form-control"
+        id="LoanSanctionDate" name="LoanSanctionDate" [(ngModel)]="ocrModel.LoanSanctionDate"
+        #loanSanctionDate="ngModel" (change)="MatchDate(ocrModel)"
+        pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+        [class.error]="loanSanctionDate.invalid && loanSanctionDate.touched"
+        [class.has-success]="loanSanctionDate.valid">
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source ==='Self + Bank' || ocrModel.Source ==='Bank' || ocrModel.Source ==='Bank'">
+      <strong for="nocissued">NOC Issued :</strong>
+      <select type="text" class="form-control" id="nocissued" name="nocissued" [(ngModel)]="ocrModel.NOCIssued"
+        (change)="MatchDate(ocrModel)" [disabled]="isFieldDisabled" #nocissued="ngModel"
+        [class.error]="nocissued.invalid && nocissued.touched" [class.has-success]="nocissued.valid">
+        <option value="">---Select---</option>
+        <option *ngFor="let loan of loanCheckInfo" [value]="loan.key">{{loan.value}}</option>
+      </select>
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self + Bank' || ocrModel.Source ==='Bank' && ocrModel.NOCIssued==='yes'">
+      <span for="NOCIssuedDate">
+        <strong>
+          <span class="required"></span>NOC Issued Date :</strong>
+      </span>
+      <input [disabled]="isFieldDisabled" type="date" max="3000-31-12" [max]="getToday()" class="form-control"
+        id="NOCIssuedDate" name="NOCIssuedDate" [(ngModel)]="ocrModel.NOCIssuedDate" #NOCIssuedDate="ngModel"
+        (change)="MatchDate(ocrModel)"
+        pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+        [class.error]="NOCIssuedDate.invalid && NOCIssuedDate.touched" [class.has-success]="NOCIssuedDate.valid">
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self + Bank'">
+      <strong for="selfPercentage">Self % :</strong>
+      <input type="text" class="form-control" id="SelfPercentage" name="SelfPercentage" [(ngModel)]="ocrModel.SelfPercentage"
+        placeholder="Enter self percentage" #SelfPercentage="ngModel" pattern="[0-9. ]*"
+        [class.error]="SelfPercentage.invalid && SelfPercentage.touched" [class.has-success]="SelfPercentage.valid">
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self + Bank'">
+      <strong for="BankPercentage">Bank % :</strong>
+      <input type="text" class="form-control" id="BankPercentage" name="BankPercentage" [(ngModel)]="ocrModel.BankPercentage"
+        placeholder="Enter bank percentage" #BankPercentage="ngModel" pattern="[0-9. ]*"
+        [class.error]="BankPercentage.invalid && BankPercentage.touched" [class.has-success]="BankPercentage.valid">
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self' && !isFieldDisabled">
+      <strong for="PaymentMilestone"> Payment Milestone</strong>
+      <input type="text" class="form-control" id="PaymentMilestone" name="PaymentMilestone"
+        [(ngModel)]="ocrModel.PaymentMilestone" placeholder="Enter Payment Milestone..." #PaymentMilestone="ngModel"
+        pattern="[a-zA-Z0-9 ]*" [class.error]="PaymentMilestone.invalid && PaymentMilestone.touched"
+        [class.has-success]="PaymentMilestone.valid">
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self' && !isFieldDisabled">
+      <strong for="CompanyName"> Company Name :</strong>
+      <input type="text" class="form-control" id="CompanyName" name="CompanyName" [(ngModel)]="ocrModel.CompanyName"
+        placeholder="Enter Company Name..." #CompanyName="ngModel" pattern="[a-zA-Z0-9. ]*"
+        [class.error]="CompanyName.invalid && CompanyName.touched" [class.has-success]="CompanyName.valid">
+    </div>
+    <div class="col-sm-3" *ngIf="ocrModel.Source==='Self' && !isFieldDisabled">
+      <strong for="Designation">Designation :</strong>
+      <input type="text" class="form-control" id="Designation" name="Designation" [(ngModel)]="ocrModel.Designation"
+        placeholder="Enter Designation..." #Designation="ngModel" pattern="[a-zA-Z0-9. ]*"
+        [class.error]="Designation.invalid && Designation.touched" [class.has-success]="Designation.valid">
+    </div>
+  </div>
+  <div class="row justify-content-md-center" *ngIf="showDateNotMatchMessage">
+    <div class="col-sm-12">
+      <h4 class="listnotfound">Loan Sanction Date Must be Match With NOC Issued Date</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3">
+      <strong for="loanamount">Loan Amount :</strong>
+      <input type="text" class="form-control" id="loanamount" name="loanamount" [(ngModel)]="ocrModel.LoanAmount"
+        placeholder="Enter loan Amount..." #loanamount="ngModel" pattern="[0-9. ]*"
+        [class.error]="loanamount.invalid && loanamount.touched" [class.has-success]="loanamount.valid">
+    </div>
+    <div class="col-sm-3">
+      <strong for="ocrone">OCR 1 :</strong>
+      <input type="text" class="form-control" id="ocrone" name="ocrone" [(ngModel)]="ocrModel.OCR1"
+        placeholder="Enter ocrOne..." #ocrone="ngModel" pattern="[0-9. ]*"
+        [class.error]="ocrone.invalid && ocrone.touched" [class.has-success]="ocrone.valid">
+    </div>
+    <div class="col-sm-3">
+      <strong for="ocrtwo">OCR 2 :</strong>
+      <input type="text" class="form-control" id="ocrtwo" name="ocrtwo" [(ngModel)]="ocrModel.OCR2"
+        placeholder="Enter ocrTwo..." #ocrtwo="ngModel" pattern="[0-9. ]*"
+        [class.error]="ocrtwo.invalid && ocrtwo.touched" [class.has-success]="ocrtwo.valid">
+    </div>
+  </div>
+  <br>
+  <div class="row justify-content-md-center">
+    <button type="button" class="btn btn-primary center-block" (click)="insertOcrDetails(ocrModel)"
+      [disabled]="!ocrcreateForm.form.valid || showDateNotMatchMessage">Submit</button>
+  </div><br>
+  <div class="row justify-content-md-center">
+    <div class="alert alert-success" *ngIf="showSuccessfullMessage!==''" role="alert">
+      <h4> <i class="fa fa-check"></i> {{showSuccessfullMessage}}</h4>
+    </div>
+    <div class="alert alert-warning" *ngIf="showUnsuccessfullMessage!==''" role="alert">
+      <h4> <i class="fa fa-times-circle"></i> {{showUnsuccessfullMessage}}</h4>
+    </div>
+  </div>
+</form>

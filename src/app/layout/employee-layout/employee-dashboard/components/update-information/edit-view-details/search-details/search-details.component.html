@@ -1,0 +1,104 @@
+<form #employeeDashboardForm="ngForm">
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="icon-addon addon-md">
+                <input type="text" name="test" class="form-control search" [(ngModel)]="searchText" id="keyword "
+                    placeholder="Search By Name Or Email Or Mobile Number... " (keyup)="searchCustomer(searchText)"
+                    autocomplete="off">
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-result" [hidden]="!flag">
+                <ul id="myUL">
+                    <li *ngFor="let cust of customers;trackBy: trackByFn">
+                        <a (click)="onselectCustomer(cust)">{{cust.FirstName}} - {{cust.LastName}} -{{ cust.MobileNo}}
+                            -{{cust.UserId}}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>    <br />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <fieldset class="scheduler-border" [hidden]="!showEmail">
+                <ngb-tabset type="pills">
+                    <ngb-tab>
+                        <ng-template ngbTabTitle>
+                            <b>
+                                <i class="fa fa-phone "></i> Call</b>
+                        </ng-template>
+                        <ng-template ngbTabContent>  
+                            <br>                        
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <select class="form-control" id="countryCode" name="countryCode"
+                                            [disabled]="disableAllFields"
+                                            (change)="onChangeCountryCode($event.target.value)"
+                                            [(ngModel)]="CountryCode">
+                                            <option *ngFor="let select of countryCode;trackBy: trackByFn" [value]="select.key">
+                                                {{select.value}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-success" ngbTooltip="To: {{To}} || From: {{from}}"
+                                            placement="top" (click)="onDialCall()">
+                                            <i class="fa fa-phone"></i> Call Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngb-tab>
+
+                    <ngb-tab>
+                        <ng-template ngbTabTitle>
+                            <b (click)="clearmessage()" (click)="clearscreen(employeeDashboardForm)">
+                                <i class="fa fa-envelope"></i>
+                                Click to Send Email</b>
+                        </ng-template>
+                        <ng-template ngbTabContent>
+                            <br>                           
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <strong>To:</strong>
+                                        <label>{{to}}</label>
+                                        <label class="pull-right">{{CC}}</label>
+                                        <strong class="pull-right">CC:</strong>
+                                        <div>
+                                            <strong for="subject">Subject
+                                                <span class="required">*</span>:</strong>
+                                            <input type="text" name="subject" id="subject" class="form-control"
+                                                #subject="ngModel" required [(ngModel)]="emailmodel.Subject"
+                                                placeholder="Enter the Subject."
+                                                [class.error]="subject.invalid && subject.touched"
+                                                [class.has-success]="subject.valid">
+                                        </div>
+                                        <div class="form-group "> <strong for="details">Details
+                                                <span class="required">*</span>:</strong>
+                                            <textarea name="details" id="details" cols="30" class="form-control"
+                                                rows="2" #details="ngModel" required [(ngModel)]="emailmodel.Details"
+                                                placeholder="Enter the Details."
+                                                [class.error]="details.invalid && details.touched"
+                                                [class.has-success]="details.valid"></textarea>
+                                        </div>
+                                        <div class="row justify-content-md-center">
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="onSendEmail(employeeDashboardForm)"
+                                                [disabled]="!employeeDashboardForm.form.valid">
+                                                <i class="fa fa-paper-plane"></i> Send Email
+                                            </button>
+                                        </div>
+                                        <br />
+                                
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngb-tab>
+                </ngb-tabset>
+            </fieldset>
+        </div>
+    </div>
+</form>

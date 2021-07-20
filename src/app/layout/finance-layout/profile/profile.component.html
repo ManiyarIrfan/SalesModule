@@ -1,0 +1,167 @@
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="page-title-box">
+                    <div class="pull-right">
+                        <ol class="breadcrumb-data">
+                            <li class="breadcrumbitem">
+                                <a href="">Home &nbsp;/&nbsp;</a>
+                            </li>
+                            <li class="breadcrumbitem active">
+                                <a href="">Profile</a>
+                            </li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title pt-2"><strong class="font-weight600">
+                            {{loggedInuserDetails.Firstname | titlecase}}
+                            {{loggedInuserDetails.LastName | titlecase}}'s</strong> Profile</h4>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="card p-4">
+                    <div class="row">
+                        <div class="col-sm-2 border-right">
+                            <div class="row">
+                                <div class="col-sm-12  p-4">
+                                    <img src="../../../../assets/images/user.png" class="responsive" alt="">
+                                </div>
+                                <div class="col-sm-12 py-3 text-center">
+                                    <app-community-file-upload [disabledBtn]="filesModel.length > 0" [Type]="'Button'"
+                                        [text]="'Upload'" (getuploadedFile)="receiveimage($event)"
+                                        (removeFile)="$event===true ? this.filesModel=[] :this.filesModel"
+                                        [UploadDone]="filesModel">
+                                    </app-community-file-upload>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-9">
+                            <form #profileForm="ngForm">
+                                <div class="row mb-1">
+                                    <div class="col-sm-12 pt-4">
+                                        <h3 class="pb-2">{{loggedInuserDetails.Firstname | titlecase }}
+                                            {{loggedInuserDetails.LastName | titlecase}}</h3>
+                                        <h5><span
+                                                class="badge-soft-purple px-2 py-1">{{loggedInuserDetails.UserType}}</span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <mat-divider class="py-2"></mat-divider>
+                                <div class="row py-3 px-2">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="FirstName">First Name :</strong>
+                                            <input type="text" class="form-control" id="FirstName" [disabled]="true"
+                                                required [(ngModel)]="profileModel.FirstName" name="FirstName"
+                                                #FirstName="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="LastName">Last Name :</strong>
+                                            <input type="text" class="form-control" id="LastName" [disabled]="true"
+                                                required [(ngModel)]="profileModel.LastName" name="LastName"
+                                                #LastName="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="Email">Email Id : </strong>
+                                            <input type="text" [pattern]="emailPattren" class="form-control" id="Email"
+                                                [disabled]="true" required [(ngModel)]="profileModel.Email" name="Email"
+                                                [class.error]="email.invalid && email.touched"
+                                                [class.has-success]="email.valid" #email="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="MobileNo">Mobile No : </strong>
+                                            <input type="tel" pattern="^\d{10}$" class="form-control" id="MobileNo"
+                                                [disabled]="true" required [(ngModel)]="profileModel.MobileNo"
+                                                name="MobileNo" #mobileNo="ngModel" minlength=10 maxlength=10>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="chanPartAddressLine1">
+                                                Address : </strong>
+                                            <input type="text" class="form-control" id="chanPartAddressLine1"
+                                                [disabled]="!isEdit" required [(ngModel)]="profileModel.AddressLine1"
+                                                name="chanPartAddressLine1"
+                                                [class.error]="chanpartAddressLine1.invalid && chanpartAddressLine1.touched"
+                                                [class.has-success]="chanpartAddressLine1.valid"
+                                                #chanpartAddressLine1="ngModel"
+                                                pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="chanPartCity">
+                                                City :</strong>
+                                            <input type="text" class="form-control" id="chanPartCity"
+                                                [disabled]="!isEdit" required [(ngModel)]="profileModel.City"
+                                                name="chanPartCity"
+                                                [class.error]="chanpartCity.invalid && chanpartCity.touched"
+                                                [class.has-success]="chanpartCity.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                                #chanpartCity="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="chanPartState">State :</strong>
+                                            <input type="text" class="form-control" id="chanPartState"
+                                                [disabled]="!isEdit" [(ngModel)]="profileModel.State"
+                                                name="chanPartState"
+                                                [class.error]="chanPartState.invalid && chanPartState.touched"
+                                                [class.has-success]="chanPartState.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                                #chanPartState="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="chanPartCountry">Country :</strong>
+                                            <input type="text" class="form-control" id="chanPartCountry"
+                                                [disabled]="!isEdit" [(ngModel)]="profileModel.Country"
+                                                name="chanPartCountry"
+                                                [class.error]="chanPartCountry.invalid && chanPartCountry.touched"
+                                                [class.has-success]="chanPartCountry.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                                #chanPartCountry="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <strong for="chanPartPincode">Pincode :</strong>
+                                            <input type="tel" pattern="^\d{6}$" class="form-control" minlength=6
+                                                maxlength=6 id="chanPartPincode" [disabled]="!isEdit"
+                                                [(ngModel)]="profileModel.Pincode" name="chanPartPincode"
+                                                #chanPartPincode="ngModel"
+                                                [class.error]="chanPartPincode.invalid && chanPartPincode.touched"
+                                                [class.has-success]="chanPartPincode.valid">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-12">
+                                        <mat-divider class="py-2"></mat-divider>
+                                        <button type="button" class="btn pull-right btn-primary px-3 py-2 ml-2 mr-2"
+                                            [disabled]="!profileForm.valid || profileModel.btnFlag"
+                                            (click)="onUpload(profileForm)">
+                                            Submit
+                                        </button>
+                                        <button class="btn btn-light px-3 py-2 pull-right">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+</div>

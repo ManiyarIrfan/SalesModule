@@ -1,0 +1,298 @@
+<form #CustFeedbackForm="ngForm">
+    <div class="container-fluid" id="scrolltop">
+        <div class="row">
+            <div class="col-sm-12">
+                <header>
+                    <a id="logo">Kekarav</a>
+                </header>
+                <div class="zoombtn">
+                    <button class="btn pull-right mobile" (click)="zoomin()"><i class="fa  fa-search-plus fa-lg"
+                            aria-hidden="true"></i>
+                    </button>
+                    <button class="btn pull-right mobile" (click)="zoomout()"><i class="fa   fa-search-minus fa-lg"
+                            aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-9 imgpo">
+                        <section id="hero1" class="hero" style="zoom: 85%; ">
+                            <div class="main">
+                                <img usemap="#image-map" id="map" style="cursor: no-drop;"
+                                    src="../../../../assets/images/new layout-Model_pages-to-jpg-0001.jpg" alt="">
+                                <map name="image-map">
+                                    <span *ngFor="let item of MappingData;trackBy:trackByFn;">
+                                        <area target="_blank" alt="{{item.Amenities}}"
+                                            (click)="viewImages(item,'ImageMap')" placement="right"
+                                            data-toggle="tooltip" title="{{item.Amenities}}" class="pointer"
+                                            coords="{{item.coords}}" shape="{{item.shape}}">
+                                    </span>
+                                </map>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-sm-3 goteaser">
+                        <div class="o-stage">
+                            <div class="c-video-thumbnail text-center" (click)="viewPresentation('video')">
+                                <div class="c-video-thumbnail__content c-video-thumbnail__contenticon">
+                                    <img class="o-image--adaptive"
+                                        src="../../../../assets/images/TeaserThumbnail.PNG" />
+                                </div>
+                                <div class="captiontitle">View Kekarav Teaser</div>
+                            </div>
+                            <div class="c-video-thumbnail text-center" (click)="viewPresentation('PPT')">
+                                <div class="c-video-thumbnail__content c-ppt-thumbnail__contenticon">
+                                    <img class=" " src="../../../../assets/images/Ppthumbnail.PNG" />
+                                </div>
+                                <div class="captiontitle">View Kekarav Presentation</div>
+                            </div>
+                            <div class="c-video-thumbnail text-center" (click)="viewPresentation('Feedback')">
+                                <div class="c-video-thumbnail__content c-feedback-thumbnail__contenticon">
+                                    <img class=" " src="../../../../assets/images/feedbackthumbnail.jpg" />
+                                </div>
+                                <div class="captiontitle">Overall Site Feedback</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row msgpos" style="margin-bottom: 1em;">
+                    <div class="col-sm-12 msgpos col-xs-12 text-center justify-content-md-center "
+                        style="padding-top: 1.52em;margin-top: 0em;">
+                        <h3 class="text-muted headbtn pull-left"><b>Please scroll below to review project
+                                features. We would love to hear your Rating & Feedback on each area.</b></h3>
+                        <hr class="hrpos">
+                    </div>
+
+                    <div class="col-sm-12 col-xs-12 text-center">
+                        <h3 class="text-center text-danger headbtn" (click)="SectorSort('All')">All </h3>
+                        <h3 class="text-center headbtn linkstyle optioncolor"
+                            *ngFor="let headitem of MainHeader;trackBy:trackByFn" (click)="SectorSort(headitem)">
+                            {{headitem}}
+                        </h3>
+                    </div>
+                </div>
+                <div class="row mb-4" *ngFor="let item of SectorHeader; trackBy: trackByFn;">
+                    <div class="col-sm-12 col-xs-12">
+                        <h3 class=" text-left font-weight-bold text-muted pointer ml-1">
+                            <span class="px-2 bg-warning"></span>&nbsp;{{item}}
+                        </h3>
+                    </div>
+                    <div class="col-sm-12  col-xs-12" style="margin-bottom: 5em;">
+                        <div class="row rowstyle"
+                            *ngFor="let SelectedSector of FinalData[item]; trackBy: trackByFn;let sr=index">
+                            <div class="col-sm-12 col-xs-12 amenities">
+                                <strong>{{sr+1}}. {{SelectedSector.Amenities}} :
+                                </strong>
+                                <!-- <hr class="hrstyle"> -->
+                            </div>
+                            <div class="col-sm-2 col-xs-12 keymapimg">
+                                <img class="staticimg CenterItems" (click)="viewImages(SelectedSector,'keymap')"
+                                    src="{{SelectedSector.FileURL}}" width="50px" alt="">
+                            </div>
+                            <div class="col-sm-3 col-xs-12 carouselpos">
+                                <ngb-carousel #myCarousel="ngbCarousel" class="mycarousel-Size">
+                                    <ng-template ngbSlide id="{{i}}"
+                                        *ngFor="let image of SelectedSector.Arena; trackBy: trackByFn;let i = index">
+                                        <div class="picsum-img-wrapper">
+                                            <img class="imgstyle" (click)="viewImages(image,'Slider')"
+                                                [src]="image.FileURL" alt="Random slide">
+                                        </div>
+                                        <div class="carousel-caption">
+                                            <strong>{{image.Arena}}</strong>
+                                        </div>
+                                    </ng-template>
+                                </ngb-carousel>
+                            </div>
+                            <div class="col-sm-3 col-xs-12 arenalist">
+                                <div class="tab-content tabscroll CenterItems listitems" id="style-2">
+                                    <div class="tab-pane active " id="a ">
+                                        <ol class="list-group pull-left"
+                                            *ngFor="let listItem of SelectedSector.TempArenaList; trackBy: trackByFn;let i=index">
+                                            <span class="titleitem text-muted ContentStyle"
+                                                style="font-size: 18.5px;">{{i+1}}.&nbsp;
+                                                {{listItem.ArenaNames}}</span>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-xs-12 arenalist" style="margin-bottom: 1em;">
+                                <i [hidden]="SelectedSector.Feedback==='' || SelectedSector.Rating==='' || SelectedSector.EditParameters"
+                                    class="fa fa-edit pull-right" (click)="EditDetails(SelectedSector)"
+                                    style="font-size:20px">
+                                </i>
+                                <div class="content">
+                                    <main>
+                                        <span class="titleitem text-muted"> Rating : </span>
+                                        <bar-rating [max]="5" required name="rating" [theme]="'stars'"
+                                            [disabled]="SelectedSector.Rating===null"
+                                            [ngModelOptions]="{standalone: true}" [(ngModel)]="SelectedSector.Rating">
+                                        </bar-rating>
+                                        <form mv-multiple="feedback">
+                                            <span class="titleitem text-muted"> Feedback : </span>
+                                            <textarea property="comment" cols="30" rows="10" required
+                                                [ngModelOptions]="{standalone: true}"
+                                                [(ngModel)]="SelectedSector.Feedback"
+                                                (keyup)="ViewSubmit(SelectedSector)"
+                                                placeholder="Please Enter  your Feedback...">
+                                            </textarea>
+                                        </form>
+                                        <span>
+                                            <button style="margin-right: 0.51em !important;"
+                                                [hidden]="!SelectedSector.Rating || !SelectedSector.Feedback"
+                                                [disabled]="SelectedSector.disablebtn || !SelectedSector.EditParameters"
+                                                class="mv-save pull-right mvcolorcan" type="button"
+                                                (click)="CancelEditedFeedback(SelectedSector)">
+                                                Cancel
+                                            </button>
+                                        </span>
+                                        <span>
+                                            <button style="margin-right: 0.51em !important;"
+                                                [hidden]="!SelectedSector.Rating || !SelectedSector.Feedback"
+                                                [disabled]="SelectedSector.disablebtn || !SelectedSector.EditParameters"
+                                                class="mv-save pull-right mvcolorSucc" type="button"
+                                                (click)="InsertFeedback(SelectedSector)">
+                                                Submit
+                                            </button>
+                                        </span>
+                                    </main>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row margin-btm">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10 text-center">
+                        <div class="mv-bar">
+                            <button class="mv-save" type="button" [disabled]="disablebtn" (click)="InsertFeedback()">
+                                Submit Feedback
+                            </button>
+                        </div>
+                        <h4 class="text-muted">
+                            <strong >
+                                “This exercise is only for soliciting views of prospective
+                                enquiries and TRU Realty
+                                is not soliciting any business out of this and it should be not be construed as offer to
+                                sale as RERA is not yet received”
+                            </strong>
+                        </h4>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</form>
+
+<div bsModal #viewLargeModel="bs-modal" class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modaldialogstyle modal-dialog-scrollable">
+        <div class="modal-content" (click)="viewLargeModel.hide()" style="margin-top: 6em;">
+            <div class="modal-body">
+                <img src="{{SelectedImg}}" class="d-block w-100 img-fluid " alt="">
+                <div class="row">
+                    <div class="col-sm-12 text-center" style="padding: 8px;">
+                        <!-- <h5 *ngIf="SelectedSectorTitle">{{SelectedSectorTitle}}</h5> -->
+                        <!-- <button type="button" class="btn btn-danger btn-sm"
+                            (click)="viewLargeModel.hide();SelectedSectorTitle=''">
+                            <i class="fa fa-times" aria-hidden="true"></i> Close
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- <div class="row"> -->
+                <div class="col-sm-8">
+                    <h5 class="pull-left" *ngIf="SelectedSectorTitle">{{SelectedSectorTitle}}</h5>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-danger btn-sm pull-right"
+                        (click)="viewLargeModel.hide();SelectedSectorTitle=''">
+                        <i class="fa fa-times" aria-hidden="true"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #MapviewLargeModel="bs-modal" class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content" (click)="MapviewLargeModel.hide()" style="margin-top:2em;">
+            <img src="{{SelectedImg}}" class="d-block w-100 img-fluid" alt="">
+            <div class="row">
+                <div class="col-sm-12 text-center" style="padding: 8px;">
+                    <h5 *ngIf="SelectedSectorTitle">{{SelectedSectorTitle}}</h5>
+                    <button type="button" class="btn btn-danger btn-sm"
+                        (click)="viewLargeModel.hide();SelectedSectorTitle=''">
+                        <i class="fa fa-times" aria-hidden="true"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" cdkDrag mdbModal #PlayTeaser="mdbModal" id="PlayTeaser" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="false" [config]="{backdrop: false, ignoreBackdropClick: true}">
+    <div class="modal-dialog modal-notify modal-info modal-lg" role="document">
+        <div class="modal-content">
+            <div class="model-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12" *ngIf="PresentationDetails['Action']==='video'">
+                            <br>
+                            <video controls autoplay style="width: 100%; height: auto;">
+                                <source src="{{PresentationDetails['Video']}}" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-sm-12 text-center" *ngIf="PresentationDetails['Action']==='Feedback'">
+                            <form #FeedbackForm="ngForm">
+                                <div>
+                                    <div class="card-header">
+                                        <strong>Please provide your feedback for overall Kekarav site.</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <textarea type="text" rows="5" class="form-control" id="Details"
+                                                    name="Details" [class.error]="Details.invalid && Details.touched"
+                                                    [class.has-success]="Details.valid" required
+                                                    [(ngModel)]="FeedBackModel.Details"
+                                                    placeholder="Enter your feedback*" #Details="ngModel"></textarea>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row ">
+                                            <div class="col-sm-12 text-center justify-content-md-center">
+                                                <button type="button" class="btn btn-danger btn-sm pull-right  "
+                                                    (click)="PlayTeaser.hide()">
+                                                    <i class="fa fa-paper-plane text-white"></i> Cancel</button>
+                                                <button type="button" class="btn btn-primary btn-sm pull-right  "
+                                                    (click)="OnFeedbackSubmit(FeedbackForm)"
+                                                    [disabled]="!FeedBackModel.Details || FeedBackModel.Disable">
+                                                    <i class="fa fa-paper-plane text-white"></i> Submit</button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-12 text-right" [hidden]="PresentationDetails['Action']==='Feedback'">
+                            <button type="button" class="btn btn-danger btn-md" (click)="PlayTeaser.hide()">
+                                <i class="fa fa-times text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loggedInuserDetails.UserType==='ChannelPartner'">
+    <app-feedback></app-feedback>
+</div>

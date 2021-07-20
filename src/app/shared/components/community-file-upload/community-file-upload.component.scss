@@ -1,0 +1,104 @@
+.profile-user-img {
+    width: 150px;
+    height: 150px;
+    border: 2px solid #afafaf;
+    padding: 3px;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+}
+.font-size14 {
+    font-size: 14px;
+}
+.padleft {
+    // padding-left: 3rem;
+    padding-left: 1.8rem;
+}
+.avatar-upload {
+    position: relative;
+    max-width: 205px;
+    margin: auto;
+    margin-bottom: 20px;
+
+    .avatar-edit {
+        position: absolute;
+        right: 40px;
+        z-index: 1;
+        top: 90px;
+        left: 8.2em;
+        input {
+            display: none;
+            + label {
+                display: inline-block;
+                width: 34px;
+                height: 34px;
+                margin-bottom: 0;
+                border-radius: 100%;
+                background: #05050505;
+                border: 1px solid #d2d6de;
+                box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+                cursor: pointer;
+                font-weight: normal;
+                transition: all 0.2s ease-in-out;
+                &:hover {
+                    background: #161616da;
+                    border-color: #d6d6d6;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 280px) and (max-width: 500px) {
+    .avatar-upload {
+        margin-left: 6em;
+    }
+    .padleft {
+        padding-left: 0px !important;
+    }
+
+    .rowpadd {
+        padding: 2px 15px;
+    }
+}
+.uploadbtn {
+    border: 1px solid #ededed66 !important;
+    border-radius: 5px;
+    color: white;
+    // background: #33b5e5;
+    background: #455374;
+    outline: #ffffff00 !important;
+}
+
+.fileimg {
+    width: 25px;
+    margin: 0px 4px 1px -9px;
+}
+
+:host ::ng-deep {
+    .mat-progress-bar {
+        width: 80% !important;
+        border-radius: 4px !important;
+    }
+
+    .mat-progress-bar-fill::after {
+        background-color: #5fd4ff;
+    }
+}
+
+.filefont {
+    font-size: 13px;
+}
+
+.modal-dialog .modal-content {
+    border: 0;
+    border-top-left-radius: 1.25em !important;
+    border-top-right-radius: 1.25em !important;
+    margin-top: 5em;
+    /* height: 14px; */
+}
+.modal-dialog .modal-content .modal-header {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    background: #dc3545;
+    height: 40px;
+    color: white;
+}

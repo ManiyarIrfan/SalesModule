@@ -1,0 +1,360 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<!-- Architect List for Selection  -->
+<br />
+<form #selectArchitectForm="ngForm" *ngIf="!isSpinnerActive">
+    <div class="col-sm-12">
+        <div class="row " *ngIf="subProjectDetails.Type === 'Customer Driven' && architectList.length>0">
+            <button class="btn btn-custom btn-md pull-right btnPos" (click)="opendesignBrief()"> <i
+                    class="fa fa-edit"></i> Plot No - {{subProjectDetails.FlatNo}} - Design Brief</button> &nbsp;
+            <button class="btn btn-custom btn-md pull-right" (click)="openOptin()" *ngIf="showOptInBtn"> <i
+                    class="fa fa-edit"></i> Contractor/Supplier(OPT IN)</button>
+        </div>
+        <span class="required" *ngIf="showDataNotFoundMessage">No Data Found</span>
+        <div *ngIf="!showDataNotFoundMessage">
+            <div class="row" *ngIf="!showSiteRating">
+                <div
+                    [ngClass]="{'col-sm-12':subProjectDetails.Type === 'Design Competition'||subProjectDetails.Type === 'Design Competition_multi','col-sm-7':subProjectDetails.Type === 'Customer Driven'}">
+                    <div class="row">
+                        <mat-card *ngFor="let architect of architectList; trackBy: trackByFn; let i=index;"
+                            (click)="architectForInteraction(architect)" class="cardforLayout pointer">
+                            <div class="row">
+                                <Button class="btn-primary btn-sm btn-color pull-left"
+                                    (click)="showPortfolio(architect)">Portfolio</Button>
+                            </div>
+                            <div class="row justify-content-center">
+                                <img src="../../../../../../../assets/images/user.png" alt="profile card"
+                                    class="profile-card__img">
+                            </div>
+                            <div class="row justify-content-center">
+                                <!-- <div *ngIf="loggedInuserDetails.UserType !=='Customer'"> -->
+                                <div
+                                    *ngIf="subProjectDetails.Type === 'Design Competition'||subProjectDetails.Type === 'Design Competition_multi'">
+                                    <mat-checkbox #chkEnable [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="architect.checked" name="architectGroup[{{i}}]" color="primary"
+                                        (ngModelChange)="selectArchitect(architect,$event,selectedArchitectList)">
+                                    </mat-checkbox>
+                                    &nbsp;&nbsp;<strong> <b>
+                                            {{architect.VendorName |titlecase}} </b></strong><br />
+                                </div>
+                                <div *ngIf="subProjectDetails.Type === 'Customer Driven'">
+                                    <!-- <div *ngIf="loggedInuserDetails.UserType ==='Customer'"> -->
+                                    <mat-radio-group color="primary" name="selectarchitect"
+                                        [(ngModel)]="selectedArchitect">
+                                        <mat-radio-button [value]="architect" [checked]="architect.checked">
+                                            &nbsp;&nbsp;<strong> <b>
+                                                    {{architect.VendorName |titlecase}} </b></strong>
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <strong> <b> ({{architect.FirmName}}) </b></strong>
+                            </div>
+                            <div class="row justify-content-center">
+                                <button class="btn btn-sm btn-link" (click)="openWebLinkInNewTab(architect.FirmLink)"
+                                    matTooltip="{{architect.FirmLink}}"> <strong> <i class="fa fa-eye"></i>
+                                        Firm-Weblink
+                                    </strong></button>
+                            </div>
+                            <div class="row justify-content-center">
+                                <strong> <b>Collaborating Since:</b>
+                                    {{architect.CreatedOn| date:"d MMM y"}}</strong>
+                            </div>
+                            <div class="row">
+
+                            </div>
+                            <!-- <strong class="required" *ngIf="!fileDetails[architect.ETExecutionId]">Response Pending
+                                From Architect</strong> -->
+                            <div class="table-responsive" *ngIf="fileDetails[architect.ETExecutionId]">
+                                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Files</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let file of fileDetails[architect.ETExecutionId]; trackBy: trackByFn;">
+                                            <td> <a data-toggle="tooltip" (click)="openFileInNewTab(file.FileUrl)">
+                                                    <span> <i class="fa fa-eye"></i> &nbsp;
+                                                        {{file.FileName ? ((file.FileName.length>40) ? (file.FileName | slice:0:40)+'...' : file.FileName) :''}}
+                                                    </span>
+                                                </a> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </mat-card>
+                    </div>
+                    <br />
+                    <div class="col-sm-12 text-center">
+                        <button class="btn btn-primary" (click)="submitArchitectList(selectedArchitect)">Submit <i
+                                class="fa fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <!-- <div class="col-sm-5" *ngIf="loggedInuserDetails.UserType === 'Customer'"> -->
+                <div class="col-sm-5" *ngIf="subProjectDetails.Type === 'Customer Driven'">
+                    <app-interact-details></app-interact-details>
+                </div>
+            </div>
+        </div>
+        <!-- Architect List for Rating/Review -->
+        <strong class="required" *ngIf="ratingnoDataFound">No Data Found</strong>
+        <div *ngIf="showSiteRating">
+            <div class="row" *ngIf="!ratingnoDataFound">
+                <mat-card class="cardforLayout"
+                    *ngFor="let architect of reviewconsultantList; trackBy: trackByFn; let i=index;">
+                    <div class="row justify-content-center">
+                        <img src="../../../../../../../assets/images/user.png" alt="profile card"
+                            class="profile-card__img">
+                    </div>
+                    <div class="row justify-content-center">
+                        &nbsp;<strong> <b>{{architect.VendorName |  titlecase}} </b></strong> &nbsp;
+                    </div>
+                    <div>
+                        <bar-rating [(rate)]="architect.Rating" [max]="5" name="frating" [theme]="'stars'"
+                            [readOnly]="true"> </bar-rating>
+                    </div>
+                    <strong><b> Feedback : </b> </strong> <strong>{{architect.Feedback}}</strong>
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>Files</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let file of fileDetails[architect.ETExecutionId]; trackBy: trackByFn;">
+                                <td> <a matTooltip="Click to Open {{file.FileName }}"
+                                        (click)="openFileInNewTab(file.FileUrl)">
+                                        <span class="linking-text"> <i class="fa fa-eye"></i>
+                                            &nbsp;
+                                            {{file.FileName ? ((file.FileName.length>40) ? (file.FileName | slice:0:40)+'...' : file.FileName) :''}}
+                                        </span>
+                                    </a> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button mat-button color="warn" (click)="openRatingModal(architect)">
+                        <b> Rating / Review </b></button>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal Pop Up for Rating to Architect -->
+<div bsModal cdkDrag #RatingModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">{{TitleModal}}</h4>
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="RatingModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <div *ngIf="!Portfolio">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h5 class="purple-text margin-bottom">Rating</h5>
+                        </div>
+                        <div class="col-sm-8">
+                            <bar-rating [max]="5" name="frating" [theme]="'stars'" [(ngModel)]="ratingDetails.Rating">
+                            </bar-rating>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <textarea required class="form-control" placeholder="Feedback" rows="3"
+                            [(ngModel)]="ratingDetails.Feedback"></textarea>
+                    </div>
+                    <br />
+                    <div class="row justify-content-center">
+                        <button type="button" class="btn btn-primary btn-sm" [disabled]="!ratingDetails.Rating"
+                            (click)="submitRating(ratingDetails)"> Submit Rating </button>
+                    </div>
+                </div>
+                <div *ngIf="Portfolio">
+                    <strong *ngIf="getarchitectData.length===0" class="required">No Data Found</strong>
+                    <div class="table-responsive" *ngIf="getarchitectData.length>0">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Files</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let file of getarchitectData; trackBy: trackByFn;">
+                                    <td> <a matTooltip="Click to Open" (click)="openFileInNewTab(file.Portfolio)">
+                                            <span> <i class="fa fa-eye"></i>
+                                                &nbsp;{{file.filename}}</span>
+                                        </a> </td>
+                                    <td>
+                                        {{file.Document}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Pop Up for Design Brief to Architect -->
+<div bsModal cdkDrag #DesignBriefModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">Design Brief / Requirements</h4>
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="DesignBriefModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[2] }} : </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[2]]; trackBy: trackByFn; let i = index;">
+                        <mat-checkbox #chkEnable [ngModelOptions]="{standalone: true}" [(ngModel)]="bhk.checked"
+                            (ngModelChange)="onChange(bhk,$event,selectedList)" name="groundFloorGroup[{{i}}]">
+                            <strong class="fontweight"> {{bhk.SubPreference}}</strong> </mat-checkbox>
+                        &nbsp; &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[3] }} : </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[3]]; trackBy: trackByFn; let i = index;">
+                        <mat-checkbox #chkEnable [ngModelOptions]="{standalone: true}" [(ngModel)]="bhk.checked"
+                            (ngModelChange)="onChange(bhk,$event,selectedList)" name="firstfloorGroup[{{i}}]">
+
+                            <strong class="fontweight"> {{bhk.SubPreference}}</strong> </mat-checkbox>
+                        &nbsp; &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[4] }} : </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[4]]; trackBy: trackByFn; let i = index;">
+                        <mat-checkbox #chkEnable [ngModelOptions]="{standalone: true}" [(ngModel)]="bhk.checked"
+                            (ngModelChange)="onChange(bhk,$event,selectedList)" name="terraceGroup[{{i}}]">
+                            <strong class="fontweight"> {{bhk.SubPreference}}</strong> </mat-checkbox>
+                        &nbsp; &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[6] }}: </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[6]]; trackBy: trackByFn; let i = index;">
+                        <mat-checkbox #chkEnable [ngModelOptions]="{standalone: true}" [(ngModel)]="bhk.checked"
+                            (ngModelChange)="onChange(bhk,$event,selectedList)" name="otherfeatureGroup[{{i}}]">
+                            <strong class="fontweight"> {{bhk.SubPreference}}</strong></mat-checkbox>
+                        &nbsp; &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[7] }}: </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[7]]; trackBy: trackByFn; let i = index;">
+                        <mat-checkbox #chkEnable [ngModelOptions]="{standalone: true}" [(ngModel)]="bhk.checked"
+                            (ngModelChange)="onChange(bhk,$event,selectedList)"
+                            (ngModelChange)="onChange(bhk,$event,selectedList)" name="specificationGroup[{{i}}]"><strong
+                                class="fontweight"> {{bhk.SubPreference}}</strong>
+                        </mat-checkbox>
+                        &nbsp; &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[0] }} : </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[0]]; trackBy: trackByFn;">
+                        <mat-radio-group [(ngModel)]="designBriefModel.BHK" name="bhkGroup">
+                            <mat-radio-button [value]="bhk.CPSubId"> <strong
+                                    class="fontweight">{{bhk.SubPreference}}</strong>
+                            </mat-radio-button>&nbsp;&nbsp;
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[1] }} : </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[1]]; trackBy: trackByFn;">
+                        <mat-radio-group [(ngModel)]="designBriefModel.Parking" name="ParkingGroup">
+                            <mat-radio-button [value]="bhk.CPSubId"> <strong
+                                    class="fontweight">{{bhk.SubPreference}}</strong>
+                            </mat-radio-button>&nbsp;&nbsp;
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong> <b class="HtextSize">{{keys[5] }} : </b></strong>
+                    </div>
+                    <div *ngFor="let bhk of designBrief[keys[5]]; trackBy: trackByFn;">
+                        <mat-radio-group [(ngModel)]="designBriefModel.WaterStorage" name="waterstorageGroup">
+                            <mat-radio-button [value]="bhk.CPSubId"> <strong
+                                    class="fontweight">{{bhk.SubPreference}}</strong>
+                            </mat-radio-button>&nbsp;&nbsp;
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <strong> <b class="HtextSize"> Remark :</b></strong>
+                        <textarea name="remark" id="remark" cols="30" rows="3" class="form-control"
+                            [(ngModel)]="designBriefModel.Description" #remark="ngModel"></textarea>
+                    </div>
+                </div>
+                <br />
+                <div class="row justify-content-center">
+                    <button class="btn btn-primary btn-md" (click)="submitDesignBrief(designBriefModel)">
+                        <i class="fa fa-paper-plane"></i> Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pop Up for OPT IN form for Customer -->
+<div bsModal cdkDrag #OptinFormModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">OPT IN Form</h4>
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="OptinFormModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <h5> <b> TRU has build aggregation system which brings 100's of Contractor and Supplier on same
+                        platform.This functionality is only available for TRU Customer.
+                        <br /> By Clicking the below agree button you accept the "Terms & Conditions".You will be
+                        selecting Supplier and Contractor by yourself. </b></h5>
+                <br />
+                <mat-checkbox name="termsandcondition" [(ngModel)]="designBriefModel.OptIn"
+                    [disabled]="disableForSelected">I Accept all Terms and Condition</mat-checkbox>
+                <br />
+                <h5 *ngIf="disableForSelected">Please check your registered Email and SMS for Url, LoginId and
+                    Password </h5>
+                <div class="row justify-content-center modal-footer" *ngIf="!disableForSelected">
+                    <button class="btn btn-success btn-md" [disabled]="!designBriefModel.OptIn"
+                        (click)="submitDesignBrief(designBriefModel)"> <i class="fa fa-check-circle"></i>
+                        Agree</button> &nbsp;
+                    <button class="btn btn-danger btn-md"> <i class="fa fa-times-circle"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

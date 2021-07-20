@@ -1,0 +1,12 @@
+table thead th {
+  width: 5% !important;
+}
+@media (min-width: 992px) {
+  .modal-lg {
+    max-width: 1180px;
+  }
+}
+.modal-title {
+  margin-left: 29px;
+  line-height: 0.5;
+}

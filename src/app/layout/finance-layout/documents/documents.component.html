@@ -1,0 +1,94 @@
+<div class="main-container" *ngIf="!Flag">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="page-title-box">
+                    <div class="pull-right">
+                        <ol class="breadcrumb-data">
+                            <li class="breadcrumbitem">
+                                <a href="">Home &nbsp;/</a>
+                            </li>
+                            <li class="breadcrumbitem active">
+                                <a class="pl-2" href="">Documents</a>
+                            </li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title pt-2">Documents</h4>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-prepend">
+                                            <button type="button" class="btn btn-gradient-primary"><i
+                                                    class="fas fa-search"></i></button>
+                                        </span>
+                                        <input name="searchtext" [(ngModel)]="searchtext" type="text"
+                                            id="example-input1-group2" class="form-control" placeholder="Search">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <button (click)="createNew()" class="pull-right btn btn-primary">Upload
+                                    Document</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table mb-0 table-centered">
+                                        <thead>
+                                            <tr>
+                                                <th>File</th>
+                                                <th>Property Name</th>
+                                                <th>Doc Name</th>
+                                                <th>Remark</th>
+                                                <th>Created On</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let item of documentList| filter:searchtext | paginate: { itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn;let i=index;">
+                                                <td>
+                                                    <ng-container
+                                                        *ngIf="getFormatedData(item,item.DocURL && item.DocURL.substr(item.DocURL.lastIndexOf('.') + 1))">
+                                                        <img id="imageLogo{{i+1}}"
+                                                            (click)="openFileInNewTab(item.DocURL)" class="docStyle"
+                                                            src="{{item.docStyle}}" alt="Logo image{{i+1}}" />
+                                                    </ng-container>
+                                                </td>
+                                                <td>{{item.PropertyName | titlecase}}</td>
+                                                <td>{{item.DocName | titlecase}}</td>
+                                                <td>{{item.Remark}}</td>
+                                                <td>{{item.CreatedOn | date:'d MMM y'}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <tfoot class="pull-right" *ngIf="documentList.length > 10">
+                                        <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                                    </tfoot>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="Flag">
+    <app-uploaddoc (goBack)="Flag=$event;getDocs();"></app-uploaddoc>
+</ng-container>

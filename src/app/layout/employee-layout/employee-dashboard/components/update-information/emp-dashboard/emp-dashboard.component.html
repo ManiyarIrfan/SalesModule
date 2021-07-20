@@ -1,0 +1,277 @@
+<br />
+<form>
+    <div *ngIf="!showtoManager">
+        <tru-employee-analytics (emitEvent)="receiveMessage($event)"
+            (emitopportunityEvent)="receiveLeadMessage($event)"> </tru-employee-analytics>
+    </div>
+    <fieldset class="scheduler-border" *ngIf="loggedInuserDetails.Role === 2 || loggedInuserDetails.Role === 1">
+        <legend class="scheduler-border"><input type="text" autocomplete="off" [alwaysShowCalendars]="true"
+                [ranges]="ranges" [linkedCalendars]="true" ngxDaterangepickerMd id="date" name="date" #date="ngModel"
+                [(ngModel)]="selectedDateRange" class="form-control calenderwidth" placeholder="Select Dates"
+                [class.error]="date.invalid && date.touched" (change)="changeDateCRM(selectedDateRange)"
+                [class.has-success]="date.valid" /></legend>
+        <div class="row">
+            <div class="col-sm-2 box purplebox pointer" ngbTooltip="Order Created" (click)="Show_Modal('OrderCount')">
+                <div class="row">
+                    <div class="col-sm-12 purplebag ">
+                        <span class="text-center heading">Order</span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 class="text-center countppl">{{totalOrders}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 box purplebox pointer" ngbTooltip="Payment Due" (click)="Show_Modal('PaymentDue')">
+                <div class="row">
+                    <div class="col-sm-12 purplebag">
+                        <span class="text-center heading">Payment Due</span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 class="text-center countppl">{{PaymentDue}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 box purplebox pointer" ngbTooltip="Payment Receipt"
+                (click)="Show_Modal('PaymentReceipt')">
+                <div class="row">
+                    <div class="col-sm-12 purplebag">
+                        <span class="text-center heading">Payment Receipt</span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 class="text-center countppl">{{PaymentReceipt}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 box purplebox pointer" ngbTooltip="Agreement pending"
+                (click)="Show_Modal('AgreementPending')">
+                <div class="row">
+                    <div class="col-sm-12 purplebag">
+                        <span class="text-center heading"> Agreement Pending</span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 class="text-center countppl">{{AgreementPending}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 box purplebox pointer" ngbTooltip="Agreement Done"
+                (click)="Show_Modal('AgreementDone')">
+                <div class="row">
+                    <div class="col-sm-12 purplebag">
+                        <span class="text-center heading"> Agreement Done</span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 class="text-center countppl">{{AgreementDone}}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <form #EmpDashboardRatioForm="ngForm" [hidden]="loggedInuserDetails.Role === 2">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">KPIs</legend>
+            <div class="row">
+                <div class="col-sm-5">
+                    <Strong> <span class="required">*</span>Select Date: </Strong>
+                     <span class="required"> {{errormessage}}</span>
+                    <input type="text" class="form-control" id="kpidate" name="kpidate" ngxDaterangepickerMd
+                        [(ngModel)]="selected" (change)="SelectAmountSpend(null,ratioModel,selected)"
+                        [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges"
+                        [linkedCalendars]="true" autocomplete="off" required #kpidate="ngModel"
+                        placeholder="Select Dates" [class.error]="kpidate.invalid && kpidate.touched"
+                        [class.has-success]="kpidate.valid"/>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <Strong>Select Project: </Strong>
+                            <select class="form-control" id="ProjectName" name="ProjectName"
+                                [(ngModel)]="ratioModel.searchProjectName" #projectName="ngModel"
+                                (change)="SelectAmountSpend($event.target.value,ratioModel,selected)"
+                                [class.error]="projectName.invalid && projectName.touched"
+                                [class.has-success]="projectName.valid">
+                                <option value="">--Select--</option>
+                                <option *ngFor="let item of selectedProjectName;trackBy: trackByFn"
+                                    [hidden]="item.ProjectName === 'Common'">
+                                    {{item.ProjectName}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <Strong id="titlefont">Enter Spend Amount: </Strong>
+                                    <input type="text" id="spAmount" name="spAmount" class="form-control"
+                                        [(ngModel)]="ratioModel.totalSpend" placeholder="Spend Amount"
+                                        autocomplete="off" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <br>
+                                    <button (click)="onButtonClick(selected,ratioModel)" class="btn btn-primary"
+                                        [disabled]="!EmpDashboardRatioForm.form.valid">
+                                        Search Ratio</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col-sm-4 boxCard" [ngClass]="new ?'newclass':''" id="enq1">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <i class="fa fa-comments cardfa"></i>
+                                </div>
+                                <div class="col-lg-8">
+                                    <h3 class="text-center heading">Enquiry to Site Visit</h3>
+                                    <br>
+                                    <h3 class="text-center count">{{refToSiteVisitRatio}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 boxCard" [ngClass]="new ?'newclass':''" id="enq2">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <i class="fa fa-shopping-cart cardfa"></i>
+                                </div>
+                                <div class="col-lg-8">
+                                    <h3 class="text-center heading">Site Visit to Order</h3>
+                                    <br>
+                                    <h3 class="text-center count">{{siteToOrderRatio}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 boxCard" [ngClass]="new ?'newclass':''" id="enq3">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <i class="fa fa-money cardfa"></i>
+                                </div>
+                                <div class="col-lg-8">
+                                    <h3 class="text-center heading">Spend on Enquiry</h3>
+                                    <br>
+                                    <h3 class="text-center count">{{spendRatio}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <!-- Modal Pop for Show CRM Reports -->
+    <div bsModal #showcrmReportModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+        data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+        <div class="modal-dialog lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-sm-12">
+                        <h3 class="modal-title">{{Modal_Title}}</h3>
+                        <img id="cross" class="pull-right" src="assets/images/crossnew.png" alt="X"
+                            (click)="showcrmReportModal.hide()" />
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center" *ngIf="isLoading">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                    <div *ngIf="!isLoading">
+                        <div class="table-responsive scrollbar" id="style-2">
+                            <table class="table table-bordered table-hover  table-sm text-nowrap  ">
+                                <thead class="thead-light">
+                                    <tr class="text-center">
+                                        <th> Order# </th>
+                                        <th>Booking</th>
+                                        <th>Customer Name </th>
+                                        <th>Flat No</th>
+                                        <th> Mobile No</th>
+                                        <th> Status</th>
+                                        <th>Agreement</th>
+                                        <th>Sales</th>
+                                        <th *ngIf="Modal_Title==='Payment Due Details'">Due Amount</th>
+                                        <th *ngIf="Modal_Title==='Payment Due Details'">Amount Paid</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchOrder"
+                                                [(ngModel)]="filterDataModel.OrderId" (keyup)="filterLeadData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchBookingDate"
+                                                [(ngModel)]="filterDataModel.BookingDate" (keyup)="filterLeadData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchLeadName"
+                                                [(ngModel)]="filterDataModel.LeadName" (keyup)="filterLeadData()">
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchMobileNo"
+                                                [(ngModel)]="filterDataModel.MobileNo" (keyup)="filterLeadData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchOrderStatus"
+                                                [(ngModel)]="filterDataModel.OrderStatus" (keyup)="filterLeadData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchAgreementDate"
+                                                [(ngModel)]="filterDataModel.AgreementDate" (keyup)="filterLeadData()">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchSalesAgentId"
+                                                [(ngModel)]="filterDataModel.SalesAgentId" (keyup)="filterLeadData()">
+                                        </td>
+                                        <td *ngIf="Modal_Title==='Payment Due Details'" colspan="2"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center"
+                                        *ngFor="let detail of crmData| paginate: {itemsPerPage:10, currentPage: q,id:'sales-pagination' };trackBy: trackByFn">
+                                        <td><button class="btn btn-sm btn-link" ngbTooltip="View order details"
+                                                (click)="goToOrderTab(detail)">{{detail.OrderId}}</button> </td>
+                                        <td>{{detail.BookingDate |date:"d MMM y"}}</td>
+                                        <td>{{detail.LeadName}}</td>
+                                        <td>{{detail.BuildingType}} - {{detail.FlatNo}} </td>
+                                        <td>{{detail.MobileNo}} </td>
+                                        <td>{{detail.OrderStatus}}</td>
+                                        <td>{{detail.AgreementDate |date:"d MMM y"}}</td>
+                                        <td>{{detail.SalesAgentId}}</td>
+                                        <td *ngIf="Modal_Title==='Payment Due Details'">{{detail.RemaningAmount}}</td>
+                                        <td *ngIf="Modal_Title==='Payment Due Details'">{{detail.TotalAmountPaid}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <tfoot class="pull-right" *ngIf="crmData.length>10">
+                                <pagination-controls id="sales-pagination" (pageChange)="q = $event">
+                                </pagination-controls>
+                            </tfoot>
+                            <div class="text-center mt-2" *ngIf="crmData.length === 0">
+                                <strong>
+                                    <span class="required"> Records Are Not Available.</span>
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="showtoManager">
+        <tru-employee-analytics (emitEvent)="receiveMessage($event)"></tru-employee-analytics>
+    </div>
+    <tru-service-request *ngIf="!showtoManager"></tru-service-request>
+    <tru-emp-interaction *ngIf="!showtoManager"></tru-emp-interaction>
+</form>

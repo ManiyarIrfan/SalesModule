@@ -1,0 +1,601 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <div *ngIf="disablebreadcrump">
+        <div class="col-sm-2 " *ngIf="architectOfOrder">
+            <button class="form-control pointer" matTooltip="Back to {{siteName}}"
+                (click)="architectOfOrder=false; disablebreadcrump= !disablebreadcrump;">
+                <i class="fa fa-arrow-left pull-left" aria-hidden="true"></i> &nbsp;
+                {{siteName ? ((siteName.length>20) ? (siteName | slice:0:20)+'...' : siteName) :''}}
+            </button>
+        </div>
+        <div class="col-sm-2 back-btn" *ngIf="!architectOfOrder">
+            <button class="form-control pointer" matTooltip="Back to {{siteName}}"
+                (click)="showsubProjectList=false || customerDnD=false">
+                <i class="fa fa-arrow-left pull-left" aria-hidden="true"></i> &nbsp;
+                {{siteName ? ((siteName.length>20) ? (siteName | slice:0:20)+'...' : siteName) :''}}
+            </button>
+        </div>
+    </div>
+    <!-- for My Site  -->
+    <div *ngIf="!showsubProjectList && !customerDnD && !architectOfOrder">
+        <mat-card *ngIf="this.dynamicURL ==='my-property'">
+            <mat-card-title>
+                <div class="row rowMargin">
+                    <div class="col-sm-12 text-center">
+                        <strong>My Property </strong>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+            </mat-card-title>
+            <Strong *ngIf="noDataFound" class="required">No Data Found</Strong>
+            <div class="row" *ngIf="!noDataFound">
+                <!-- <div class="Mymovie_card pointer" id="bright" *ngFor="let site of showOrderDetails; trackBy: trackByFn">
+                    <div class="info_section">
+                        <div class="movie_header row">
+                            <div class="col-sm-8">
+                                <ngb-carousel class="carousel-Size">
+                                    <ng-template ngbSlide *ngFor="let image of fileModel">
+                                        <img class="mylocandina" [src]="image.File" alt="Random first slide">
+                                    </ng-template>
+                                </ngb-carousel>
+                            </div>
+                            <div class="col-sm-3">
+                                <img class="mylocandina" src="../../../../../../assets/images/vaarivana.jpg"
+                                    matTooltip="Click to Open"  />
+                                <h1 (click)="myOrderDetails(site)">{{site.ProjectName}}</h1>
+                                <h4 (click)="myOrderDetails(site)">Plot No <strong> : {{site.FlatNo}}</strong></h4>
+                                <span class="city" (click)="myOrderDetails(site)">Order Id:
+                                    {{site.OrderId}}</span><br />
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-cust btn-md" (click)="myOrderDetails(site)"> View Details <i
+                                        class="fa fa-arrow-right"></i> </button><br />
+                                <button class="btn btn-cust btn-md" (click)="showModel('Constraint','')"> Plot
+                                    Constraint <i class="fa fa-eye"></i></button>
+                            </div>
+                        </div>
+                        <div class="row movie_desc_size">
+                             <div class="mymovie_desc col-sm-5"></div>
+                             <div class="mymovie_desc col-sm-5">
+                                <div class="card">
+                                    <h6><b>Files : </b></h6>
+                                    <hr>
+                                    <p class="fontweght" *ngFor="let file of fileList">
+                                        <a matTooltip="Click to Open" (click)="openFileInNewTab(file.FileUrl)">
+                                            <i class="fa fa-eye"></i> <span> {{file.FileName}} </span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="myblur_back mybright_back" (click)="myOrderDetails(site)">
+                    </div>
+                </div> -->
+                <div class="Mymovie_card pointer" id="bright" *ngFor="let site of showOrderDetails; trackBy: trackByFn">
+                    <div class="info_section"
+                        style="background: linear-gradient(to bottom, #363636d9 50%, #000000a8 100%);">
+                        <div class="row rowzoom">
+                            <div class="col-sm-6">
+                                <div class="movie_header">
+                                    <div class="row ">
+                                        <div class="col-sm-12 titles" style="margin-bottom: 0.5em;"
+                                            (click)="myOrderDetails(site)">
+                                            <h1 class="text-white">{{site.ProjectName}}</h1>
+                                            <h4 class="text-white">Property No/Plot No
+                                                <strong> : {{site.FlatNo}}</strong>
+                                            </h4>
+                                            <span class="city text-white">Order Id: {{site.OrderId}}
+                                            </span>
+                                        </div>
+                                        <!-- <img class="mylocandina" src="../../../../../../assets/images/vaarivana.jpg"
+                                                matTooltip="Click to Open" /> -->
+
+                                        <div class="col-sm-12 col-xs-12 carouselstyle" *ngIf="fileModel.length>0">
+                                            <ngb-carousel class="mycarousel-Size">
+                                                <ng-template ngbSlide
+                                                    *ngFor="let image of fileModel; trackBy: trackByFn">
+                                                    <img *ngIf="image.File" class="mylocandina" [src]="image.File"
+                                                        alt="Random first slide" (click)="viewImages(image)">
+                                                    <div class="carousel-caption">
+                                                        <p style="color: black;">{{image.Description}}</p>
+                                                    </div>
+                                                </ng-template>
+                                            </ngb-carousel>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12" *ngIf="fileList">
+                                        <div class="card" id="style-2">
+                                            <h6>
+                                                <b class="text-dark">Files : </b>
+                                            </h6>
+                                            <br>
+                                            <hr>
+                                            <p class="fontweght" *ngFor="let file of fileList; trackBy: trackByFn">
+                                                <a (click)="openFileInNewTab(file.FileUrl)">
+                                                    <img id="imageLogo" placement="bottom" data-toggle="tooltip"
+                                                        title="{{file.FileName}}"
+                                                        *ngIf="file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'png' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'PNG' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'jpeg' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'jpg' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'JPG' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'JPEG'"
+                                                        class="responsive" src="assets\images\image_logo.png"
+                                                        alt="Logo image" style="height: 50px; width: 50px;" />
+                                                </a>
+                                                <a (click)="openFileInNewTab(file.FileUrl)">
+                                                    <img id="imageLogo" placement="bottom" data-toggle="tooltip"
+                                                        title="{{file.FileName}}"
+                                                        *ngIf="file.FileUrl &&file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'pdf' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'PDF'"
+                                                        class="responsive" src="assets\images\pdf.png"
+                                                        alt="PDF file image" style="height: 50px; width: 50px;" />
+
+                                                </a>
+                                                <a (click)="openFileInNewTab(file.FileUrl)">
+                                                    <img id="imageLogo" placement="bottom" data-toggle="tooltip"
+                                                        title="{{file.FileName}}"
+                                                        *ngIf="file.FileUrl   && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'xlsx' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'xls' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'xltm' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'xlt' || file.FileUrl && file.FileUrl.substr(file.FileUrl.lastIndexOf('.') + 1) === 'xltx'"
+                                                        class="responsive"
+                                                        src="../../../../../../assets/images/excel.png"
+                                                        alt="PDF file image" style="height: 45px; width: 45px;" />
+                                                </a>
+                                                <br>
+                                                <span (click)="openFileInNewTab(file.FileUrl)" maxlength="10"
+                                                    class="spancolor">{{ file.FileName | slice:0:10 }}
+                                                    {{ file.FileName.length > 20 ? '...' : ''}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-sm-4 btnpos">
+                                    </div> -->
+                                    <div class="col-sm-12 mobilecss btnpos">
+                                        <button class="btn btn-cust btn-md" (click)="myOrderDetails(site)"> DND Process
+                                            <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                        <button class="btn btn-cust btn-md" (click)="showModel('Constraint','')"> Plot
+                                            Constraint
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="myblur_back mybright_back" style="width: 100%;" (click)="myOrderDetails(site)">
+                    </div>
+                    <!-- <div class="myblur_back bright_back" (click)="getAllPlotlist(site)" *ngIf="site.SiteId !== 2">
+                    </div> -->
+                </div>
+
+            </div>
+        </mat-card>
+
+        <!-- for Float Site  -->
+        <mat-card *ngIf="this.dynamicURL ==='new-Projects' && siteDetailsList.length>0">
+            <mat-card-title>
+                <div class=" row rowMargin">
+                    <div class="col-sm-12 text-center">
+                        <strong>Upcoming Projects</strong>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+            </mat-card-title>
+            <div class="row">
+                <div class="Mymovie_card pointer" id="bright" *ngFor="let site of siteDetailsList; trackBy: trackByFn">
+                    <div class="info_section"
+                        style="background: linear-gradient(to bottom, #363636d9 50%, #000000a8 100%);">
+                        <div class="row rowzoom">
+                            <div class="col-sm-6">
+                                <div class="movie_header">
+                                    <div class="row ">
+                                        <div class="col-sm-12 titles" style="margin-bottom: 0.5em;">
+                                            <h1 class="text-white">{{site.SiteName}}</h1>
+                                            <h4 class="text-white">Developer
+                                                <strong> : {{site.Developer}}</strong>
+                                            </h4>
+                                            <span class="city text-white">Address: {{site.PropertyAddress | titlecase}}
+                                                {{site.State| titlecase}}</span>
+                                        </div>
+                                        <div class="col-sm-12 col-xs-12 carouselstyle">
+                                            <ngb-carousel class="mycarousel-Size" *ngIf="site.fileModel.length > 0">
+                                                <ng-template ngbSlide
+                                                    *ngFor="let image of site.fileModel; trackBy: trackByFn">
+                                                    <img *ngIf="image.File" class="mylocandina" [src]="image.File"
+                                                        alt="Random first slide" (click)="viewImages(image)">
+                                                    <div class="carousel-caption">
+                                                        <p>{{image.Description}}</p>
+                                                    </div>
+                                                </ng-template>
+                                            </ngb-carousel>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12" *ngIf="fileDetails[site.SiteId]">
+                                        <div class="card" id="style-2">
+                                            <h6>
+                                                <b class="text-dark">Files : </b>
+                                            </h6>
+                                            <br>
+                                            <hr>
+                                            <p class="fontweght"
+                                                *ngFor="let file of fileDetails[site.SiteId]; trackBy: trackByFn">
+                                                <!-- <a matTooltip="Click to Open"
+                                                    (click)="openFileInNewTab(file.SiteFiles)">
+                                                    <mat-icon>visibility</mat-icon>
+                                                    <span> {{file.FileName}} </span>
+                                                </a> -->
+
+                                                <a (click)="openFileInNewTab(file.SiteFiles)">
+                                                    <img id="imageLogo" placement="bottom" data-toggle="tooltip"
+                                                        title="{{file.FileName}}"
+                                                        *ngIf="file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'png' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'PNG' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'jpeg' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'jpg' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'JPG' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'JPEG'"
+                                                        class="responsive" src="assets\images\image_logo.png"
+                                                        alt="Logo image" style="height: 50px; width: 50px;" />
+                                                </a>
+                                                <a (click)="openFileInNewTab(file.SiteFiles)">
+                                                    <img id="imageLogo" placement="bottom" data-toggle="tooltip"
+                                                        title="{{file.FileName}}"
+                                                        *ngIf="file.SiteFiles &&file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'pdf' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'PDF'"
+                                                        class="responsive" src="assets\images\pdf.png"
+                                                        alt="PDF file image" style="height: 50px; width: 50px;" />
+
+                                                </a>
+                                                <a (click)="openFileInNewTab(file.SiteFiles)">
+                                                    <img id="imageLogo" placement="bottom" data-toggle="tooltip"
+                                                        title="{{file.FileName}}"
+                                                        *ngIf="file.SiteFiles   && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'xlsx' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'xls' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'xltm' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'xlt' || file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1) === 'xltx'"
+                                                        class="responsive"
+                                                        src="../../../../../../assets/images/excel.png"
+                                                        alt="PDF file image" style="height: 45px; width: 45px;" />
+                                                </a>
+                                                <br>
+                                                <span (click)="openFileInNewTab(file.SiteFiles)" maxlength="10"
+                                                    class="spancolor text-white">{{ file.FileName | slice:0:10 }}
+                                                    {{ file.FileName.length > 20 ? '...' : ''}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-sm-4 btnpos">
+                                    </div> -->
+                                    <div class="col-sm-12 mobilecss btnpos" style="padding: 0.51em;">
+                                        <button class="btn btn-md btn-cust pull-right" (click)="getAllPlotlist(site)">
+                                            View Details
+                                            <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                        <button class="btn btn-md btn-cust pull-right"
+                                            (click)="showModel('keyHighlights',site)">
+                                            Key highlights </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="myblur_back mybright_back" style="width: 100%;" (click)="getAllPlotlist(site)"
+                        *ngIf="site.SiteId === 2">
+                    </div>
+                    <div class="myblur_back bright_back" style="width: 100%;" (click)="getAllPlotlist(site)"
+                        *ngIf="site.SiteId !== 2">
+                    </div>
+                </div>
+                <!-- <div class="Mymovie_card pointer" id="bright" *ngFor="let site of siteDetailsList; trackBy: trackByFn"
+                    (click)="getAllPlotlist(site)">
+                    <div class="info_section">
+                        <div class="movie_header">
+                            <img class="locandina pointer" src="../../../../../../assets/images/bhavdan.jpg"
+                                matTooltip="Click to Open" (click)="getAllPlotlist(site)" />
+                            <h1>{{site.SiteName}}</h1>
+                            <h4>Developer <strong> : {{site.Developer}}</strong></h4>
+                            <span class="city">Address: {{site.PropertyAddress | titlecase}}
+                                {{site.State| titlecase}}</span>
+                        </div>
+                        <div class="movie_desc">
+                            <p class="text">
+                                <strong>Land Area : {{site.LandArea}}</strong> <br />
+                                <strong>Devloper : {{site.Developer}}</strong> <br />
+                                <strong>Address : {{site.PropertyAddress}} {{site.State}}</strong>
+                            </p>
+                        </div>
+                        <div class="movie_social">
+                            <ul>
+                                <button mat-button [matTooltip]="site.SiteName" (click)="getAllPlotlist(site)">Next
+                                    <mat-icon> forward </mat-icon></button>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="blur_back bright_back"></div>
+                </div> -->
+            </div>
+        </mat-card>
+    </div>
+    <!-- <app-subproject-details [siteDetail]="siteDetails" (subprojectDetailsEvent)="receivesubprojectDetails($event)" ></app-subproject-details> -->
+    <ng-container *ngIf="showsubProjectList">
+        <app-subproject-details [siteDetail]="siteDetails"></app-subproject-details>
+    </ng-container>
+    <ng-container *ngIf="customerDnD">
+        <app-cust-aggregation [siteDetail]="siteDetails"></app-cust-aggregation>
+    </ng-container>
+    <ng-container *ngIf="architectOfOrder">
+        <app-architect-details [subProjectDetails]="subProjectDetails"></app-architect-details>
+    </ng-container>
+</div>
+
+<!-- Modal Pop Up for Constraint and Key Highlights -->
+<div bsModal cdkDrag #ConstraintListModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">{{Title}}</h4>
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="ConstraintListModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <div *ngIf="Title === 'Constraint Details'">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> ContourLevel: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.ContourLevel}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> Direction: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.Direction}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> FSI: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.FSI}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> FloorAllowed: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.FloorAllowed}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> FrontMargin: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.FrontMargin}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> FrontRoadWidth: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.FrontRoadWidth}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> MaxHeightOfUnit: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.MaxHeightOfUnit}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> MaxPlinthArea: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.MaxPlinthArea}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> PlanType: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.PlanType}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> PlinthLevel: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.PlinthLevel}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> PlotArea: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.PlotArea}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> PlotLength: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.PlotLength}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> PlotWidth: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.PlotWidth}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> RearMargin: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.RearMargin}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> RearRoadWidth: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.RearRoadWidth}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> Remark: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.Remark}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> RoadLevel: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.RoadLevel}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> Sector: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.Sector}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> SideMargin: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.SideMargin}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong> UGT: </strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>
+                                <b>{{constraintlist.UGT}}</b>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="Title === 'Key Highlights Details'">
+                    <span *ngIf="keyHighlightsList.length===0" class="required">No Data Found</span>
+                    <div class="table-responsive" *ngIf="keyHighlightsList.length>0">
+                        <table class="table table-bordered table-hover table-striped table-sm ">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th></th>
+                                    <th>Key highlights</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let keys of keyHighlightsList; trackBy: trackByFn; let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td class="col-width-half text-left">
+                                        <label>{{keys.CheckList}}</label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  Modal Pop For Enlarge the Image -->
+<div bsModal cdkDrag #MapviewLargeModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="cross" src="assets/images/cross.png" alt="X"
+                    (click)="MapviewLargeModel.hide();SelectedSectorTitle=''" />
+
+                <img src="{{SelectedImg}}" class="d-block w-100 img-fluid" alt="" style="margin-top: 24px;height:40em;">
+               
+                 &nbsp;
+                 <div class="row">
+                    <div class="col-12 col-sm-6 col-md-6" style="text-align: left;">
+                            <h5 *ngIf="SelectedSectorTitle">{{SelectedSectorTitle}}</h5>  
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6" style="text-align: right">
+                        <button class="btn btn-primary"
+                        (click)="MapviewLargeModel.hide();SelectedSectorTitle=''">
+                               Close </button> 
+                    </div>
+                  </div>
+                <!-- <div class="row">
+                    <div class="col-sm-12 text-center" style="padding: 8px;">
+                        <h5 *ngIf="SelectedSectorTitle">{{SelectedSectorTitle}}</h5>
+                    </div>
+                </div>  -->
+            </div>
+        </div>
+    </div>
+</div>

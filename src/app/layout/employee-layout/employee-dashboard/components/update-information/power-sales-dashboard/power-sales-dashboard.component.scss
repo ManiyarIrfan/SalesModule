@@ -1,0 +1,41 @@
+.modal-header {
+    background-color: #33B5E5;
+}
+
+.modal-title {
+    margin-left: 350px;
+    color: white;
+}
+
+.box {
+    height: 150px !important;
+}
+
+.heading {
+    font-size: 1.1rem;
+    margin-top: 10px;
+    color: white;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 1000px;
+        max-height: 1000px;
+    }
+}
+
+.name-width {
+    min-width: 100px;
+    width: 100%;
+}
+
+.exportbtn {
+    border: 1px solid white;
+    padding: 5px 12px;
+    margin: 2px 5px;
+    border-radius: 14px;
+}
+
+th {
+    vertical-align: middle !important;
+}

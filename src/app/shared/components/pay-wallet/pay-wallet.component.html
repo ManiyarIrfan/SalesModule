@@ -1,0 +1,287 @@
+<form #paymentwalletForm="ngForm">
+    <div class="col-sm-12 ">
+        <div class="row">
+            <div class="col-sm-4 pointer">
+                <a class="card2" (click)="brokarageDetails('predict')">
+                    <h3 *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">Predicted Earning </h3>
+                    <h3 *ngIf="loggedInuserDetails.UserType !=='ChannelPartner'">Advance Paid</h3>
+                    <p class="small"> &#8377; {{predictAmount}}</p>
+                    <div class="go-corner">
+                        <div class="go-arrow">
+                            →
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-4 pointer">
+                <a class="card2" (click)="brokarageDetails('actual')">
+                    <h3>Actual Earning</h3>
+                    <p class="small"> &#8377; {{actualAmount}} </p>
+                    <div class="go-corner">
+                        <div class="go-arrow">
+                            →
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-4 pointer">
+                <a class="card2" (click)="viewHistoryDetails()">
+                    <h3>Withdrawal History</h3>
+                    <p class="small"> &#8377; {{totalPayedAmt}} </p>
+                    <div class="go-corner">
+                        <div class="go-arrow">
+                            →
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-sm-12">
+        <div class="row">
+            <div
+                [ngClass]="{'col-sm-6':channelPartnerModel.AccountId === null,'col-sm-5':channelPartnerModel.AccountId !== null }">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">
+                        <b> Razorpay </b>
+                    </legend>
+                    <div class="col-sm-12">
+                        <div *ngIf="channelPartnerModel.ContactId === null">
+                            <button type="button" class="btn btn-primary" (click)="confirmModal('contact')">
+                                <i class="fa fa-plus"></i> Contact Account</button>
+                        </div>
+                        <div *ngIf="channelPartnerModel.ContactId !== null">
+                            <button type="button" class="btn btn-success"
+                                ngbTooltip="{{channelPartnerModel.ContactId}}"> Contact Account</button>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-sm-12">
+                        <div *ngIf="channelPartnerModel.AccountId === null">
+                            <button type="button" class="btn btn-primary" (click)="confirmModal('fund')"
+                                [disabled]="channelPartnerModel.ContactId === null">
+                                <i class="fa fa-plus"> </i> Fund Account
+                            </button>
+                        </div>
+                        <div *ngIf="channelPartnerModel.AccountId !== null">
+                            <button type="button" class="btn btn-success"
+                                ngbTooltip="{{channelPartnerModel.AccountId}}">Fund Account</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <i class="fa fa-arrows-h" aria-hidden="true" *ngIf="channelPartnerModel.AccountId !== null"></i>
+            <div class="col-sm-6">
+                <!-- [ngClass]="{'col-sm-6':channelPartnerModel.AccountId === null,'col-sm-6':channelPartnerModel.AccountId !== null }"> -->
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">
+                        <b> Bank Details </b>
+                    </legend>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span class="detailfont">{{channelPartnerModel.BankName}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-sm-12">
+                            <span class="detailfont">{{channelPartnerModel.AccountNo}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-sm-12">
+                            <span class="detailfont">{{channelPartnerModel.UPICode}}</span>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <fieldset class="scheduler-border">
+            <div class="row fieldpadding">
+                <div class="form-group col-sm-12">
+                    <strong for="agreementno" class="strong-font">
+                        <b> Enter Valid OTP Number : </b>
+                    </strong>
+                    <input type="text" class="form-control" id="agreementno"
+                        [(ngModel)]="channelPartnerModel.agreementNo" name="agreementno"
+                        [class.error]="agreementno.invalid && agreementno.touched"
+                        [class.has-success]="agreementno.valid" #agreementno="ngModel"
+                        (blur)="checkAgreementNo(channelPartnerModel.agreementNo)"
+                        (keyup)="agreementnoChnage(channelPartnerModel.agreementNo)" autocomplete="false">
+                </div>
+            </div>
+            <strong class="required" *ngIf="incorrectAgreementNo">Entered Registration Number is Incorrect!!! Please
+                check Again.
+            </strong>
+            <div class="row row-margin fieldpadding">
+                <div class="col-sm-12">
+                    <strong class="strong-font">
+                        <b> Total : </b>
+                    </strong>
+                    <span class="detailfont pull-right">{{channelPartnerModel.actualAmount}} &#8377;</span>
+                </div>
+            </div>
+            <div class="row fieldpadding">
+                <div class="col-sm-7">
+                    <strong class="strong-font">
+                        <b> Withdrawal Amt: </b>
+                    </strong>
+                </div>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control pull-right" id="withdrawalamt" required
+                        [(ngModel)]="channelPartnerModel.withdrawalAmt" name="withdrawalamt"
+                        [class.error]="withdrawalamt.invalid && withdrawalamt.touched" pattern="^[^-\s][0-9 ]*"
+                        [readonly]=true [class.has-success]="withdrawalamt.valid" #withdrawalamt="ngModel"
+                        (keyup)="calculateBrokarage(channelPartnerModel)">
+                </div>
+            </div>
+            <mat-divider class="divide">
+            </mat-divider>
+            <div class="row fieldpadding">
+                <div class="col-sm-12">
+                    <strong class="strong-font">
+                        <b> Balance : </b>
+                    </strong>
+                    <span class="detailfont pull-right">{{channelPartnerModel.balance}} &#8377;</span>
+                </div>
+            </div>
+            <h5>
+                <strong *ngIf="wrongAmtMsg" class="required">Entered amount is not Correct!!!</strong>
+            </h5>
+            <div class="row justify-content-center" [hidden]="channelPartnerModel.actualAmount === 0">
+                <button type="button" class="btn btn-success"
+                    [disabled]="showpaymentFields || wrongAmtMsg ||disabletransferBtn ||incorrectAgreementNo || !withdrawalamt.valid ||channelPartnerModel.AccountId===null"
+                    (click)="confirmModal('withdraw')">
+                    <i class="fa fa-bank"></i> Transfer To My Bank</button>
+            </div>
+        </fieldset>
+    </div>
+</form>
+
+<!-- Modal Pop up For Borkarage Details -->
+<div bsModal #BrokarageDetailsModal="bs-modal" cdkDrag class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center" *ngIf="!transferHistoryDetails">
+                    {{title}}</h4>
+                <h4 class="modal-title center" *ngIf="transferHistoryDetails">
+                    Previous Transaction History</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="BrokarageDetailsModal.hide()" />
+            </div>
+            <div class="modal-body text-center">
+                <div *ngIf="!transferHistoryDetails">
+                    <strong *ngIf="BrokarageList.length === 0" class="required">No Data Found</strong>
+                    <div class="table-responsive" *ngIf="BrokarageList.length>0">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Transaction Id</th>
+                                    <th>Total</th>
+                                    <th *ngIf="title==='Actual Earning Details'">Withdrawal Amount</th>
+                                    <th *ngIf="title==='Actual Earning Details'">Balance</th>
+                                    <!-- <th>Transaction Type</th> -->
+                                    <th>Withdrawal On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let actual of BrokarageList| paginate: { itemsPerPage: 15, currentPage: p3 , id:'actualBrokarage'};trackBy: trackByFn;">
+                                    <td>{{actual.TransactionId }}</td>
+                                    <td>{{actual.Total_Amount}} {{actual.Amount}}</td>
+                                    <td *ngIf="title==='Actual Earning Details'">{{actual.TotalWithdrawn_Amount}}</td>
+                                    <td *ngIf="title==='Actual Earning Details'">{{actual.Balance_Amount}}</td>
+                                    <!-- <td>{{actual.TransactionType}}</td> -->
+                                    <td>{{actual.CreatedOn|date:"d MMM y"}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right">
+                            <pagination-controls id="actualBrokarage" (pageChange)="p3 = $event"></pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+                <div *ngIf="transferHistoryDetails">
+                    <strong *ngIf="transferHistory.length === 0" class="required">No Data Found</strong>
+                    <div class="table-responsive" *ngIf="transferHistory.length>0">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Amount</th>
+                                    <th>Withdraw On</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let history of transferHistory| paginate: { itemsPerPage: 15, currentPage: p3 , id:'actualBrokarage'};trackBy: trackByFn;">
+                                    <td> &#8377; {{history.amount}}</td>
+                                    <td>{{history.created_at}}</td>
+                                    <td>{{history.status | titlecase}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right">
+                            <pagination-controls id="actualBrokarage" (pageChange)="p3 = $event"></pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pop up For confirmation Modal -->
+<div bsModal #confirmationModal="bs-modal" cdkDrag class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center" *ngIf="!transferHistoryDetails">
+                    {{title}}</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="confirmationModal.hide()" />
+            </div>
+            <div class="modal-body text-center" ngSwitch="{{title}}">
+                <div *ngSwitchCase="'Create RazorPay Account'">
+                    <h4>
+                        <b>This will create Contact Id with your contact Details in TruPay Account. </b>
+                    </h4>
+                    <h5>
+                        <b> Do you want to Proceed? </b>
+                    </h5>
+                </div>
+                <div *ngSwitchCase="'Create RazorPay Fund Account'">
+                    <h4>
+                        <b>This will link your Bank details with TRU Pay wallet to enable transfer of funds to you bank.
+                        </b>
+                    </h4>
+                    <h5>
+                        <b>Please make sure your Bank Details are Correct to proceed. </b>
+                    </h5>
+                </div>
+                <div *ngSwitchCase="'Confirm Bank Details'">
+                    <h4>
+                        <b>Amount: {{channelPartnerModel.withdrawalAmt}} &#8377; Will be Transfer to the Linked Account
+                            : {{channelPartnerModel.AccountNo}}
+                        </b>
+                    </h4>
+                    <h5>
+                        <b>Please make sure your Account Details are Correct to proceed. </b>
+                    </h5>
+                </div>
+                <div class="row justify-content-center" ngSwitch="{{title}}">
+                    <button class="btn btn-success btn-md" *ngSwitchCase="'Create RazorPay Account'"
+                        (click)="createRazorContactAcc()"> Confirm</button>
+                    <button class="btn btn-success btn-md" *ngSwitchCase="'Create RazorPay Fund Account'"
+                        (click)="createRazorFundAcc()">Confirm</button>
+                    <button class="btn btn-success btn-md" *ngSwitchCase="'Confirm Bank Details'"
+                        (click)="transferToBank(channelPartnerModel)">Confirm</button>
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <button class="btn btn-danger btn-md" (click)="confirmationModal.hide()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

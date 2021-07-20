@@ -1,0 +1,190 @@
+<div *ngIf="storeloginDetails.flag===0" bsModal #showVideopopup="bs-modal" class="modal fade model" role="dialog"
+    data-backdrop="static" data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true"
+    [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="container-fluid">
+                <!-- <div class="modal-header"> -->
+                <!-- <div class="col-sm-12 text-center"> -->
+                <!-- <h3 class="modal-title text-white">Current Updates</h3> -->
+                <!-- </div> -->
+                <!-- <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="closePopup()" /> -->
+                <!-- </div> -->
+                <!-- <div class="modal-body bgcolor"> -->
+                <!-- <div class="row">
+                    <div class="container-fluid">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="showVideoPPt('video')">
+                            <i class="fa fa-video-camera" aria-hidden="true"></i> Kekarav Teaser
+                            video</button>&nbsp;&nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" (click)="showVideoPPt('pdf')">
+                            <i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> Kekarav Presentation</button>&nbsp;&nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" (click)="showVideoPPt('Feedback')">
+                            <i class="fa ffa fa-book" aria-hidden="true"></i> Feedback
+                        </button>
+                    </div>
+                </div> -->
+                <!-- <div class="row mt-2">
+                    <div class="col-sm-12">
+                        <carousel *ngIf="displaySlider">
+                            <slide *ngFor="let slide of slides; let  i = index">
+                                <img [src]="slide.key" alt="image slide" class="img" height="400px">
+                            </slide>
+                        </carousel>
+                        <video class="size" controls autoplay height="400px;" *ngIf="displayselected==='video'">
+                            <source src="https://trushare.blob.core.windows.net/production/Kekaraav Teaser.mp4"
+                                type="video/mp4">
+                        </video>
+                        <embed style="height: 450px !important;"
+                            src='https://trushare.blob.core.windows.net/production/KekaravFile.pdf#toolbar=0&navpanes=0&scrollbar=0'
+                            type='application/pdf' width='100%' height='100%' *ngIf="displayselected==='pdf'">
+                        <form #FeedbackForm="ngForm" *ngIf="displayselected==='Feedback'">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong>Your feedback is valuable for us</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <textarea type="text" rows="5" class="form-control" id="Details"
+                                                name="Details" [class.error]="Details.invalid && Details.touched"
+                                                [class.has-success]="Details.valid" required
+                                                [(ngModel)]="FeedBackModel.Details" placeholder="Enter your feedback*"
+                                                #Details="ngModel"></textarea>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row justify-content-md-center">
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            (click)="OnFeedbackSubmit(FeedbackForm)"
+                                            [disabled]="!FeedBackModel.Details">
+                                            <i class="fa fa-paper-plane"></i> Submit</button>
+                                    </div>
+                                    <div class="row justify-content-md-center mt-2">
+                                        <div class="alert alert-success" *ngIf="showSuccessfullMessage!==''"
+                                            role="alert">
+                                            <h6>
+                                                <i class="fa fa-check"></i> {{showSuccessfullMessage}}</h6>
+                                        </div>
+                                        <div class="alert alert-warning" *ngIf="showUnsuccessfullMessage!==''"
+                                            role="alert">
+                                            <h6>
+                                                <i class="fa fa-times-circle"></i> {{showUnsuccessfullMessage}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-12 mt-2 text-center ">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="GiveFeedback()">
+                            <i class="fa fa-paper-plane"></i> Submit Feedback
+                        </button>
+                    </div>
+                </div> -->
+                <!-- <div class="row">
+                    <div class="col-sm-12 popupscroll">
+                        <div class="wrapper">
+                            <h1 class="h1font">Hello,</h1><br>
+                            <h2 class=" h2font fontstyle">Hope you & your family is safe!</h2><br>
+                            <p class="pfont">Welcome to the Customer Module of the TRU Portal - This is your own private
+                                space of
+                                interacting with US! We Thank you for visiting Kekarav, a project by TRU Realty & we are
+                                glad to inform you
+                                that
+                                <b> we have received plan sanction for the project from PMRDA and the Commencement
+                                    Certificate</b>
+                                was issued on 29th May 2020.
+                            </p>
+                            <br>                         
+                            <br>
+                            <p class="pfont">
+                                At TRU Realty, we always believe in <b>involving customers at every stage of design &
+                                    development</b> & hence, while our team of Architects and Designers have designed a
+                                world
+                                class
+                                project, we feel nothing can be better than getting the <b> same evaluated from YOU.</b>
+                            </p> <br><br>
+                            <p class="pfont">For a quick preview of how we collaborate with our customers,
+                                <b>rating/feedback the landscape, amenities, services</b> that we have planned and also
+                                help us understand few additional things/aspects/features that you would want your home
+                                <b class="linking" (click)="GiveFeedback()">Click here to enter TRU Customer Portal</b>
+                            </p>                          
+                            <br>
+                            <h4 class="h4font">
+                                Thanks for sparing time,
+                            </h4><br>
+                            <h4 style="font-weight: 500;" class="h4font">Team - Kekarav</h4>
+                            <ul class="bg-bubbles">
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div id="wrapper">
+                            <br>
+                            <video id="bgvid" controls autoplay style="width: 100%; height: auto;">
+                                <source src="{{PresentationDetails['Video']}}" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btn btn-danger btn-md" placement="right" data-toggle="tooltip"
+                            title="Click To Close" (click)="vidplayer.muted = true;showVideopopup.hide()">
+                            <i class="fa fa-times text-white"></i>
+                        </button>
+                    </div>
+                </div> -->
+
+                <div class="modal-body">
+                    <div *ngIf="Flag">
+                        <!-- <div [ngSwitch]="CurrentExtension">
+                            <div *ngSwitchCase="'pdf' || 'PDF'">
+                                <embed style="height: 450px !important;" [attr.src]="PresentationVideo" type='application/pdf'
+                                    width='100%' height='100%'>
+                            </div>
+                            <div *ngSwitchCase="'mp4' || 'm4p' || 'm4v'">
+                                <video id="bgvid" controls autoplay style="width: 100%; height: auto;">
+                                    <source src="{{PresentationVideo}}" type="video/mp4">
+                                </video>
+                            </div>
+                        </div> -->
+                        <video id="bgvid" controls autoplay style="width: 100%; height: auto;">
+                            <source src="{{PresentationVideo}}" type="video/mp4">
+                        </video>
+                    </div>
+                    <div *ngIf="!Flag">
+                        <!-- <img src="{{ShowContent}}" class="d-block w-100 img-fluid" style="width: 100%;"> -->
+                        <div class="sliderborder">
+                            <mdb-carousel class="carousel slide carousel-fade" [animation]="'fade'">
+                                <mdb-carousel-item *ngFor="let item of ImageList; trackBy: trackByFn">
+                                    <img class="sliderimg d-block w-100 img-fluid pointer" src="{{item.FileURL}}"
+                                        alt="First slide">
+                                    <div class="mask rgba-black-light waves-light" mdbWavesEffect>
+                                    </div>
+                                </mdb-carousel-item>
+                            </mdb-carousel>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btn btn-danger btn-md" placement="right" data-toggle="tooltip"
+                            title="Click To Close" (click)="closeModel()">
+                            <i class="fa fa-times text-white"></i>
+                        </button>
+                        <!-- <button type="button" class="btn btn-danger btn-md" placement="right" data-toggle="tooltip"
+                            title="Click To Close" (click)="vidplayer.muted = true;showVideopopup.hide()">
+                            <i class="fa fa-times text-white"></i>
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>

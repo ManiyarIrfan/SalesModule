@@ -1,0 +1,239 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<br>
+<div class="row" *ngIf="!isSpinnerActive">
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">CRO Information</legend>
+                    <div class="row">
+                        <div class="col-sm-3 box greenbox pointer">
+                            <div class="row">
+                                <div class="col-sm-12 greenbag">
+                                    <span class="text-center heading text-white">Total CRO</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center ">{{TotalCRO}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 box  orangebox pointer">
+                            <div class="row">
+                                <div class="col-sm-12 orangebag">
+                                    <span class="text-center heading text-white">Total Leads</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center ">{{TotalLeads}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 box redbox pointer">
+                            <div class="row">
+                                <div class="col-sm-12 redbag">
+                                    <span class="text-center heading text-white">Site Visit</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center ">{{TotalSiteVisit}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 box bluebox pointer">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading text-white">Total Bookings</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center ">{{TotalBookings}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-sm-12">
+                <fieldset class="scheduler-border">
+                    <br />
+                    <div class="icon-addon addon-md">
+                        <input class="form-control" type="text" name="croname" [(ngModel)]="croName"
+                            placeholder="Search By CRO Name..."> <i class="fa fa-search"></i>
+                    </div>
+                    <span *ngIf="orgshowDataNotFoundError" class="notfoundmsg">{{DataNotFoundError}}</span>
+                    <div [hidden]="!isSpinnerActive">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading... </p>
+                    </div>
+                    <br>
+                    <div *ngIf="!orgshowDataNotFoundError && !isSpinnerActive">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                <thead class="thead-light">
+                                    <tr class="text-center">
+                                        <th>CRO Name</th>
+                                        <th>Total leads</th>
+                                        <th>Total site visit</th>
+                                        <th>Total bookings</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let details of CroData |filter:croName| paginate: { id:'Organisation-Details-pagination',itemsPerPage: 8, currentPage: p1 };trackBy: trackByFn ">
+                                        <td>
+                                            <button type="button" class="btn btn-link btn-sm"
+                                                (click)="showDashboard(details)"><i class="fa fa-eye"></i>
+                                                {{details.CroName}}
+                                            </button>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-link btn-sm"
+                                                (click)="getListOfLeads(details.CroId)">{{details.NumOfReferral}}
+                                            </button>
+                                        </td>
+                                        <td class="text-center">{{details.SiteVisite}}</td>
+                                        <td class="text-center">{{details.Booking}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <tfoot class="pull-right" *ngIf="CroData.length>8">
+                                <pagination-controls id="Organisation-Details-pagination" (pageChange)="p1 = $event">
+                                </pagination-controls>
+                            </tfoot>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6" *ngIf="CroLeadsData && CroLeadsData.length>0 ">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">Leads Information</legend>
+            <span *ngIf="orgshowDataNotFoundError" id="exception">{{DataNotFoundError}}</span>
+            <div [hidden]="!isSpinnerForTableActive">
+                <p class="LoaderAlign">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+            <div *ngIf="!orgshowDataNotFoundError && !isSpinnerForTableActive">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th>Lead Name </th>
+                                <th>Project Name</th>
+                                <th>Sales Agent Name</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let details of CroLeadsData | paginate: { id:'CRO-Details-pagination',itemsPerPage: 14, currentPage: p2 };trackBy: trackByFn ">
+                                <td *ngIf="loggedInuserDetails.Role !== 20">
+                                    <button type="button" class="btn btn-link btn-md"
+                                        (click)="ShowLeadDetails(details)">{{details.LeadName}}
+                                    </button>
+                                </td>
+                                <td *ngIf="loggedInuserDetails.Role === 20"> {{details.LeadName}} </td>
+                                <td>{{details.ProjectName}}</td>
+                                <td>{{details.SalesAgentName}}</td>
+                                <td class="text-center">{{details.MobileNo}}</td>
+                                <td>
+                                    <span
+                                        [ngStyle]="{'background-color': details.ReferralStatus=='New'? 'green' : 'red','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{details.ReferralStatus}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot class="pull-right" *ngIf="CroLeadsData.length>14">
+                        <pagination-controls id="CRO-Details-pagination" (pageChange)="p2 = $event">
+                        </pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<!-- Lead Data for Update Status and Sales Agent -->
+<div bsModal #leadDetailsModel="bs-modal" cdkDrag class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #leadDetailspopForm="ngForm">
+        <div class="modal-dialog modal-lg modal-notify modal-info">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">Lead Details</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="leadDetailsModel.hide()" />
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12">
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">
+                                <strong>Lead Information</strong>
+                            </legend>
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <strong for="Name">
+                                        <span class="required">*</span>Lead Name :</strong>
+                                    <input type="text" class="form-control" id="Name" name="Name"
+                                        [(ngModel)]="refModel.Name" placeholder="Enter Name..." #Name="ngModel"
+                                        disabled>
+                                </div>
+                                <div class="col-sm-4" *ngIf="StatusInfo">
+                                    <strong for="source">
+                                        <span class="required">*</span>Status :</strong>
+                                    <select class="form-control" id="source" name="source"
+                                        [(ngModel)]="refModel.ReferralStatus" required #source="ngModel"
+                                        (change)="OnStatusChange(refModel.ReferralStatus)">
+                                        <option>--select--</option>
+                                        <option class='option' *ngFor='let source of StatusInfo;trackBy: trackByFn' [value]="source.value">
+                                            {{source.value}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3" *ngIf="employeeName">
+                                    <strong for="SalesAgentAssinged">
+                                        <span class="required">*</span>Sales Agent Assinged :</strong>
+                                    <select class="form-control" id="SalesAgentAssinged" name="SalesAgentAssinged"
+                                        [(ngModel)]="refModel.SalesAgentAssignedId" required
+                                        #SalesAgentAssinged="ngModel"
+                                        (change)="OnSalesChange(refModel.SalesAgentAssignedId)">
+                                        <option value="0">--select--</option>
+                                        <option class='option' *ngFor='let SalesAgentAssinged of employeeName;trackBy: trackByFn'
+                                            [value]="SalesAgentAssinged.EmployeeId">{{SalesAgentAssinged.Name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <!--Model Body Close-->
+                <div class="modal-footer">
+                    <button type="button" id="submit" name="submit" value="Submit" class="btn btn-primary"
+                        (click)="OnSubmitBtnClick(refModel)" [disabled]="!UpdateBtnEnbl">
+                        <i class="fa fa-paper-plane"></i> Update</button>
+                    <button type="button" class="btn btn-outline-info waves-effect" data-dismiss="modal"
+                        (click)="leadDetailsModel.hide()">Cancel</button>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,100 @@
+#celender {
+    min-height: 250px;
+}
+
+#piechart {
+    height: 500px;
+}
+
+.id-width {
+    min-width: 70px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.SVHOT {
+    //color: rgb(245, 9, 9);
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(355, 100%, 34%);
+}
+
+.svs {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(27, 94%, 51%);
+}
+
+.svd {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(130, 82%, 50%);
+}
+
+.Lost {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(295, 85%, 45%);
+}
+
+.New {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(323, 93%, 52%);
+}
+
+.Booked {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(300, 89%, 11%);
+}
+
+.warm {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(17, 94%, 53%);
+}
+
+.cold {
+    padding: 0px 6px 0px 6px;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: hsl(199, 39%, 43%);
+}
+
+.name-width {
+    border: 1px solid #e1dede;
+    min-width: 100px;
+    width: 100%;
+    border-radius: 3px;
+}
+
+.mobile-width {
+    min-width: 80px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.btn {
+    border-radius: 18px;
+}
+
+.scrollbar {
+    overflow: auto;
+    max-height: 570px;
+}

@@ -1,0 +1,277 @@
+<form #CommLayoutForm="ngForm">
+    <div class="bckstyle">
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-header">
+                    <div class="pull-right" *ngIf="loggedInuserDetails!==null">
+                        <a class="mob pull-right" [matMenuTriggerFor]="menu1">
+                            <img class="rounded-circle mob" style="margin-top: -2px;" src="{{userProfile}}" width="40px"
+                                height="40px" alt="">
+                        </a>
+                        <button (click)="showMenu()" class="navbar-toggler menubar " data-toggle="open-navbar1">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                    <div class="pull-right hidecard navbar-toggler" *ngIf="loggedInuserDetails===null">
+                        <a (click)="login()" class="gotoportal">Log In
+                            <i class="fa fa-sign-in" aria-hidden="true"></i>
+                        </a>
+                        <!-- <a class="gotoportal" [matMenuTriggerFor]="menu">Log In
+                            <i class="fa fa-sign-in" aria-hidden="true"></i>
+                        </a> -->
+                    </div>
+                    <mat-menu #menu1="matMenu">
+                        <div class="row p-3 justify-content-center">
+                            <!-- <div class="col-sm-4 text-center">
+
+                            </div> -->
+                            <div class="col-sm-12 centerdata" *ngIf="loggedInuserDetails!==null">
+                                <img class="rounded-circle img1 userprofile" src="{{userProfile}}" alt="">
+                                <div class="usernams">
+                                    <h5 class="pl-1"><strong> {{loggedInuserDetails.Firstname | titlecase}}
+                                            {{loggedInuserDetails.LastName | titlecase}}</strong></h5>
+                                    <h6 class=" pl-1 text-white">
+                                        <span
+                                            class="badge badge-primary rounded-pill pt-1 pb-1 pl-3 pr-3">{{loggedInuserDetails.UserType}}</span>
+                                    </h6>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <hr class="mt-2 mb-2">
+                            </div>
+                            <div class="col-sm-12 profile_dropdown p-2 text-center pointer"
+                                (click)="Page('Profile');gotoProfileTabs('profile')">
+                                <h6 class="pull-left"> View Profile</h6>
+                                <h6 class="pull-right"><i class="fa fa-user-circle"></i></h6>
+                            </div>
+                            <div class="col-sm-12 profile_dropdown p-2 text-center pointer"
+                                (click)="Page('Profile');gotoProfileTabs('message')">
+                                <h6 class="pull-left">Messages</h6>
+                                <h6 class="pull-right"><i class="fa fa-comments"></i></h6>
+                            </div>
+                            <div class="col-sm-12 profile_dropdown p-2 text-center pointer"
+                                (click)="Page('Profile');gotoProfileTabs('post')">
+                                <h6 class="pull-left">My Posts</h6>
+                                <h6 class="pull-right"><i class="fa fa-address-card-o"></i></h6>
+                            </div>
+                            <div class="col-sm-12 profile_dropdown p-2 text-center pointer" (click)="logout()">
+                                <h6 class="pull-left"> Log Out</h6>
+                                <h6 class="pull-right"><i class="fa fa-sign-out"></i></h6>
+                            </div>
+                        </div>
+                    </mat-menu>
+                    <h5 class="mart1">
+                        <a href="https://www.trurealty.in/" target="_blank">
+                            <img src="../../../assets/images/logo.png" width="40px" alt=""> &nbsp;</a>
+                        <!-- <strong class="text-white" [routerLink]="['/community']"> Tru <span>
+                                Community</span></strong> -->
+                    </h5>
+                </div>
+                <div *ngIf="flag" class="showOnMob">
+                    <div class="navbar-dropdown">
+                        <ul class="dropdown ">
+
+                            <li *ngFor="let head of HomeTabs; trackBy: trackByFn;let i=index">
+                                <a (click)="Page(head.key);hideMenu(head.key,i)">{{head.key}}</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="navbar-menu">
+                    <ul class="navbar-nav">
+                        <li *ngFor="let head of HomeTabs; trackBy: trackByFn;">
+                            <a (click)="Page(head.key)">{{head.key}}</a>
+                        </li>
+                        <li *ngIf="loggedInuserDetails===null">
+                            <!-- <a class="gotoportal text-dark" [matMenuTriggerFor]="menu">Log In
+                                <i class="fa fa-sign-in" aria-hidden="true"></i>
+                            </a> -->
+                            <a (click)="login()" class="gotoportal text-dark">Log In
+                                <i class="fa fa-sign-in" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                        <!-- <mat-menu #menu="matMenu">
+                            <button (click)="login()" mat-menu-item>Sign In</button>
+                            <button (click)="register()" mat-menu-item>Register</button>
+                        </mat-menu> -->
+                    </ul>
+                    <ul class="navbar-nav ml-2" *ngIf="loggedInuserDetails!==null">
+                        <li (click)="landingPage()" class="li_mar pointer">
+                            <span class="gotoportal">Go to Portal</span>
+                        </li>
+                        <li class="mart1"><a [matMenuTriggerFor]="menu12">
+                                <!-- <i class="fa fontsize30 fa-user-circle"></i> -->
+                                <img class="rounded-circle" src="{{userProfile}}" width="40px" height="40px" alt="">
+                            </a>
+                        </li>
+                        <!-- <li>
+                            <div class="notification">
+                                <div class="notBtn">
+                                    <div class="number">{{notifiactionCount}}</div>
+                                    <i class="fas fa-bell"></i>
+                                    <div class="box1">
+                                        <div class="display">
+                                            <div class="nothing">
+                                                <i class="fas fa-child stick"></i>
+                                                <div class="cent">Looks Like your all caught up!</div>
+                                            </div>
+                                            <div class="cont">
+                                                <div class="sec new"
+                                                    *ngFor="let item of Notifications;trackBy:trackByFn">
+                                                    <a>
+                                                        <div class="profCont">
+                                                            <img class="profile"
+                                                                [src]="item.ProfilePic || '../../../assets/images/user.png'">
+                                                            <span
+                                                                class="p-2 pull-right badge badge-pill badge-danger">{{item.IsRead}}</span>
+                                                        </div>
+                                                        <span
+                                                        class="p-2 pull-right badge badge-pill badge-danger">{{item.IsRead}}</span>
+                                                        <div class="txt">{{item.Username ? item.Username : 'Anonymous'}}
+                                                            <span *ngIf="item.GroupName" class="text-primary">@{{item.GroupName}}</span>
+                                                        </div>                                                        
+                                                        <div class="txt sub">{{item.LastMsg ? item.LastMsg :''}}
+                                                        </div>
+                                                        <div class="txt fontsize15 sub">
+                                                            {{item.CreatedOn |  date:'medium'}}</div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li> -->
+                        <mat-menu #menu12="matMenu">
+                            <div class="row p-3 justify-content-center">
+                                <div class="col-sm-4 text-center">
+                                    <img class="rounded-circle" src="{{userProfile}}" width="90px" height="90px" alt="">
+                                </div>
+                                <div class="col-sm-8 centerdata">
+                                    <h5 class="pl-1"><strong> {{loggedInuserDetails.Firstname | titlecase}}
+                                            {{loggedInuserDetails.LastName | titlecase}}</strong></h5>
+                                    <h6 class=" pl-1 text-white">
+                                        <span
+                                            class="badge badge-primary rounded-pill pt-1 pb-1 pl-3 pr-3">{{loggedInuserDetails.UserType}}</span>
+                                    </h6>
+                                </div>
+                                <div class="col-sm-12">
+                                    <hr class="mt-2 mb-2">
+                                </div>
+                                <div class="col-sm-12 profile_dropdown p-2 text-center pointer"
+                                    (click)="Page('Profile');gotoProfileTabs('profile')">
+                                    <h6 class="pull-left"> View Profile</h6>
+                                    <h6 class="pull-right"><i class="fa fa-user-circle"></i></h6>
+                                </div>
+                                <div class="col-sm-12 profile_dropdown p-2 text-center pointer"
+                                    (click)="Page('Profile');gotoProfileTabs('message')">
+                                    <h6 class="pull-left">Messages</h6>
+                                    <h6 class="pull-right"><i class="fa fa-comments"></i></h6>
+                                </div>
+                                <div class="col-sm-12 profile_dropdown p-2 text-center pointer"
+                                    (click)="Page('Profile');gotoProfileTabs('post')">
+                                    <h6 class="pull-left">My Posts</h6>
+                                    <h6 class="pull-right"><i class="fa fa-address-card-o"></i></h6>
+                                </div>
+                                <div class="col-sm-12 profile_dropdown p-2 text-center pointer" (click)="logout()">
+                                    <h6 class="pull-left"> Log Out</h6>
+                                    <h6 class="pull-right"><i class="fa fa-sign-out"></i></h6>
+                                </div>
+                            </div>
+                        </mat-menu>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div [ngSwitch]="TabName">
+            <div *ngSwitchCase="'Home'">
+                <app-community-dashboard [logout]="logoutFlag"></app-community-dashboard>
+            </div>
+            <div *ngSwitchCase="'Projects'">
+                <app-project-community></app-project-community>
+            </div>
+            <div *ngSwitchCase="'Partners'">
+                <app-parteners-community></app-parteners-community>
+            </div>
+            <div *ngSwitchCase="'Customers'">
+                <app-customers-community></app-customers-community>
+            </div>
+            <div *ngSwitchCase="'Events'">
+                <app-events-community></app-events-community>
+            </div>
+            <div *ngSwitchCase="'Profile'">
+                <app-user-profile [ProfileTab]="ProfileTab" (HomeTab)="TabName=$event"></app-user-profile>
+            </div>
+        </div>
+    </div>
+    <footer class="footer-section mt-3">
+        <div class="container">
+            <div class="footer-content pt-5 pb-5">
+                <div class="row pl-5">
+                    <div class="col-xl-4 col-lg-4 mb-50">
+                        <div class="footer-widget">
+                            <div class="footer-logo">
+                                <a href="https://trurealty.in/" target="_blank"><img
+                                        src="../../../assets/images/logo.png" width="100px" class="img-fluid"
+                                        alt="logo"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 mb-30">
+                        <div class="footer-widget">
+                            <ul>
+                                <li *ngFor="let head of HomeTabs; trackBy: trackByFn;">
+                                    <a (click)="Page(head.key)">{{head.key}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 mb-50">
+                        <div class="footer-widget">
+                            <ul *ngIf="loggedInuserDetails===null">
+                                <li><a (click)="login()">Sign In</a></li>
+                                <li><a>&nbsp;</a></li>
+                                <li><a (click)="register()">Register</a></li>
+                            </ul>
+                            <ul *ngIf="loggedInuserDetails!==null">
+                                <li><a>View Profile</a></li>
+                                <li><a>&nbsp;</a></li>
+                                <li (click)="logout()"><a>Log Out <i class="fa fa-sign-out"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copyright-area footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 text-center text-lg-left">
+                        <div class="copyright-text">
+                            <p>Copyright &copy; 2020,<a href="https://www.trurealty.in/" target="_blank"> Tru Realty
+                                </a> &nbsp;All
+                                Right
+                                Reserved
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 d-none d-lg-block text-right">
+                        <div class="footer-menu">
+                            <ul>
+                                <li *ngFor="let item of socialTabs; trackBy: trackByFn;" class="pointer">
+                                    <a href="{{item.url}}" target="_blank">
+                                        <i class="{{item.css}} {{item.icon}}" aria-hidden="true"></i>
+                                        &nbsp;{{item.title}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>

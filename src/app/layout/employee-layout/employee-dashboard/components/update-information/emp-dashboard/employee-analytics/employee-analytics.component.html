@@ -1,0 +1,816 @@
+<div *ngIf="!showtoManager" class="main">
+    <div class="row">
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-primary btn-sm pull-right rounded"
+                ngbTooltip="open received feedback details" (click)="getFeedback()">
+                Feedback <i class="fa fa-comments"></i></button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-7">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Today's Activity</legend>
+                <div class="row">
+                    <div class="col-sm-3 box purplebox pointer"
+                        ngbTooltip="Todays New Leads, Site-Visits and Follow-Up Leads"
+                        (click)="Show_Modal('MyTodaysWork')">
+                        <div class="row">
+                            <div class="col-sm-12 purplebag ">
+                                <span class="text-center heading">Todays Work</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countppl">{{MyTodaysWork}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="col-sm-3 box purplebox pointer" (click)="Show_Modal('Today_Followup')">
+                        <div class="row">
+                            <div class="col-sm-12 purplebag">
+                                <span class="text-center heading"> Follow-Up</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countppl">{{todaysFollowup}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-sm-3 box purplebox pointer" (click)="Show_Modal('Today_Sitevisit')">
+                        <div class="row">
+                            <div class="col-sm-12 purplebag">
+                                <span class="text-center heading"> Site-Visit</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countppl">{{todaySiteVisit}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 box purplebox pointer" (click)="Show_Modal('Reminder')">
+                        <div class="row">
+                            <div class="col-sm-12 purplebag">
+                                <span class="text-center heading"> Reminder</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countppl">{{todays_Reminder}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-sm-5">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Attention Required</legend>
+                <div class="row">
+                    <div class="col-sm-4 box redbox pointer" ngbTooltip="Leads with 'HOT' status"
+                        (click)="Show_Modal('Hot')">
+                        <div class="row">
+                            <div class="col-sm-12 redbag">
+                                <span class="text-center heading">Hot</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countred">{{HotLeads}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 box redbox pointer" (click)="Show_Modal('NoActionPlanned')">
+                        <div class="row">
+                            <div class="col-sm-12 redbag">
+                                <span class="text-center heading">No Action Planned</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countred">{{NoActionPlanned}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 box redbox pointer" (click)="Show_Modal('Missed_Followup')">
+                        <div class="row">
+                            <div class="col-sm-12 redbag">
+                                <span class="text-center heading">Missed Follow-Ups</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countred">{{missedFollowUpNumber}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-7">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">
+                    <input type="text" autocomplete="off" [alwaysShowCalendars]="true" [ranges]="ranges"
+                        [linkedCalendars]="true" ngxDaterangepickerMd id="Date" name="Date" #Date="ngModel"
+                        [(ngModel)]="selectedDateRange" class="form-control calendercss" placeholder="Select Dates"
+                        [class.error]="Date.invalid && Date.touched" (change)="onChangeDate(selectedDateRange)"
+                        [class.has-success]="Date.valid" style="width: 14em;" />
+                </legend>
+                <div class="row">
+                    <div class="col-sm-3 box bluebox pointer" (click)="Show_Modal('Total_Calls')">
+                        <div class="row">
+                            <div class="col-sm-12 bluebag">
+                                <span class="text-center heading">Call Attempts</span>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countblue">{{totalCallCount}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 box bluebox">
+                        <div class="row">
+                            <div class="col-sm-12 bluebag">
+                                <span class="text-center heading">Total Talktime</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countblue">{{totalTalktime}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 box bluebox pointer" (click)="Show_Modal('SiteVisitConducted')">
+                        <div class="row">
+                            <div class="col-sm-12 bluebag">
+                                <span class="text-center heading">Site Visits Conducted</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countblue">{{SiteVisitConducted}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 box bluebox pointer" (click)="Show_Modal('BookedLeads')">
+                        <div class="row">
+                            <div class="col-sm-12 bluebag">
+                                <span class="text-center heading">Booked</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countblue">{{BookedLeads}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-sm-5">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">SiteVisit Details</legend>
+                <div class="row">
+                    <div class="col-sm-4 box orangebox pointer" data-toggle="tooltip" data-placement="top"
+                        title="SV scheduled by you" (click)="Show_Modal('By_Sales')">
+                        <div class="row">
+                            <div class="col-sm-12 orangebag">
+                                <span class="text-center heading">By Sales</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countorange">{{by_sales}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 box orangebox pointer" data-toggle="tooltip" data-placement="top"
+                        title="SV schedule by Presales" (click)="Show_Modal('By_Presales')">
+                        <div class="row">
+                            <div class="col-sm-12 orangebag">
+                                <span class="text-center heading">By Presales</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countorange">{{by_presales}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 box orangebox pointer" data-toggle="tooltip" data-placement="top"
+                        title="Leads By CP in last 30 Days" (click)="Show_Modal('By_CP')">
+                        <div class="row">
+                            <div class="col-sm-12 orangebag">
+                                <span class="text-center cp-lead ">CP / CRO Leads(Last 30 days)</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countorange">{{by_cp}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<!-- ModalPop for Display Data Selected Card -->
+<div bsModal #showModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog" style=" cursor: pointer;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{Modal_Title}}</h3>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <div class="row" *ngIf="isLoadingStops">
+                    <div class="col-sm-12 text-center">
+                        <div [hidden]="!isLoading">
+                            <p class="loading">
+                                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center" *ngIf="!isLoadingStops">
+                    <div id="table_grid">
+                        <h5 *ngIf="DetailList.length > 0" class="pull-right"><span class="badge badge-dark">Count :
+                                {{DetailList.length}}</span></h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Sr. No.</th>
+                                        <th>Name</th>
+                                        <th
+                                            *ngIf="Modal_Title === 'New Opportunity Details' || Modal_Title=== 'Leads By CP / CRO'">
+                                            Broker Name</th>
+                                        <th>Mobile Number</th>
+                                        <th
+                                            *ngIf="Modal_Title === 'New Opportunity Details' || Modal_Title=== 'Leads By CP / CRO'">
+                                            Referred By</th>
+                                        <th *ngIf="siteVisitFlag">Site Visit Date</th>
+                                        <th *ngIf="siteVisitFlag">Site Visit Time</th>
+                                        <th *ngIf="followUpFlag">Follow-Up Date</th>
+                                        <th *ngIf="followUpFlag">Follow-Up Time</th>
+                                        <th *ngIf="statusFlag === 'Total_Calls'">Start Time</th>
+                                        <th *ngIf="statusFlag === 'Total_Calls'">End Time</th>
+                                        <th *ngIf="statusFlag === 'Total_Calls'">Duration</th>
+                                        <th *ngIf="statusFlag === 'SiteVisitConducted' || statusFlag === 'BookedLeads'">
+                                            Created On</th>
+                                        <th *ngIf="statusFlag === 'SiteVisitConducted'">Conducted On</th>
+                                        <th *ngIf="statusFlag === 'BookedLeads'">Booked On</th>
+                                    </tr>
+
+                                    <tr *ngIf="listlength && listlength >= 1">
+                                        <td></td>
+                                        <td>
+                                            <input class="name-width" type="text" name="searchName"
+                                                [(ngModel)]="filterDataModel.Name"
+                                                (keyup)="filterEmpData(ListOffilter,DetailList,storeData,filterDataModel,'DetailList')">
+                                        </td>
+                                        <td
+                                            *ngIf="Modal_Title === 'New Opportunity Details' || Modal_Title=== 'Leads By CP / CRO'">
+                                            <input class="name-width" type="text" name="searchBrokerName"
+                                                [(ngModel)]="filterDataModel.BrokerName"
+                                                (keyup)="filterEmpData(ListOffilter,DetailList,storeData,filterDataModel,'DetailList')">
+                                        </td>
+                                        <td>
+                                            <input class="name-width" type="number" name="searchMobileNo"
+                                                [(ngModel)]="filterDataModel.MobileNo"
+                                                (keyup)="filterEmpData(ListOffilter,DetailList,storeData,filterDataModel,'DetailList')">
+                                        </td>
+                                        <td
+                                            *ngIf="Modal_Title === 'New Opportunity Details' || Modal_Title=== 'Leads By CP / CRO'">
+                                            <input class="name-width" type="text" name="searchSource"
+                                                [(ngModel)]="filterDataModel.Source"
+                                                (keyup)="filterEmpData(ListOffilter,DetailList,storeData,filterDataModel,'DetailList')">
+                                        </td>
+                                        <td *ngIf="siteVisitFlag"></td>
+                                        <td *ngIf="siteVisitFlag"></td>
+                                        <td *ngIf="followUpFlag"></td>
+                                        <td *ngIf="followUpFlag"></td>
+                                        <td *ngIf="statusFlag === 'Total_Calls'"></td>
+                                        <td *ngIf="statusFlag === 'Total_Calls'"></td>
+                                        <td *ngIf="statusFlag === 'Total_Calls'"></td>
+                                        <td *ngIf="statusFlag === 'SiteVisitConducted' || statusFlag === 'BookedLeads'">
+                                        </td>
+                                        <td *ngIf="statusFlag === 'SiteVisitConducted'"></td>
+                                        <td *ngIf="statusFlag === 'BookedLeads'"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let detail of DetailList| paginate: { itemsPerPage:10, currentPage: p };let i=index;trackBy: trackByFn">
+                                        <td>{{i+1}}</td>
+                                        <td class="text-left">
+                                            <button type="button" class="btn btn-link btn-sm text-left"
+                                                (click)="showLeadDetails(detail)">
+                                                <i class="fa fa-eye"></i>
+                                                {{detail.Name | titlecase}}
+                                            </button>
+                                        </td>
+                                        <td
+                                            *ngIf="Modal_Title === 'New Opportunity Details' || Modal_Title=== 'Leads By CP / CRO'">
+                                            {{detail.BrokerName | titlecase}}
+                                        </td>
+                                        <td>{{detail.MobileNo}}</td>
+                                        <td
+                                            *ngIf="Modal_Title === 'New Opportunity Details' || Modal_Title=== 'Leads By CP / CRO'">
+                                            {{detail.ReferredByType}}</td>
+                                        <td *ngIf="siteVisitFlag">{{detail.PreferredDate | date:'yyyy-MM-dd'}}</td>
+                                        <td *ngIf="siteVisitFlag">{{detail.PreferredTime}}</td>
+                                        <td *ngIf="followUpFlag">{{detail.FollowUpDate}}</td>
+                                        <td *ngIf="followUpFlag">{{detail.FollowupTime}}</td>
+                                        <td *ngIf="statusFlag === 'Total_Calls'">{{detail.StartTime}}</td>
+                                        <td *ngIf="statusFlag === 'Total_Calls'">{{detail.EndTime}}</td>
+                                        <td *ngIf="statusFlag === 'Total_Calls'">{{detail.Duration}}</td>
+                                        <td *ngIf="statusFlag === 'SiteVisitConducted'">
+                                            {{detail.RefCreatedOn | date:'yyyy-MM-dd'}}</td>
+                                        <td *ngIf="statusFlag === 'SiteVisitConducted' || statusFlag === 'BookedLeads'">
+                                            {{detail.CreatedOn | date:'yyyy-MM-dd'}}</td>
+                                        <td *ngIf="statusFlag === 'BookedLeads'">
+                                            {{detail.BookedOn? (detail.BookedOn | date:'yyyy-MM-dd'):'NA'}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <tfoot class="pull-right" *ngIf="listlength > 10">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </tfoot>
+                        <div class="text-center mt-2" *ngIf="listlength === 0">
+                            <strong>
+                                <span class="required"> Records Are Not Available.</span>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showtoManager && loggedInuserDetails.Role !== 2 ">
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Performance Report</legend>
+        <div class="row">
+            <span class="required">Default date is Last 30 Days.</span>
+            <div class="col-sm-7">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <Strong> <span class="required">*</span>Select Date: </Strong>
+                        <input type="text" class="form-control" id="selectdate" name="selectdate" ngxDaterangepickerMd
+                            [(ngModel)]="selected" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true"
+                            [ranges]="ranges" [linkedCalendars]="true" autocomplete="off" required #selectdate="ngModel"
+                            placeholder="Select Dates" [class.error]="selectdate.invalid && selectdate.touched"
+                            [class.has-success]="selectdate.valid" />
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="type">Select Project</strong>
+                        <select class="form-control" id="type" name="type" [(ngModel)]="searchModel.ProjectId"
+                            #Presales="ngModel" [class.error]="Presales.invalid && Presales.touched"
+                            [class.has-success]="Presales.valid">
+                            <option [value]="">--- Select Project ---</option>
+                            <option *ngFor="let item of getProjectNames;trackBy:trackByFn" [value]="item.ProjectId"
+                                [hidden]="item.ProjectName === 'Common'">
+                                {{item.ProjectName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <strong for="type">Select Presales</strong>
+                        <select class="form-control" id="type" name="type" [(ngModel)]="searchModel.PresalesId"
+                            #Presales="ngModel" [class.error]="Presales.invalid && Presales.touched"
+                            [class.has-success]="Presales.valid">
+                            <option [value]="">--- Select Presales ---</option>
+                            <option *ngFor="let type of getPresalesName;trackBy:trackByFn" [value]="type.EmployeeId">
+                                {{type.FirstName}}
+                                {{type.LastName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1 pt-4">
+                <button (click)="showCallReportDetails(selected,searchModel)" class="btn btn-primary"> <i
+                        class="fa fa-search"></i>
+                    Search</button>
+            </div>
+        </div>
+        <!-- For Role=9 (Senior Manager's) tiles and Drop Down -->
+        <div class="row">
+            <div class="col-sm-4" *ngIf="loggedInuserDetails.Role !== 11">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Sales Performance</legend>
+                    <div class="row">
+                        <div class="col-sm-4 box bluebox pointer" (click)="openSalesPresalesModel('bysales')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading">Total calls</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue">{{totalSalesData.Total_Calls}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 box bluebox pointer" (click)="openSalesPresalesModel('bysales')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading Talktime">Total Talktime</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue count">{{totalSalesData.Total_Talktime}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 box bluebox pointer" (click)="openSalesPresalesModel('bysales')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading">Site Visits</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue">{{totalSalesData.SiteVisit_Scheduled}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-sm-5">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Presales Performance</legend>
+                    <div class="row">
+                        <div class="col-sm-4 box bluebox pointer" (click)="openSalesPresalesModel('byPresales')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading">Total Calls</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue">{{totalpreSalesData.Total_Calls}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 box bluebox pointer" (click)="openSalesPresalesModel('byPresales')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading">Total Talktime</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue">{{totalpreSalesData.Total_Talktime}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 box bluebox pointer" (click)="openSalesPresalesModel('byPresales')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading">Site Visits</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue">{{totalpreSalesData.SiteVisit_Scheduled}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-sm-3">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Site Performance</legend>
+                    <div class="row">
+                        <div class="col-sm-6 box bluebox pointer" (click)="openSalesPresalesModel('bySitelevel')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading">Leads</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue">{{totalSiteLevelData.Total_Leads}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 box bluebox pointer" (click)="openSalesPresalesModel('bySitelevel')">
+                            <div class="row">
+                                <div class="col-sm-12 bluebag">
+                                    <span class="text-center heading">Bookings</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2 class="text-center countblue">{{totalSiteLevelData.Total_booking}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<!-- Modal Pop for Show Call Reports -->
+<div bsModal #showsalesPresalesModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{Modal_Title}}</h3>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <!-- Sales Table -->
+                <h5 class="pull-right"><span class="badge badge-dark px-2 py-1">Count :
+                        {{showsalesPresaslesData.length}}</span></h5>
+                <div id="table_grid" *ngIf="salesPresales ===true">
+                    <div class="table-responsive scrollheight">
+                        <table class="table table-bordered table-hover table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>Sr No</th>
+                                    <th> Names </th>
+                                    <th> Role </th>
+                                    <!--For Sales -->
+                                    <th *ngIf="showSalesData === true">Project</th>
+                                    <th> Total Calls </th>
+                                    <th> Total Talk Time</th>
+                                    <th> SV Scheduled</th>
+                                    <th *ngIf="showSalesData === false"> SV Conducted</th>
+                                    <!--For Sales -->
+                                    <th *ngIf="showSalesData === true">Booking</th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <input class="name-width w-75" type="text" name="Name"
+                                            [(ngModel)]="filterData.Name"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                    <td>
+                                        <input class="name-width w-75" type="text" name="Role"
+                                            [(ngModel)]="filterData.Role"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                    <td *ngIf="showSalesData === true">
+                                        <input class="name-width w-75" type="text" name="Project"
+                                            [(ngModel)]="filterData.Project"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                    <td>
+                                        <input class="name-width w-75" type="text" name="Total_Calls"
+                                            [(ngModel)]="filterData.Total_Calls"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                    <td>
+                                        <input class="name-width w-75" type="text" name="Total_Talktime"
+                                            [(ngModel)]="filterData.Total_Talktime"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                    <td>
+                                        <input class="name-width w-75" type="text" name="SiteVisit_Scheduled"
+                                            [(ngModel)]="filterData.SiteVisit_Scheduled"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                    <td *ngIf="showSalesData === false">
+                                        <input class="name-width w-75" type="text" name="SiteVisit_Conducted"
+                                            [(ngModel)]="filterData.SiteVisit_Conducted"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                    <td *ngIf="showSalesData === true">
+                                        <input class="name-width w-75" type="text" name="Bookings"
+                                            [(ngModel)]="filterData.Bookings"
+                                            (keyup)="filterEmpData(ListOffilterValue,showsalesPresaslesData,TempFilteredData,filterData,'showsalesPresales')">
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center"
+                                    *ngFor="let detail of showsalesPresaslesData;trackBy: trackByFn;let i=index;">
+                                    <td>{{i+1}}</td>
+                                    <td class="text-left pl-2">{{detail.Name}} </td>
+                                    <td>{{detail.Role}} </td>
+                                    <td *ngIf="showSalesData === true">{{detail.Project}} </td>
+                                    <td>{{detail.Total_Calls}}</td>
+                                    <td>{{detail.Total_Talktime}}</td>
+                                    <td>{{detail.SiteVisit_Scheduled}}</td>
+                                    <td *ngIf="showSalesData === false">{{detail.SiteVisit_Conducted}}</td>
+                                    <td *ngIf="showSalesData === true">{{detail.Bookings}} </td>
+                                </tr>
+                                <tr style="background: grey;" class="text-center">
+                                    <td class="fix sticky-col" colspan="2"></td>
+                                    <td class="fix sticky-col"><strong>Total</strong></td>
+                                    <td class="fix sticky-col"> <strong>{{totalpreSalesData.Total_Calls}}</strong> </td>
+                                    <td class="fix sticky-col"> <strong>{{totalpreSalesData.Total_Talktime}}</strong>
+                                    </td>
+                                    <td class="fix sticky-col">
+                                        <strong>{{totalpreSalesData.SiteVisit_Scheduled}}</strong>
+                                    </td>
+                                    <td *ngIf="showSalesData === false" class="fix sticky-col">
+                                        <strong>{{TotalSVConduct}}</strong>
+                                    </td>
+                                    <td *ngIf="showSalesData === true" class="fix sticky-col">
+                                        <strong>{{TotalBookings}}</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- <tfoot class="pull-right" *ngIf="showsalesPresaslesData.length>10">
+                            <pagination-controls id="sales-pagination12" (pageChange)="q112 = $event">
+                            </pagination-controls>
+                        </tfoot> -->
+                    </div>
+                </div>
+
+                <!-- SiteVisit Table -->
+                <div id="table_grid" *ngIf="siteLevelData && salesPresales !==true">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover  table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th> Project </th>
+                                    <th> Leads </th>
+                                    <th> Site Visit </th>
+                                    <th> Booking</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center"
+                                    *ngFor="let detail of siteLevelData| paginate: { itemsPerPage:10, currentPage: r1,id:'sitelevel-Details-pagination' };trackBy: trackByFn">
+                                    <td>{{detail.Project}} </td>
+                                    <td>{{detail.Total_Leads}} </td>
+                                    <td>{{detail.SiteVisit_Scheduled}}</td>
+                                    <td>{{detail.Total_booking}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="siteLevelData.length>10">
+                            <pagination-controls id="sitelevel-Details-pagination" (pageChange)="r1 = $event">
+                            </pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Display Order,Sitevisit, Service request Chart -->
+<div class="row">
+    <div class="col-sm-4" [hidden]="loggedInuserDetails.Role===2">
+        <div class="card mb-3 chart">
+            <div class="card-header">
+                Service Request Chart
+            </div>
+            <div [hidden]="!isChartLoading">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+            <div class="card-body">
+                <span class="notfoundmsg">{{barChartDataNotFoundMessage}}</span>
+                <div *ngIf="!barChartDataNotFoundMessage">
+                    <div id="barchart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card mb-3 chart">
+            <div class="card-header">
+                Order Chart
+            </div>
+            <div [hidden]="!isDougnetChartLoading">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+            <span *ngIf="donutDataNotFoundMessage" class="notfoundmsg exception">No Data Found</span>
+            <div *ngIf="!donutDataNotFoundMessage">
+                <div id="donutchart"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="card mb-3 chart">
+            <div class="card-header">
+                Lead Chart
+            </div>
+            <div [hidden]="!isPieChartLoading">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+            <span *ngIf="pieChartDataNotFoundMessage" class="notfoundmsg exception mt-5">No Data Found</span>
+            <div *ngIf="!pieChartDataNotFoundMessage">
+                <div id="piechart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Pop for Show Call Reports -->
+<div bsModal #showFeedbackModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Stakeholders Feedback</h3>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showFeedbackModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <!-- Sales Table -->
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-sm">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th> CreatedOn</th>
+                                <th> Name </th>
+                                <th> UserType </th>
+                                <th>Feedback Details</th>
+                                <th> Project Name</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchFeedbackFrom"
+                                        [(ngModel)]="filterDataModel.FeedbackFrom"
+                                        (keyup)="filterEmpData(ListOffilter,feedbackData,storeFeedbackData,filterDataModel,'feedbackData')">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchUserType"
+                                        [(ngModel)]="filterDataModel.UserType"
+                                        (keyup)="filterEmpData(ListOffilter,feedbackData,storeFeedbackData,filterDataModel,'feedbackData')">
+                                </td>
+                                <td>
+                                    <input class="name-width" type="text" name="searchDetails"
+                                        [(ngModel)]="filterDataModel.Details"
+                                        (keyup)="filterEmpData(ListOffilter,feedbackData,storeFeedbackData,filterDataModel,'feedbackData')">
+                                </td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center"
+                                *ngFor="let detail of feedbackData| paginate: {itemsPerPage:9, currentPage: f1,id:'feedback-pagination' };trackBy: trackByFn">
+                                <td>{{detail.CreatedOn |date:"d MMM y"}}</td>
+                                <td>{{detail.FeedbackFrom}}</td>
+                                <td>{{detail.UserType}} </td>
+                                <td class="col-width"><label>{{detail.Details}}</label></td>
+                                <td>{{detail.ProjectName}} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot *ngIf="feedbackData.length>9" class="pull-right">
+                        <pagination-controls id="feedback-pagination" (pageChange)="f1 = $event">
+                        </pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

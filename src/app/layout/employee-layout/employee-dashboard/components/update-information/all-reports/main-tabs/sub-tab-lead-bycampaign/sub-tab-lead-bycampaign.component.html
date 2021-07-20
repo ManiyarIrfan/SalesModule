@@ -1,0 +1,136 @@
+<p-tabView>
+  <div>
+    <div class="card-header">
+      <div class="row">
+        <strong>
+          <h5>Leads By Campaign</h5>
+        </strong>
+        <div class="col-sm-1" *ngIf="getLeadByStatus.length > 0">
+          <button type="button" class="btn btn-primary btn-sm pull-right" (click)="exportEvent()"
+            [disabled]="this.loggedInuserDetails.Level ==='L3'">
+            <i class="fa fa-upload"></i>
+            &nbsp; Export</button>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div *ngIf="isLoading">
+      <p class="loading">
+        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+      </p>
+    </div>
+    <div class="table-responsive" *ngIf="!isLoading">
+      <span class="required" *ngIf="getLeadByStatus.length === 0">Data Not Available</span>
+      <div *ngIf="getLeadByStatus.length > 0">
+        <table class="table table-bordered table-hover  table-sm text-nowrap  ">
+          <thead class="thead-light">
+            <tr class="text-center">
+              <th>Employee Name</th>
+              <th *ngFor="let heading of tableHeader; trackBy: trackByFn;">
+                {{heading !== 'EmpName'?heading : 'Employee Name'}}
+              </th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-center"
+              *ngFor="let data of getLeadByStatus | paginate: { itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn;let i= index;">
+              <td>{{data.EmpName}}</td>
+              <td *ngFor="let heading of tableHeader; trackBy: trackByFn;">
+                <div *ngIf="data[heading] !=='EmpName'"><button class="btn btn-sm btn-link"
+                    (click)="getLeadDetail(data,data[heading],heading)">{{data[heading]}}</button></div>
+              </td>
+              <td>{{data.Total}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <tfoot class="pull-right" *ngIf="getLeadByStatus.length > 10">
+          <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+        </tfoot>
+      </div>
+    </div>
+  </div>
+  <!-- popup -->
+  <div bsModal #showReportsDetailsModal="bs-modal" cdkDrag class="modal fade model" role="dialog"
+    data-backdrop="static" data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true"
+    [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="col-sm-12">
+            <h3 class="modal-title text-center">Lead Details</h3>
+          </div>
+          <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="close()" />
+        </div>
+        <div class="modal-body">
+          <div *ngIf="isPopUpLoading">
+            <p class="loading">
+              <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+            </p>
+          </div>
+          <div class="row" *ngIf="!isPopUpLoading">
+            <div class="col-sm-3">
+              <h6 class="text-center"> Name:- <span class="required">{{empDetailModel.EmpName | titlecase}}</span> </h6>
+            </div>
+            <div class="col-sm-3">
+              <h6 class="text-center"> From:- <span
+                  class="required">{{this.selectedDateRange.startDate | date:'dd MMM yyyy h:mm a'}}</span>
+              </h6>
+            </div>
+            <div class="col-sm-3">
+              <h6 class="text-center"> To:- <span
+                  class="required">{{this.selectedDateRange.endDate | date:'dd MMM yyyy h:mm a'}}</span>
+              </h6>
+            </div>
+            <div class="col-sm-3 text-center" *ngIf="leadAnalysisDetailsReportList.length > 0">
+              <button type="button" class="btn btn-primary btn-sm" [disabled]="this.loggedInuserDetails.Level ==='L3'"
+                (click)="exportPopEvent()">
+                <i class="fa fa-download"></i> &nbsp; Export</button>
+            </div>
+          </div>
+          <br>
+          <div class="table-responsive scrollbar" id="style-2" *ngIf="leadAnalysisDetailsReportList.length>0">
+            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+              <thead class="thead-light">
+                <tr class="text-center">
+                  <th>Name</th>
+                  <th>ID</th>
+                  <th>Received On</th>
+                  <th>Source</th>
+                  <th>First Contacted On</th>
+                  <th>Last Note</th>
+                  <th>Sales Name</th>
+                  <th>Last Contact</th>
+                  <th>FollowUp Scheduled</th>
+                  <th>Site Visit Scheduled</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center"
+                  *ngFor="let detail of leadAnalysisDetailsReportList | paginate: {id:'lead-Details-pagination', itemsPerPage: 7, currentPage: j };trackBy: trackByFn;">
+                  <td>{{detail.Name | titlecase}}</td>
+                  <td>{{detail.EnquiryId}}</td>
+                  <td>{{detail.CreatedOn | date:'dd MMM yyyy'}}</td>
+                  <td>{{detail.Source | titlecase}}</td>
+                  <td>{{detail.FirstContactedOn | date:'dd MMM yyyy'}}</td>
+                  <td class="note-width">{{detail.LastNote | titlecase}}</td>
+                  <td>{{detail.SalesName | titlecase}}</td>
+                  <td>{{detail.LastContactedOn | date:'dd MMM yyyy'}}</td>
+                  <td>{{detail.FollowUpDate | date:'dd MMM yyyy'}} {{detail.FollowUpTime}}</td>
+                  <td>{{detail.PreferredDate | date:'dd MMM yyyy'}} {{detail.PreferredTime}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <tfoot class="pull-right" [hidden]="leadAnalysisDetailsReportList.length<=7">
+            <pagination-controls id="lead-Details-pagination" (pageChange)="j = $event"></pagination-controls>
+          </tfoot>
+          <div class="text-center" *ngIf="leadAnalysisDetailsReportList.length===0 && !isPopUpLoading">
+            <br>
+            <strong class="required"> Records Not Available </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-tabView>

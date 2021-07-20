@@ -1,0 +1,71 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<mat-card *ngIf="!isSpinnerActive">
+    <!-- <div class="col-sm-12 text-center">
+        <span class="required">{{showSuccessfullMessage}}</span>
+    </div> -->
+    <form>
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Lead Id</th>
+                                <th>Referred By </th>
+                                <th>Name </th>
+                                <th>Created Date </th>
+                                <th>Preferred City</th>
+                                <th>Preferred Location</th>
+                                <th>Preferred Project</th>
+                                <th>BHK</th>
+                                <th>Budget</th>
+                                <th>CRM Assigned</th>
+                                <th>Incentive</th>
+                                <th>Preferred Date</th>
+                                <th>Source</th>
+                                <th>FtoF</th>
+                                <th>Site Visit</th>
+                                <th>Status</th>
+                                <th>Sales Agent</th>
+                                <th>Possesion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let referral of showReferral| paginate: { itemsPerPage: 15, currentPage: p1};trackBy: trackByFn">
+                                <td>{{referral.ReferralId}} </td>
+                                <td>{{referral.ReferralBy }}</td>
+                                <td>{{referral.Name}}</td>
+                                <td>{{referral.CreatedOn |date:"d MMM y"}}</td>
+                                <td>{{referral.PreferredCity}}</td>
+                                <td>{{referral.PreferredLocation}}</td>
+                                <td>{{referral.PreferredProject}}</td>
+                                <td>{{referral.Bhk}}</td>
+                                <td>{{referral.Budget}}</td>
+                                <td>{{referral.CrmAssinged}}</td>
+                                <td>{{referral.IncentivePraposed}}</td>
+                                <td>{{referral.PreferredDate|date:"d MMM y"}} - {{referral.PreferredTime}}</td>
+                                <td>{{referral.Source}}</td>
+                                <td>{{referral.Face2Face}}</td>
+                                <td>{{referral.NoOfSiteVisit}}</td>
+                                <td>{{referral.ReferralStatus}}</td>
+                                <td>{{referral.SalesAgentAssinged}}</td>
+                                <td>{{referral.Possession}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot class="pull-right">
+                        <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+        </div>
+    </form>
+</mat-card>

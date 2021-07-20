@@ -1,0 +1,372 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<br>
+<div *ngIf="!isSpinnerActive">
+    <div class="row">
+        <div class="col-sm-2">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">New</legend>
+                <div class="row">
+                    <div class="col-sm-12 box redbox pointer" (click)="Show_Modal('New_Opportunity')">
+                        <div class="row">
+                            <div class="col-sm-12 redbag">
+                                <span class="text-center heading">New Leads</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countred">{{new_opportunity}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-sm-7">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Channel Partner Information</legend>
+                <div class="row">
+                    <div class="col-sm-3 box greenbox ">
+                        <div class="row">
+                            <div class="col-sm-12 greenbag">
+                                <span class="text-center heading text-white">Total CP</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countgrn">{{totalCp}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 box  orangebox ">
+                        <div class="row">
+                            <div class="col-sm-12 orangebag">
+                                <span class="text-center heading text-white">Total Leads</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countorange">{{totalLeads}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 box redbox ">
+                        <div class="row">
+                            <div class="col-sm-12 redbag">
+                                <span class="text-center heading text-white">Site Visit</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countred">{{totalSiteVisit}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 box bluebox ">
+                        <div class="row">
+                            <div class="col-sm-12 bluebag">
+                                <span class="text-center heading text-white">Total Bookings</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countblue ">{{totalBooking}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-sm-3">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Today's Activity</legend>
+                <div class="row">
+                    <div class="col-sm-6 box purplebox pointer" (click)="Show_Modal('Today_Followup')">
+                        <div class="row">
+                            <div class="col-sm-12 purplebag">
+                                <span class="text-center heading">Follow-Up</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countppl">{{todaysFollowup}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 box purplebox pointer" (click)="Show_Modal('Reminder')">
+                        <div class="row">
+                            <div class="col-sm-12 purplebag">
+                                <span class="text-center heading">Reminder</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countppl">{{todays_Reminder}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div *ngIf="!cpDetailsNodataFound">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                <thead class="thead-light">
+                    <tr>
+                        <th>CP Name</th>
+                        <th>Organization</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Mobile No</th>
+                        <th>Created On</th>
+                        <th>Total leads</th>
+                        <th>Total site visit</th>
+                        <th>Total bookings
+                            <i (click)="exportEvent(cpDetail)" ngbTooltip="Click Here To EXPORT" class="fa exportbtn fa-download"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input class="name-width" type="text" name="searchCPName" [(ngModel)]="filterDataModel.CPName" (keyup)="filterCPData()">
+                        </td>
+                        <td>
+                            <input class="name-width" type="text" name="searchOrganization" [(ngModel)]="filterDataModel.Organization" (keyup)="filterCPData()">
+                        </td>
+                        <td>
+                            <input class="name-width" type="text" name="searchCity" [(ngModel)]="filterDataModel.City" (keyup)="filterCPData()">
+                        </td>
+                        <td>
+                            <input class="name-width" type="text" name="searchState" [(ngModel)]="filterDataModel.State" (keyup)="filterCPData()">
+                        </td>
+
+                        <td>
+                            <input class="name-width" type="number" name="searchMobileNo" [(ngModel)]="filterDataModel.MobileNo" min="0" (keyup)="filterCPData()">
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr *ngFor="let details of cpDetail | paginate: { id:'Cp-Details-pagination',itemsPerPage: 7, currentPage: p1 };trackBy: trackByFn ">
+                        <td>
+                            <button type="button" class="btn btn-link btn-sm" (click)="showDashboard(details)"> <i
+                                    class="fa fa-eye"></i> {{details.CPName}} </button>
+                        </td>
+                        <td>{{details.Organization}}</td>
+                        <td>{{details.City}}</td>
+                        <td>{{details.State}}</td>
+                        <td>{{details.MobileNo}}</td>
+                        <td>{{details.CreatedOn|date:"d MMM y"}}</td>
+                        <td>
+                            <button type="button" (click)="showleadDetails(details)" class="btn btn-link btn-sm">
+                                {{details.NumOfReferral}} </button>
+                        </td>
+                        <td>{{details.SiteVisite}}</td>
+                        <td>{{details.Booking}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <tfoot class="pull-right">
+            <pagination-controls id="Cp-Details-pagination" (pageChange)="p1= $event"> </pagination-controls>
+        </tfoot>
+    </div>
+    <div class="text-center" *ngIf="cpDetailsNodataFound">
+        <strong> <span class="required"> Records Not Available</span> </strong>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Missed Contact</legend>
+                <div class="row">
+                    <div class="col-sm-6 box redbox pointer" (click)="Show_Modal('Missed_Calls')">
+                        <div class="row">
+                            <div class="col-sm-12 redbag">
+                                <span class="text-center heading">Calls</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countred">{{missedCallDetail}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 box redbox pointer" (click)="Show_Modal('Missed_Followup')">
+                        <div class="row">
+                            <div class="col-sm-12 redbag">
+                                <span class="text-center heading">Follow-Ups</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countred">{{missedFollowUpNumber}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-sm-4">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Contact Details</legend>
+                <div class="row">
+                    <div class="col-sm-6 box bluebox">
+                        <div class="row">
+                            <div class="col-sm-12 bluebag">
+                                <span class="text-center heading">Total calls</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countblue">{{totalCallCount}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 box bluebox">
+                        <div class="row">
+                            <div class="col-sm-12 bluebag">
+                                <span class="text-center heading">Total Talktime</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h2 class="text-center countblue">{{totalTalktime}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+
+<div bsModal #leadDetailsModel="bs-modal" cdkDrag class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #leadDetailspopForm="ngForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">Lead Details</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="leadDetailsModel.hide()" />
+                </div>
+                <div class="modal-body">
+                    <span *ngIf="showDataNotFoundError" class="required">{{NotFoundError}}</span>
+                    <div [hidden]="!isLeadDetailsSpinnerActive">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                    <div *ngIf="!showDataNotFoundError && !isLeadDetailsSpinnerActive">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Lead Id</th>
+                                        <th>Lead Name</th>
+                                        <th>Status</th>
+                                        <th>Project</th>
+                                        <th>Mobile No</th>
+                                        <th>Email Id</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let details of leadDetails | paginate: { id:'Cp-LeadDetails-pagination',itemsPerPage: 10, currentPage: p2 };trackBy: trackByFn ">
+                                        <td>{{details.ReferralId}}</td>
+                                        <td *ngIf="loggedInuserDetails.Role!==20"> <button class="btn btn-link btn-sm" type="button" (click)="gotoLeadDetails(details)">
+                                                {{details.LeadName}}</button></td>
+                                        <td *ngIf="loggedInuserDetails.Role===20">{{details.LeadName}}</td>
+                                        <td>{{details.ReferralStatus}}</td>
+                                        <td>{{details.PreferredProject}}</td>
+                                        <td>{{details.MobileNo}}</td>
+                                        <td>{{details.Email}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <tfoot class="pull-right" *ngIf="leadDetails.length>10">
+                                <pagination-controls id="Cp-LeadDetails-pagination" (pageChange)="p2 = $event">
+                                </pagination-controls>
+                            </tfoot>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div bsModal #showModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-center">{{Modal_Title}}</h3>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="this.showModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div id="table_grid">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <div [hidden]="!isLoading">
+                                    <p class="loading">
+                                        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <h5 *ngIf="DetailList.length > 0" class="pull-right"><span class="badbe badge-dark">Count : {{DetailList.length}}</span></h5>
+                        <div *ngIf="listlength>0 && !isLoading">
+                            <table class="table table-bordered table-hover  table-sm text-nowrap  ">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th> Sr. No. </th>
+                                        <th> Name </th>
+                                        <th> Mobile Number</th>
+                                        <th> Follow-Up Time</th>
+                                        <th> Follow-Up Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detail of DetailList| paginate: { id:'dashboardPopup',itemsPerPage:10, currentPage: p3 };trackBy: trackByFn;let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td *ngIf="loggedInuserDetails.Role !== 20"><button class="btn btn-link btn-sm" (click)="gotoLeadDetails(detail)"> <i class="fa fa-eye"></i>
+                                                {{detail.Name}} </button></td>
+                                        <td *ngIf="loggedInuserDetails.Role === 20"> {{detail.Name}}</td>
+                                        <td>{{detail.MobileNo}}</td>
+                                        <td>{{detail.FollowupTime}}</td>
+                                        <td>{{detail.FollowUpDate}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <tfoot class="pull-right" *ngIf="listlength>0 && !isLoading">
+                                <pagination-controls id="dashboardPopup" (pageChange)="p3 = $event">
+                                </pagination-controls>
+                            </tfoot>
+                        </div>
+                        <div class="text-center" *ngIf="listlength==0">
+                            <strong>
+                                <span class="required"> Records Not Available</span>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

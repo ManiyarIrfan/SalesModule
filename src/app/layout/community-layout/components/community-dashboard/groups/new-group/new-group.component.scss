@@ -1,0 +1,82 @@
+.margntop6 {
+    margin-top: 6px;
+}
+
+.example-chip-list {
+    width: 100%;
+}
+
+::ng-deep {
+    .mat-form-field-appearance-outline .mat-form-field-infix {
+        padding: 0.51em 0 1em 0 !important;
+    }
+}
+.btnpost {
+    background-color: #f0483e;
+    color: #ffffff;
+}
+
+.btnstyle {
+    border-radius: 4px !important;
+    padding: 6px 16px;
+    margin: 2px;
+}
+
+.profile-user-img {
+    width: 150px;
+    height: 150px;
+    border: 2px solid #afafaf;
+    padding: 3px;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+}
+
+.avatar-upload {
+    position: relative;
+    max-width: 205px;
+    margin: auto;
+    margin-bottom: 20px;
+
+    .avatar-edit {
+        position: absolute;
+        right: 40px;
+        z-index: 1;
+        top: 90px;
+        input {
+            display: none;
+            + label {
+                display: inline-block;
+                width: 34px;
+                height: 34px;
+                margin-bottom: 0;
+                border-radius: 100%;
+                background: #05050505;
+                border: 1px solid #d2d6de;
+                box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+                cursor: pointer;
+                font-weight: normal;
+                transition: all 0.2s ease-in-out;
+                &:hover {
+                    background: #161616da;
+                    border-color: #d6d6d6;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 280px) and (max-width: 500px) {
+    .avatar-upload {
+        margin-left: 6em;
+    }
+    .padleft {
+        padding-left: 0px !important;
+    }
+
+    .rowpadd {
+        padding: 2px 15px;
+    }
+}
+
+.padleft {
+    padding-left: 3rem;
+}

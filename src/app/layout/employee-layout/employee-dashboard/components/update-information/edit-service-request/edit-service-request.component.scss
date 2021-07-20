@@ -1,0 +1,98 @@
+.alert {
+    font-size: 12px;
+}
+
+#show {
+    height: 320px;
+}
+
+.modal-lg {
+    max-width: 1100px;
+    max-height: 450px;
+}
+
+.img {
+    display: block;
+    width: 100%;
+    height: 440px;
+}
+
+.modal-title {
+    margin-left: 388px;
+}
+
+.modal-dialog.modal-notify.modal-info .fa {
+    color: #539dff !important;
+}
+
+.modal-header {
+    background-color: #9af3f7;
+    padding: 0.4rem 1rem;
+}
+
+.bodycolor {
+    color: #72e772 !important;
+}
+
+.modal-title {
+    margin-left: 423px;
+    color: white;
+}
+
+#viewimageBtn {
+    font-size: 60px;
+}
+
+#gridViewImageBtn {
+    font-size: 26px;
+}
+
+#showImage {
+    padding-left: 0.45cm;
+}
+
+.listnotfound {
+    color: red;
+    font-size: 15px;
+}
+
+.formmargin {
+    margin-top: -2em;
+}
+
+.btn {
+    border-radius: 20px;
+}
+
+.text-margin {
+    margin-top: -35px;
+}
+
+.name-width {
+    border-radius: 10px;
+}
+
+.mat-tab-label {
+    min-width: 25px !important;
+    background-color: gray;
+    font-weight: 700;
+    border-top-right-radius: 1em !important;
+    border-top-left-radius: 1em !important;
+    background-color: rgb(5, 121, 156);
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+
+/* Styles for the active tab label */
+
+.mat-tab-label.mat-tab-label-active {
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    border-top-right-radius: 1em !important;
+    border-top-left-radius: 1em !important;
+}

@@ -1,0 +1,73 @@
+<!-- font-size14 -->
+<div *ngIf="Type === 'NewDiscussion'">
+    <label for="exampleForm2  font-size14 pointer">
+        <p class="pointer" (click)="onClick()">
+            <i class="fa fa-paperclip" aria-hidden="true"></i>
+            &nbsp;Attach a Files <span class="text-muted font13 nxtline">( Up to 5MB) </span>
+            <span *ngIf="inputFiles.length===0" class="text-danger font13">&nbsp;No File Selected</span>
+        </p>
+        <ul *ngFor="let file of files;trackBy: trackByFn">
+            <li class="mml1" [@fadeInOut]="file.state">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <mat-progress-bar [value]="file.progress" *ngIf="inputFiles"></mat-progress-bar>
+                    </div>
+                    <div class="col-sm-9">
+                        <span id="file-label" data-toggle="tooltip" data-placement="bottom"
+                            mdbTooltip="{{file.data.name?file.data.name:''}}">
+                            {{file.data.name ? ((file.data.name.length >20) ? (file.data.name | slice:0:20)+'...' : file.data.name) :''}}
+                        </span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="pull-right" title="Cancel" (click)="cancelFile(file)">
+                            <i class="fa fa-times-circle"></i>
+                        </span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <input type="file" id="fileUpload" name="fileUpload" accept="{{accept}}" style="display:none;"
+            (ngModelChange)="onInputFilesUpdated($event)" />
+    </label>
+</div>
+<div class="col-sm-12" *ngIf="Type === 'NewGroup'">
+    <div class="box-body box-profile">
+        <span class="padleft">Upload Profile</span>
+        <div class="avatar-upload">
+            <div class="avatar-edit" (click)="onClick()">
+                <form class="btnhover" action="" method="post" id="form-image">
+                    <input type="file" id="fileUpload" name="fileUpload" [multiple]="false" accept="{{accept}}"
+                        style="display:none;" (ngModelChange)="onInputFilesUpdated($event)" />
+                    <label class="btnhover" for="imageUpload"></label>
+                </form>
+            </div>
+            <div class="avatar-preview">
+                <img class="profile-user-img img-responsive img-circle rounded-circle" id="imagePreview"
+                    src="{{ProfilePic}}" alt="User profile picture">
+            </div>
+            <i class="fa fa-camera" style=" transform: translate(8.8em, -3.4em);"></i>
+        </div>
+        <!-- <span>Change Image</span> -->
+    </div>
+</div>
+<div *ngIf="Type === 'Button'">
+    <button class="uploadbtn" mat-button color="black" (click)="onClick()" [disabled]="disabledBtn">
+        <img src="../../../../assets/images/upload.png" class="fileimg" width="20px" alt=""> {{text}}
+    </button>
+    <br />
+    <ul style="margin-top: 0.5em;">
+        <li *ngFor="let file of files;trackBy: trackByFn" [@fadeInOut]="file.state">
+            <mat-progress-bar [value]="file.progress" *ngIf="inputFiles"></mat-progress-bar>
+
+            <span id="file-label filefont" data-toggle="tooltip" data-placement="top"
+                title="{{file.data && file.data.name ? file.data.name:''}}">{{file.data && file.data.name ? ((file.data.name.length >15) ? (file.data.name | slice:0:15)+'...' : file.data.name) :''}}
+            </span>
+            <a title="Cancel" (click)="cancelFile(file)">
+                <mat-icon>cancel</mat-icon>
+            </a>
+        </li>
+    </ul>
+    <input type="file" id="fileUpload" name="fileUpload" [multiple]="multiple" accept="{{accept}}" style="display:none;"
+        (ngModelChange)="onInputFilesUpdated($event)" />
+
+</div>

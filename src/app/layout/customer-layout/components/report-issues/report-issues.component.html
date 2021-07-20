@@ -1,0 +1,309 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<mat-card *ngIf="!isSpinnerActive">
+    <form #ServiceReportForm="ngForm" *ngIf="!isSpinnerActive">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 text-left">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Issue Report</legend>
+                        <div class="row">
+                            <div class="col-sm-6" *ngIf="!showServiceRequestDetails">
+                                <div class="card">
+                                    <span class="notfoundmsg">{{DataNotFoundMessage}}
+                                    </span>
+                                    <div class="card-body">
+                                        <div class="table-responsive" *ngIf="!showDataNotFoundMessage">
+                                            <table
+                                                class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Issue Id</th>
+                                                        <th>Project Name</th>
+                                                        <th>Flat Number</th>
+                                                        <th>Subject</th>
+                                                        <th>Status</th>
+                                                        <th>Image</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr
+                                                        *ngFor="let report of showServiceRequest | paginate: { itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn">
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-link"
+                                                                (click)="emitIssueID(report)">{{report.IssueId}}</button>
+                                                        </td>
+                                                        <td>{{report.ProjectName}}</td>
+                                                        <td>{{report.Building}} {{report.Flat}}</td>
+                                                        <td>{{report.IssueSubject}}</td>
+                                                        <td>
+                                                            <span
+                                                                [ngStyle]="{'background-color': report.IssueStatus=='New'? 'red' : 'green','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{report.IssueStatus}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" *ngIf="report.ImageUrl"
+                                                                class="btn btn-sm btn-link"
+                                                                (click)="viewImage(report.ImageUrl)" id="fontsm"><i
+                                                                    class="fa fa-file-image-o"
+                                                                    id="fontlrg"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <tfoot class="pull-right" *ngIf="showServiceRequest.length>10">
+                                                <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                                            </tfoot>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card cardchanges">
+                                    <div class="card-body">
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-8">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <strong>
+                                                            <span class="required">*</span>
+                                                            Customer ID :
+                                                        </strong>
+                                                    </div>
+                                                    <div class="col-sm-7">
+                                                        <input type="text" class="form-control" id="EntityId"
+                                                            name="EntityId" [disabled]="true"
+                                                            [(ngModel)]="sessionModel.EntityId">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-8">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <strong>
+                                                            <span class="required">*</span>
+                                                            Project Name :</strong>
+                                                    </div>
+                                                    <div class="col-sm-7">
+                                                        <select class="form-control" name="ProjectName" id="ProjectName"
+                                                            [disabled]="!isEdit" #ProjectName="ngModel" required
+                                                            [(ngModel)]="reportIssueModel.ProjectName"
+                                                            [class.error]="ProjectName.invalid && (ProjectName.dirty || ProjectName.touched)"
+                                                            [class.has-success]="ProjectName.valid && (ProjectName.dirty || ProjectName.touched)"
+                                                            required>
+                                                            <option value="">---Select---</option>
+                                                            <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn"
+                                                                [hidden]="item.ProjectName === 'Common'">
+                                                                {{item.ProjectName}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                            </div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-8">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <strong>&nbsp;Building Name :</strong>
+                                                    </div>
+                                                    <div class="col-sm-7"> <input type="text" class="form-control"
+                                                            name="Building" #Building="ngModel" [disabled]="!isEdit"
+                                                            id="Building" [(ngModel)]="reportIssueModel.Building"
+                                                            [class.error]="Building.invalid && (Building.dirty || Building.touched)"
+                                                            pattern="^[^-\s][a-zA-Z0-9 ]*"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                            </div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-8">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <strong>&nbsp;&nbsp;Flat No :</strong>
+
+                                                    </div>
+                                                    <div class="col-sm-7">
+                                                        <input type="text" class="form-control" name="Flat"
+                                                            #Flat="ngModel" [disabled]="!isEdit" id="Flat"
+                                                            [(ngModel)]="reportIssueModel.Flat"
+                                                            [class.error]="Flat.invalid && (Flat.dirty || Flat.touched)"
+                                                            pattern="^[^-\s][a-zA-Z0-9 ]*">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="row">
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-8">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <strong>
+                                                            <span class="required">*</span>
+                                                            Issue Date :</strong>
+                                                    </div>
+                                                    <div class="col-sm-7">
+                                                        <input type="date" class="form-control" name="IssueDate"
+                                                            dateFormatPipe [disabled]="!isEdit" id="IssueDate"
+                                                            [(ngModel)]="reportIssueModel.IssueDate"
+                                                            #IssueDate="ngModel" [max]="getToday()"
+                                                            [class.error]="IssueDate.invalid && (IssueDate.dirty || IssueDate.touched)"
+                                                            [class.has-success]="IssueDate.valid && (IssueDate.dirty || IssueDate.touched)"
+                                                            required [max]="getToday()"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+
+                                            </div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-8">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <strong>
+                                                            <span class="required  ">*</span>Issue Type :</strong>
+                                                    </div>
+                                                    <div class="col-sm-7"><select class="form-control" name="IssueType"
+                                                            id="IssueType" [disabled]="!isEdit" #IssueType="ngModel"
+                                                            [(ngModel)]="reportIssueModel.IssueType"
+                                                            [class.error]="IssueType.invalid && (IssueType.dirty || IssueType.touched)"
+                                                            [class.has-success]="IssueType.valid && (IssueType.dirty || IssueType.touched)"
+                                                            required>
+                                                            <option value="">---Select---</option>
+                                                            <option class='option' *ngFor='let Issue of issueTypeInfo;trackBy: trackByFn'
+                                                                [value]="Issue.value">
+                                                                {{Issue.value}}</option>
+                                                        </select></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-6"> <strong>
+                                                    &nbsp;&nbsp;Upload Image :</strong>
+                                            </div>
+                                            <div class="col-sm-6"></div>
+                                            <div class="col-sm-5">
+                                                <tru-file-upload [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png'"
+                                                    [(inputFiles)]="filesModel" multiple="multiple">
+                                                </tru-file-upload>
+                                            </div>
+                                        </div>
+                                        <div class="row rowmargin" *ngIf="!isShow">
+                                            <div class="col-sm-3">
+                                                <strong>View Image :</strong>
+                                            </div>
+                                            <div class="col-sm-9">
+                                                <carousel>
+                                                    <slide *ngFor="let slide of imagesArray;trackBy: trackByFn; let index=index">
+                                                        <img [src]="slide" alt="image slide" class="img"
+                                                            style="width: 40% !important;height: auto;">
+                                                    </slide>
+                                                </carousel>
+                                                <!-- <img src="{{imagesArray}}" width="100px" alt=""> -->
+                                                <!-- <button type="button" class="btn btn-sm btn-link font"
+                                                    (click)="viewImage(imagesArray)">
+                                                    <i class="fa fa-image"></i>
+                                                </button> -->
+                                            </div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-3">
+                                                <strong>
+                                                    <span class="required  ">*</span>Subject :</strong>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" name="IssueSubject"
+                                                    #IssueSubject="ngModel" [disabled]="!isEdit" id="IssueSubject"
+                                                    [(ngModel)]="reportIssueModel.IssueSubject"
+                                                    [class.error]="IssueSubject.invalid && (IssueSubject.dirty || IssueSubject.touched)"
+                                                    [class.has-success]="IssueSubject.valid && (IssueSubject.dirty || IssueSubject.touched)"
+                                                    required pattern="^[^-\s][a-zA-Z0-9.,() ]*">
+                                            </div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-3">
+                                                <strong>
+                                                    <span class="required">*</span>Issue Details :</strong>
+                                            </div>
+                                            <div class="col-sm-12  ">
+                                                <textarea class="form-control" name="Details" #Details="ngModel"
+                                                    [disabled]="!isEdit" id="Details" rows="5"
+                                                    [(ngModel)]="reportIssueModel.Details"
+                                                    [class.error]="Details.invalid && (Details.dirty || Details.touched)"
+                                                    [class.has-success]="Details.valid && (Details.dirty || Details.touched)"
+                                                    required pattern="^[^-\s][a-zA-Z0-9,.=() ]*"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                <button type="button" *ngIf="isShow"
+                                                    class="btn btn-primary center-block"
+                                                    [disabled]="!ServiceReportForm.valid || disableButton"
+                                                    (click)="OnSubmitBtnClick(ServiceReportForm,loggedInuserDetails,filesModel)"><i
+                                                        class="fa fa-paper-plane"></i> Submit Issue</button>
+                                                <button type="button" *ngIf="!isShow"
+                                                    class="btn btn-primary center-block"
+                                                    (click)="CreateNewIssue(ServiceReportForm)"><i
+                                                        class="fa fa-plus"></i>
+                                                    Create New Issue</button>
+                                            </div>
+                                        </div>
+                                        <div class="row rowmargin">
+                                            <div class="col-sm-12 text-center">
+                                                <div [hidden]="!isLoadingServiceRequestDetails">
+                                                    <p class="loading">
+                                                        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </form>
+</mat-card>
+
+<div bsModal #showServiceRequestImageModal="bs-modal" class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 6em;">
+            <carousel>
+                <slide *ngFor="let slide of images;trackBy: trackByFn; let index=index">
+                    <img [src]="slide" alt="image slide" style="width: 100% !important;" class="img">
+                </slide>
+            </carousel>
+            <div class="row">
+                <div class="col-sm-12 text-center" style="padding: 8px;">
+                    <button type="button" class="btn btn-danger btn-sm"
+                        (click)="showServiceRequestImageModal.hide();onClose()">
+                        <i class="fa fa-times" aria-hidden="true"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

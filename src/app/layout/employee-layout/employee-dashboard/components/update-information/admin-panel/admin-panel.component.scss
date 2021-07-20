@@ -1,0 +1,91 @@
+@media (min-width: 992px) {
+    .modal-xl {
+        max-width: 1368px;
+        max-height: 1000px;
+    }
+}
+
+.modal-header {
+    background-color: #33B5E5;
+}
+
+.title {      
+    color: rgb(0, 0, 0);
+}
+
+.modalLarge {
+    color: white;
+}
+
+.bdyalign {
+    line-height: 2.5;
+}
+
+.icon-addon.addon-md .fa,
+.icon-addon .fa {
+    top: 4px;
+    left: 23px;
+}
+
+.custom-day {
+    text-align: center;
+    padding: 0.185rem 0.25rem;
+    display: inline-block;
+    height: 2rem;
+    width: 2rem;
+}
+
+.custom-day.focused {
+    background-color: #e6e6e6;
+}
+
+.custom-day.range,
+.custom-day:hover {
+    background-color: rgb(2, 117, 216);
+    color: white;
+}
+
+.custom-day.faded {
+    background-color: rgba(2, 117, 216, 0.5);
+}
+
+
+.size {
+    font-size: 16px;
+}
+
+.flag {
+    padding-bottom: 10px;
+}
+
+.insertBtn {
+    padding-top: 1.5%;
+}
+ 
+  .modal-title {
+    margin-bottom: 0;
+    line-height: 0.5;
+    margin-left: 0px !important;
+    color: rgb(240, 240, 240);
+  }
+  .btn{
+      border-radius: 20px;
+  }  
+  .weight{
+    font-weight:450 !important;
+  }
+ 
+//   input[type="checkbox"] {
+//     transform: scale(1.8);    
+//   } 
+//   .textBox{  
+//     background-image:url(../../../../../../../assets/images/checked.png);   
+//     background-position:right;   
+//     background-repeat:no-repeat;   
+//     padding-left:17px;
+//     } 
+
+.checkboxscroll{
+    height: 11em;
+    overflow: auto;
+}

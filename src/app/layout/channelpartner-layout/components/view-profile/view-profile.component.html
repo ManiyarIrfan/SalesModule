@@ -1,0 +1,716 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <!-- <app-page-header [heading]="'View Profile'" [icon]="'fa-bar-chart-o'"></app-page-header> -->
+    <span class="required">{{DataNotFoundMessage}}</span>
+    <form #channelPartnerForm="ngForm" *ngIf="!showDataNotFoundMessage">
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-6">
+                        <app-stat [bgClass]="'custom'" class="primarsy" [icon]="'fa-handshake-o'"
+                            [data]="'/channelpartner/referral-status-cp'" [count]="leadsCounts" [label]="'My Leads!'">
+                        </app-stat>
+                    </div>
+                    <div class="col-xl-4 col-lg-6">
+                        <app-stat [bgClass]="'custom'" [icon]="'fa-shopping-cart'"
+                            [data]="'/channelpartner/payment-statement-cp'" [count]="bookingCounts"
+                            [label]="'My bookings!'">
+                        </app-stat>
+                    </div>
+                    <div class="col-xl-4 col-lg-6" (click)="showBuildingModal.show()">
+                        <app-stat [bgClass]="'custom'" [icon]="'fa fa-rss'" [count]="1" [label]="'My Promotion!'">
+                        </app-stat>
+                    </div>
+                    <!-- <div class="col-xl-3 col-lg-6" (click)="addConsultantModal.show()">
+                                <app-stat [bgClass]="'warning'" [icon]="'fa-money'" [count]="IncentiveCounts" [label]="'My Wallet!'">
+                                </app-stat>
+                            </div> -->
+                </div>
+                <br />
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">{{channelPartnerModel.Name}}'s Details</legend>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <strong for="BrokerId">ID :</strong>
+                                <input type="text" class="form-control" id="BrokerId" [disabled]="true" required
+                                    [(ngModel)]="channelPartnerModel.BrokerId" name="BrokerId" #brokerId="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <strong for="name">Name :</strong>
+                                <input type="text" class="form-control" id="name" [disabled]="true" required
+                                    [(ngModel)]="channelPartnerModel.Name" name="name" #name="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="MobileNo">Telephone No : </strong>
+                                <input type="tel" pattern="^\d{10}$" class="form-control" id="MobileNo"
+                                    [disabled]="true" required [(ngModel)]="channelPartnerModel.MobileNo"
+                                    name="MobileNo" #mobileNo="ngModel" minlength=10 maxlength=10>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="AlternateNumber">Alternative No : </strong>
+                                <input type="tel" class="form-control" id="AlternateNumber" [disabled]="!isEdit"
+                                    [(ngModel)]="channelPartnerModel.AlternateNumber" name="AlternateNumber"
+                                    [class.error]="alternateNumber.invalid && alternateNumber.touched"
+                                    [class.has-success]="alternateNumber.valid" pattern="^\d{10}$"
+                                    #alternateNumber="ngModel" minlength=10 maxlength=10>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="Email">Email Id/User Id : </strong>
+                                <input type="text" [pattern]="emailPattren" class="form-control" id="Email"
+                                    [disabled]="true" required [(ngModel)]="channelPartnerModel.Email" name="Email"
+                                    [class.error]="email.invalid && email.touched" [class.has-success]="email.valid"
+                                    #email="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                            <div class="form-group">
+                                <strong for="ReraNo">
+                                    <span class="required">*</span>RERA Number :</strong>
+                                <input type="text" class="form-control" id="ReraNo" required
+                                    [disabled]="!isEdit || isDisabled" [(ngModel)]="channelPartnerModel.ReraNo"
+                                    name="ReraNo" [class.error]="reraNo.invalid && reraNo.touched"
+                                    [class.has-success]="reraNo.valid" #reraNo="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='CRO'">
+                            <div class="form-group">
+                                <strong for="gender">Gender :</strong>
+                                <input type="text" class="form-control" id="gender" [disabled]="true"
+                                    [(ngModel)]="channelPartnerModel.Gender" name="gender"
+                                    [class.error]="gender.invalid && gender.touched" [class.has-success]="gender.valid"
+                                    #gender="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                            <strong>
+                                <span class="required">*</span>Rera Start Date</strong>
+                            <input class="form-control" required type="date" name="rstartdate" id="rstartdate"
+                                [disabled]="!isEdit" [(ngModel)]="channelPartnerModel.ReraStartDate"
+                                [class.error]="rstartdate.invalid && rstartdate.touched"
+                                [class.has-success]="rstartdate.valid" #rstartdate="ngModel">
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                            <strong>
+                                <span class="required">*</span>Rera End Date</strong>
+                            <input class="form-control" required type="date" name="renddate" id="renddate"
+                                [disabled]="!isEdit" [min]="getToday()" [(ngModel)]="channelPartnerModel.ReraEndDate"
+                                [class.error]="renddate.invalid && renddate.touched"
+                                [class.has-success]="renddate.valid" #renddate="ngModel">
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <strong for="PANType">
+                                <span class="required">*</span>PanCard Type:</strong>
+                            <select class="form-control" id="Type" #PANType="ngModel" required
+                                [(ngModel)]="channelPartnerModel.PANType" name="PANType"
+                                [class.error]="PANType.invalid && PANType.touched" [class.has-success]="PANType.valid"
+                                [disabled]="isDisable || !isEdit">
+                                <option value="">---Select---</option>
+                                <option *ngFor="let type of PancardTypeList;trackBy: trackByFn" [value]="type.value">{{type.key}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="PanNo">
+                                    <span class="required">*</span>Pan Card :</strong>
+                                <input type="text" class="form-control" id="PanNo"
+                                    (ngModelChange)="getPanValidation(channelPartnerModel.PanNo)"
+                                    [disabled]="isDisable || !isEdit" required [(ngModel)]="channelPartnerModel.PanNo"
+                                    name="PanNo" [class.error]="panNo.invalid && panNo.touched"
+                                    [class.has-success]="panNo.valid" #panNo="ngModel">
+                                <span [hidden]="isPanAvailable" class="text-dark">{{showPan}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="AadharNo">Aadhar Card :</strong>
+                                <input type="text" class="form-control" id="AadharNo" [disabled]="true"
+                                    pattern="^[^-\s][0-9 ]*" minlength="12" maxlength="12"
+                                    [(ngModel)]="channelPartnerModel.AadharNo" name="AadharNo"
+                                    [class.error]="aadharNo.invalid && aadharNo.touched"
+                                    [class.has-success]="aadharNo.valid" #aadharNo="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                            <div class="form-group">
+                                <strong for="Type">Type :</strong>
+                                <input type="text" class="form-control input-underline text-lg" [disabled]="true"
+                                    id="Type" name="Type" [class.error]="type.invalid && type.touched"
+                                    [class.has-success]="type.valid" required [(ngModel)]="channelPartnerModel.Type"
+                                    placeholder="Type" #type="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                            <div class="form-group">
+                                <strong for="Organization">Organization :</strong>
+                                <input type="text" class="form-control" id="Organization" [disabled]="true"
+                                    [(ngModel)]="channelPartnerModel.Organization" name="Organization"
+                                    [class.error]="organization.invalid && organization.touched"
+                                    [class.has-success]="organization.valid" #organization="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='CRO'">
+                            <div class="form-group">
+                                <strong for="occupation">Occupation :</strong>
+                                <input type="text" class="form-control" id="occupation" [disabled]="true"
+                                    [(ngModel)]="channelPartnerModel.Occupation" name="occupation"
+                                    [class.error]="occupation.invalid && occupation.touched"
+                                    [class.has-success]="occupation.valid" #occupation="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="chanPartAddressLine1">
+                                    <span class="required">*</span>Address : </strong>
+                                <input type="text" class="form-control" id="chanPartAddressLine1" [disabled]="!isEdit"
+                                    required [(ngModel)]="channelPartnerModel.AddressLine1" name="chanPartAddressLine1"
+                                    [class.error]="chanpartAddressLine1.invalid && chanpartAddressLine1.touched"
+                                    [class.has-success]="chanpartAddressLine1.valid" #chanpartAddressLine1="ngModel"
+                                    pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;': ]*" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="chanPartCity">
+                                    <span class="required">*</span>City :</strong>
+                                <input type="text" class="form-control" id="chanPartCity" [disabled]="!isEdit" required
+                                    [(ngModel)]="channelPartnerModel.City" name="chanPartCity"
+                                    [class.error]="chanpartCity.invalid && chanpartCity.touched"
+                                    [class.has-success]="chanpartCity.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                    #chanpartCity="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="Landmark">Landmark :</strong>
+                                <input type="text" class="form-control" id="Landmark" [disabled]="!isEdit"
+                                    [(ngModel)]="channelPartnerModel.Landmark" name="Landmark"
+                                    [class.error]="landmark.invalid && landmark.touched"
+                                    [class.has-success]="landmark.valid" #landmark="ngModel"
+                                    pattern="^[^-\s][a-zA-Z0-9 ]*">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="chanPartState">State :</strong>
+                                <input type="text" class="form-control" id="chanPartState" [disabled]="!isEdit"
+                                    [(ngModel)]="channelPartnerModel.State" name="chanPartState"
+                                    [class.error]="chanPartState.invalid && chanPartState.touched"
+                                    [class.has-success]="chanPartState.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                    #chanPartState="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="chanPartCountry">Country :</strong>
+                                <input type="text" class="form-control" id="chanPartCountry" [disabled]="!isEdit"
+                                    [(ngModel)]="channelPartnerModel.Country" name="chanPartCountry"
+                                    [class.error]="chanPartCountry.invalid && chanPartCountry.touched"
+                                    [class.has-success]="chanPartCountry.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                    #chanPartCountry="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="chanPartPincode">Pincode :</strong>
+                                <input type="tel" pattern="^\d{6}$" class="form-control" minlength=6 maxlength=6
+                                    id="chanPartPincode" [disabled]="!isEdit" [(ngModel)]="channelPartnerModel.Pincode"
+                                    name="chanPartPincode" #chanPartPincode="ngModel"
+                                    [class.error]="chanPartPincode.invalid && chanPartPincode.touched"
+                                    [class.has-success]="chanPartPincode.valid">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="bankname">Bank Name :</strong>
+                                <input type="text" class="form-control" id="bankname" [disabled]="!isEdit || isDisabled"
+                                    [(ngModel)]="channelPartnerModel.BankName" name="bankname"
+                                    [class.error]="bankname.invalid && bankname.touched"
+                                    [class.has-success]="bankname.valid" #bankname="ngModel"
+                                    pattern="^[^-\s][a-zA-Z0-9 ]*">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="branchname">Branch :</strong>
+                                <input type="text" class="form-control" id="branchname"
+                                    [disabled]="!isEdit || isDisabled" [(ngModel)]="channelPartnerModel.Branch"
+                                    name="branchname" [class.error]="branchname.invalid && branchname.touched"
+                                    [class.has-success]="branchname.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                    #branchname="ngModel">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="accno">AccountNo :</strong>
+                                <input type="text" class="form-control" id="accno" [disabled]="!isEdit || isDisabled"
+                                    [(ngModel)]="channelPartnerModel.AccountNo" name="accno"
+                                    [class.error]="accno.invalid && accno.touched" [class.has-success]="accno.valid"
+                                    pattern="^[^-\s][0-9 ]*" #accno="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="ifsccode">IFSC Code :</strong>
+                                <input type="tel" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="ifsccode"
+                                    [disabled]="!isEdit || isDisabled" [(ngModel)]="channelPartnerModel.IFSC"
+                                    name="ifsccode" #ifsccode="ngModel"
+                                    [class.error]="ifsccode.invalid && ifsccode.touched"
+                                    [class.has-success]="ifsccode.valid">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong for="upicode">UPI Code :</strong>
+                                <input type="tel" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*" class="form-control"
+                                    id="upicode" [disabled]="!isEdit || isDisabled"
+                                    [(ngModel)]="channelPartnerModel.UPICode" name="upicode" #upicode="ngModel"
+                                    [class.error]="upicode.invalid && upicode.touched"
+                                    [class.has-success]="upicode.valid">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong>
+                                Date Of Birth</strong>
+                            <input class="form-control " type="date" name="date" id="date"
+                                [disabled]="isDisable || !isEdit" [(ngModel)]="channelPartnerModel.DateOfBirth"
+                                pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                                [class.error]="Date.invalid && Date.touched" [class.has-success]="Date.valid"
+                                #Date="ngModel">
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                            <div class="form-group">
+                                <strong for="TAN">Tan No :</strong>
+                                <input type="text" class="form-control" id="TAN" [(ngModel)]="channelPartnerModel.TAN"
+                                    name="TAN" [disabled]="!isEdit" maxlength=10 pattern="[A-Za-z]{4}\d{5}[A-Za-z]{1}$"
+                                    [class.error]="TAN.invalid && TAN.touched" [class.has-success]="TAN.valid"
+                                    #TAN="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                            <div class="form-group">
+                                <strong for="GSTIN">GSTIN No :</strong>
+                                <input type="text" class="form-control" id="TAN" [(ngModel)]="channelPartnerModel.GSTIN"
+                                    name="GSTIN" [disabled]="!isEdit"
+                                    pattern="^([0][1-9]|[1-2][0-9]|[3][0-7])([A-Za-z]{5})([0-9]{4})([A-Za-z]{1}[1-9A-ZA-Za-z]{1})([Zz]{1})([0-9A-ZA-Za-z]{1})+$"
+                                    [class.error]="GSTIN.invalid && GSTIN.touched" [class.has-success]="GSTIN.valid"
+                                    #GSTIN="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong>Confidentiality Agreement Status-</strong> &nbsp;
+                                    <strong
+                                        [ngStyle]="{'background-color': channelPartnerModel.agreement=='Agree'? 'green' : 'red','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{channelPartnerModel.agreement}}</strong>&nbsp;&nbsp;
+                                    <button class="btn btn-link btn-sm" (click)="AgreementModal.show()">
+                                        <i class="fa fa-file"></i>&nbsp;View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <mat-accordion>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            Upload Document
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <div class="row" *ngIf="isEdit">
+                                        <div class="col-sm-5">
+                                            <div class="form-group ">
+                                                <div class="col-sm-12">
+                                                    <strong>
+                                                        <span class="required">*</span>Upload Image :</strong>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <tru-file-upload class="ui-fileupload" [disabled]="!isEdit"
+                                                        [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png,.pdf,.doc,.docx,.xlsx,.xls,.xltx,.xlt,.xltm'"
+                                                        [(inputFiles)]="uploadImages"
+                                                        style="    border: 0px solid #c8c8c8;">
+                                                    </tru-file-upload>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <strong for="type">
+                                                    <span class="required">*</span>Select Document Name :
+                                                </strong>
+                                                <select class="form-control" id="documentName" [disabled]="!isEdit"
+                                                    name="documentName" [(ngModel)]="channelPartnerModel.DocumentName"
+                                                    #documentName="ngModel">
+                                                    <option *ngFor="let type of getDocumentName;trackBy: trackByFn" [value]="type.value">
+                                                        {{type.key}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <div class="form-group mt-2">
+                                                <button type="button"
+                                                    [disabled]="!isEdit || uploadImages.length==0 || !channelPartnerModel.DocumentName || deleteAttachmentList.length>0"
+                                                    (click)="addrow()" class="btn btn-primary">
+                                                    <i class="fa fa-plus"></i>Add</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="table-responsive" *ngIf="fileUploadList.length>0">
+                                                <table class="table table-bordered table-striped table-sm text-nowrap"
+                                                    cellsspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr class="text-center">
+                                                            <th scope="col">File Name</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let att of fileUploadList; trackBy: trackByFn"
+                                                            class="text-center">
+                                                            <td>
+                                                                <span class="linking-text">
+                                                                    {{att.UploadFile.name | titlecase}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <i class="fa fa-trash-o" style="color:red"
+                                                                    ngbTooltip="Delete"
+                                                                    (click)="deleteTempAttachment(att)"></i>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="col-sm-12 text-center"
+                                        *ngIf="uploadedAttachment&&uploadedAttachment.length===0">
+                                        <strong class="text-dark">No Document Found</strong>
+                                    </div>
+                                    <div class="row" *ngIf="uploadedAttachment&&uploadedAttachment.length>0">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped table-sm" cellsspacing="0"
+                                                width="100%">
+                                                <thead>
+                                                    <tr class="text-center">
+                                                        <th scope="col">File Name</th>
+                                                        <th scope="col">Image</th>
+                                                        <th scope="col" *ngIf="isEdit">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let att of uploadedAttachment trackBy: trackByFn"
+                                                        class="text-center">
+                                                        <td *ngIf="att.FileName!==null">
+                                                            <span class="linking-text">
+                                                                {{att.FileName | titlecase}}</span>
+                                                        </td>
+                                                        <td *ngIf="att.FileUrl!==null">
+                                                            <img src="../../../../../../assets/images/doc_image.png"
+                                                                (click)="goToLink(att.FileUrl)" ngbTooltip="View Image"
+                                                                width="50px" height="30px"
+                                                                class="img-responsive pointer">
+                                                        </td>
+                                                        <td *ngIf="isEdit && att.FileUrl!==null && att.FileName!==null">
+                                                            <i class="fa fa-trash-o" style="color:red"
+                                                                ngbTooltip="Delete Image"
+                                                                (click)="deleteAttachment(att)"></i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <button type="button" *ngIf="!isEdit" (click)="OnEditBtnClick()" class="btn btn-primary">
+                            <i class="fa fa-edit"></i> Edit Details</button>
+                        <button type="button" [disabled]="channelPartnerForm.invalid || isPanAvailable===false"
+                            *ngIf="isEdit" (click)="OnUpdateBtnClick('Update')" class="btn btn-primary">
+                            <i class="fa fa-edit" aria-hidden="true"></i> Update Details
+                        </button>&nbsp;
+                        <button type="button" *ngIf="isEdit" (click)="OnCancelBtnClick()" class="btn btn-danger">
+                            <i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center mt-2">
+                    <div class="alert alert-success" role="alert" *ngIf="showSuccessfullMessage!==''">
+                        <h4>
+                            <i class="fa fa-check"></i>{{showSuccessfullMessage}}</h4>
+                    </div>
+                    <div class="alert alert-warning" role="alert" *ngIf="showNotSuccessfullMessage!==''">
+                        <h4>
+                            <i class="fa fa-times-circle"></i>{{showNotSuccessfullMessage}}</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Tru Pay Wallet Card -->
+            <div class="col-sm-5">
+                <mat-card class="border-card">
+                    <mat-card-header class="cardstyle">
+                        <mat-card-title class="headercard">
+                            <i class="fas fa-wallet"></i> &nbsp; TRU Pay Wallet
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <br />
+                        <app-pay-wallet [channelPartnerModel]="channelPartnerModel"
+                            (reloadEvent)="reloadMessage($event)">
+                        </app-pay-wallet>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Modal Pop up For Banner -->
+<div bsModal #showBuildingModal="bs-modal" cdkDrag class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">
+                    <strong></strong> Current Promotion For You</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showBuildingModal.hide();" />
+            </div>
+            <div class="modal-body text-center">
+                <img id="banner" src="assets/images/Portal banner_CPreferral.jpg" alt="Banner" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pop up For Banner -->
+<div bsModal #AgreementModal="bs-modal" cdkDrag class="modal fade"  role="dialog" data-backdrop="static" 
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onCloseUpdate()" />
+            </div>
+            <div class="modal-body text-center">
+                <div class="wrapper">
+                    <span class="text-center">
+                        <h3>
+                            <b>Confidentiality Agreement</b>
+                        </h3>
+                    </span>
+                    <div class="scroll">
+                        <p class="text-center mt-2">
+                            <span class="text-dark wrapper">
+                                Confidentiality agreement between TRUREALTY PRIVATE LIMITED, OFFICE NO. 412, PATIL
+                                PLAZA, SWARGATE, PUNE, INDIA, 411009 Hereinafter
+                                referred to as “TRU REALTY” and
+                            </span>
+                            <span class="text-dark">
+                                {{ channelPartnerModel.Name | uppercase }} {{channelPartnerModel.Organization ? ('('+channelPartnerModel.Organization+')'
+                                | uppercase) :''}} Hereinafter referred to as “Service Provider”</span>
+                        </p>
+                        <br>
+                        <ol>
+                            <li class="text-style">
+                                Within the scope of co-operation between
+                                <span class="text-dark"> {{channelPartnerModel.Name}}
+                                </span> and TRU REALTY, the interests of confidentiality of TRUREALTY are to be
+                                protected by this agreement.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> shall treat all
+                                information, data, documents, financial
+                                information OR any other details etc. (hereinafter referred to as “Data and Documents")
+                                received
+                                from TRU REALTY as industrial secrets, regardless of whether such Data and Documents are
+                                made by either party.
+                                <br>
+                                <br>
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> shall not make the Data
+                                and Documents, accessible to
+                                third parties, shall not use such beyond the co-operation with TRU REALTY for its own
+                                purposes
+                                and shall retain these in a manner by which they cannot be viewed by unauthorised
+                                persons.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> shall impose this
+                                obligation of confidentiality on its
+                                employees and auxiliary personnel and shall instruct these persons of the existing
+                                confidentiality
+                                obligations and particularly of the applicable provisions of the criminal law.
+                                <br>
+                                <br>
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> is entitled to involve
+                                third parties only to the extent
+                                necessary for the fulfilment of the contractual obligations with TRU REALTY.
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> shall bind these third
+                                parties to an equivalent confidentiality
+                                agreement and inform these explicitly and in writing of the interests of TRU REALTY in
+                                confidentiality.
+                                <br>
+                                <br> If a third party involved by
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span>
+                                infringes confidentiality in a manner distinguishable by
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> shall take appropriate
+                                steps against the third party
+                                to ensure that confidentiality is preserved.
+                                <span class="text-dark">
+                                    {{channelPartnerModel.Name}} </span> shall be fully liable to TRU REALTY for
+                                infringements
+                                of confidentiality by such third parties.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                All Data and Documents may only be used within the scope of the co-operation agreed
+                                between
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> and TRU REALTY. It is not
+                                permitted to make copies of
+                                the specified information’s, data and documents, for third parties and/or to sell such
+                                to third parties.
+                                <br>
+                                <br> It will be presumed that all deliveries to third parties which contain the Data and
+                                Documents,
+                                which are the object of this agreement, are made in infringement of this confidentiality
+                                agreement.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                This confidentiality agreement shall not apply if the corresponding information: a) was
+                                general knowledge before it is received.
+                                b) can be shown to have been known to
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> before it is received c)
+                                is published by
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> with the express, written
+                                consent of TRU REALTY.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                All Data and Documents, provided by TRU REALTY to
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> are and will remain the
+                                property of TRU REALTY. All
+                                of Data and Documents will be returned by
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> to TRU REALTY on first
+                                demand.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                If these confidentiality obligations are infringed, including such infringements
+                                committed by employees or auxiliary personnel
+                                of
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> or by third parties
+                                involved by
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span>, TRU REALTY will be
+                                entitled to demand compensation
+                                for the direct and indirect damages thereby inflicted upon TRU REALTY. This will have no
+                                effect on other legal claims.
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span> shall also be obliged to
+                                surrender profits gained by
+                                the unlawful usage of the Data and Documents of which confidentiality is to be
+                                preserved.
+                                It will be assumed that this will amount to 15% of the annual turnover achieved with
+                                such
+                                products whose manufacture and sale was conducted in infringement of this agreement. The
+                                parties shall be free to provide evidence of a greater or lesser profit.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                Any revisions or improvements of the Data and Documents of which confidentiality is to
+                                be preserved made by TRU REALTY or
+                                <span class="text-dark"> {{channelPartnerModel.Name}} </span>
+                                and derivations thereof are also subject to the provisions of this confidentiality
+                                agreement.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                The above confidentiality obligations also apply if an order is not placed or is not
+                                binding for any reason or the business
+                                relationship between the parties to this agreement ends or a competitive relationship
+                                arises
+                                between the parties.
+                                <br>
+                                <br> This agreement shall come into effect when signed by the parties and is valid for
+                                an indeterminate
+                                period. It may be terminated by either party with notice of twelve months to the end of
+                                the
+                                calendar year.
+                                <br>
+                                <br> The confidentiality obligations in effect at the time of the termination of this
+                                agreement
+                                shall remain in force for fifteen years after the date of reception of the information
+                                of
+                                which confidentiality is to be preserved.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                The disclosure of know-how by TRU REALTY shall not constitute a licence to proprietary
+                                rights or other rights.
+                                <br> This confidentiality agreement applies as a general agreement for all divulged Data
+                                and
+                                Documents, even if divulged without explicit reference to this agreement.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                This agreement is also binding for Data and Documents divulged by other companies of the
+                                TRU REALTY Group. The legal successors
+                                of
+                                <span class="text-dark"> {{channelPartnerModel.Name}}
+                                </span> shall also be bound to this agreement.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                If any provision of this agreement is held by any competent authority to be invalid or
+                                unenforceable in whole or in part
+                                the validity of the other provisions and the remainder of the provision in question
+                                shall
+                                not be affected thereby.
+                            </li>
+                            <br>
+                            <li class="text-style">
+                                This agreement shall be subject to Indian Laws and all actions arising out of or
+                                connected with this agreement shall exclusively
+                                be brought to the Courts of PUNE.
+                            </li>
+                        </ol>
+                    </div>
+                   
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-12 text-center">
+                    <mat-checkbox *ngIf="channelPartnerModel.agreement ==='Pending'" class="example-margin pull-left"
+                        id="Agreement" name="Agreement" #Agreement="ngModel"
+                        [(ngModel)]="channelPartnerModel.AgreementFlag">I Agree</mat-checkbox>&nbsp;&nbsp;
+                    <button *ngIf="channelPartnerModel.agreement==='Pending'" type="button" class="btn btn-primary"
+                        [disabled]="!channelPartnerModel.AgreementFlag" (click)="OnUpdateBtnClick('Agree')">
+                        Submit</button>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-danger" (click)="AgreementModal.hide()">
+                        Close</button>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>

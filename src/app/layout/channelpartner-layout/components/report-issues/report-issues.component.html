@@ -1,0 +1,225 @@
+<!-- <app-page-header [heading]="'Service Request'" [icon]="'fa-bar-chart-o'"></app-page-header> -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="row" *ngIf="!showServiceRequestDetails">
+                <div class="row justify-content-md-center">
+                    <h5 class="required">{{DataNotFoundMessage}}</h5>
+                   <br>
+                </div>
+                <div class="table-responsive container-fluid" *ngIf="!showDataNotFoundMessage">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th>Issue ID </th>
+                                <th>Project Name</th>
+                                <!-- <th>Employee Name </th> -->
+                                <th>Flat Number</th>
+                                <th>Subject</th>
+                                <th>CreatedOn</th>
+                                <th>Status</th>
+                                <th>Image</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let report of showServiceRequest | paginate: { itemsPerPage: 11, currentPage: p1 };trackBy: trackByFn">
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-link" (click)="emitIssueID(report)">{{report.IssueId}}</button>
+                                </td>
+                                <td>{{report.ProjectName}}</td>
+                                <!-- <td>{{report.EmployeeName}}</td> -->
+                                <td>{{report.Building}} {{report.Flat}}</td>
+                                <td>{{report.IssueSubject}}</td>
+                                <td>{{report.IssueDate |date:"d MMM y"}}</td>
+                                <td>
+                                    <span [ngStyle]="{'background-color': report.IssueStatus=='New'? 'red' : 'green','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{report.IssueStatus}}</span>
+                                </td>
+                                <td>
+                                    <span class="btn btn-sm btn-link" *ngIf="report.ImageUrl" (click)="viewImage(report.ImageUrl)">
+                                        <i class="fa fa-file-image-o" id="gridViewImageBtn"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot class="pull-right" *ngIf="showServiceRequest.length>11">
+                        <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                    </tfoot>
+                    <div class="col-sm-12" align="center">
+                        <div [hidden]="!isLoadingServiceRequestDetails">
+                            <p class="loading">
+                                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">
+                    <strong>Service Request</strong>
+                </legend>
+                <form #ServiceReportForm="ngForm">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong *ngIf="loggedInuserDetails.UserType ==='ChannelPartner'">
+                                    <span class="required">*</span>CP ID :</strong>
+                                <strong *ngIf="loggedInuserDetails.UserType ==='CRO'">
+                                    <span class="required">*</span>CRO ID :</strong>
+                                <input type="text" class="form-control" id="EntityId" name="EntityId" [disabled]="true" [(ngModel)]="sessionModel.EntityId">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong>
+                                    <span class="required">*</span>Project Name :</strong>
+                                <select class="form-control" name="ProjectName" id="ProjectName" [disabled]="!isEdit" #ProjectName="ngModel" required [(ngModel)]="reportIssueModel.ProjectName"
+                                    [class.error]="ProjectName.invalid && (ProjectName.dirty || ProjectName.touched)" [class.has-success]="ProjectName.valid && (ProjectName.dirty || ProjectName.touched)"
+                                    required>
+                                    <option value="">---Select---</option>
+                                    <option value="Not Related To Project">Not Related To Project</option>
+                                    <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn" [hidden]="item.ProjectName === 'Common'">
+                                        {{item.ProjectName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong>Building Name :</strong>
+                                <input type="text" class="form-control" name="Building" #Building="ngModel" [disabled]="!isEdit" id="Building" [(ngModel)]="reportIssueModel.Building"
+                                    [class.error]="Building.invalid && (Building.dirty || Building.touched)" pattern="^[^-\s][a-zA-Z0-9 ]*">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong>Flat No :</strong>
+                                <input type="text" class="form-control" name="Flat" #Flat="ngModel" [disabled]="!isEdit" id="Flat" [(ngModel)]="reportIssueModel.Flat"
+                                    [class.error]="Flat.invalid && (Flat.dirty || Flat.touched)" pattern="^[^-\s][a-zA-Z0-9 ]*">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <strong>
+                                    <span class="required">*</span>Issue Type :</strong>
+                                <select class="form-control" name="IssueType" id="IssueType" [disabled]="!isEdit" #IssueType="ngModel" [(ngModel)]="reportIssueModel.IssueType"
+                                    [class.error]="IssueType.invalid && (IssueType.dirty || IssueType.touched)" [class.has-success]="IssueType.valid && (IssueType.dirty || IssueType.touched)"
+                                    required>
+                                    <option value="">---Select---</option>
+                                    <option class='option' *ngFor='let Issue of issueTypeInfo;trackBy: trackByFn' [value]="Issue.value">{{Issue.value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" *ngIf="isShow">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <strong>Upload Image :</strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <tru-file-upload [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png,.pdf,.doc,.docx,.xlsx,.xls,.xltx,.xlt,.xltm'" [(inputFiles)]="filesModel"
+                                            multiple="multiple">
+                                        </tru-file-upload>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="!isShow">
+                                <strong>View Image :</strong>
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-sm btn-link font" (click)="viewImage(imagesArray)">
+                                        <i class="fa fa-image"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <strong>
+                                    <span class="required">*</span>Issue Date :</strong>
+                                <input type="date" class="form-control" name="IssueDate" [disabled]="!isEdit" id="IssueDate" [(ngModel)]="reportIssueModel.IssueDate"
+                                    #IssueDate="ngModel" [max]="getToday()" [class.error]="IssueDate.invalid && (IssueDate.dirty || IssueDate.touched)"
+                                    [class.has-success]="IssueDate.valid" required min='2000-01-01' pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))">
+                            </div>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <strong>
+                                    <span class="required">*</span>Subject :</strong>
+                                <input type="text" class="form-control" name="IssueSubject" #IssueSubject="ngModel" [disabled]="!isEdit" id="IssueSubject"
+                                    [(ngModel)]="reportIssueModel.IssueSubject" [class.error]="IssueSubject.invalid && (IssueSubject.dirty || IssueSubject.touched)"
+                                    [class.has-success]="IssueSubject.valid && (IssueSubject.dirty || IssueSubject.touched)"
+                                    required pattern="^[^-\s][a-zA-Z0-9.,() ]*">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <strong>
+                                    <span class="required">*</span>Issue Details :</strong>
+                                <textarea class="form-control" name="Details" #Details="ngModel" [disabled]="!isEdit" id="Details" rows="6" [(ngModel)]="reportIssueModel.Details"
+                                    [class.error]="Details.invalid && (Details.dirty || Details.touched)" [class.has-success]="Details.valid && (Details.dirty || Details.touched)"
+                                    required pattern="^[^-\s][a-zA-Z0-9,.=() ]*"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <button type="button" *ngIf="isShow" class="btn btn-primary center-block" [disabled]="!ServiceReportForm.valid || disableButton"
+                            (click)="OnSubmitBtnClick(ServiceReportForm,loggedInuserDetails,filesModel)">
+                            <i class="fa fa-paper-plane"></i> Submit Issue
+                        </button>
+                        <button type="button" *ngIf="!isShow" class="btn btn-primary center-block" (click)="CreateNewIssue(ServiceReportForm)">
+                            <i class="fa fa-plus"></i> Create New Issue</button>
+                    </div>
+                </form>
+                <br />
+                <div class="row justify-content-md-center">
+                    <div [hidden]="!isSubmitingServiceRequestDetails">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+        
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div bsModal #showServiceRequestImageModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static" [config]="{backdrop: 'static'}"
+    data-keyboard="false" aria-labelledby="showServiceRequestImageModal" s aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center">Image</h4>
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <div [hidden]="!isLoading">
+                    <p id="loading">
+                        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                    </p>
+                </div>
+                <div>
+                    <div *ngIf="isOn">
+                        <carousel>
+                            <slide *ngFor="let slide of images;trackBy: trackByFn; let index=index">
+                                <img [src]="slide" alt="image slide" class='img'>
+                            </slide>
+                        </carousel>
+                    </div>
+                    <div *ngIf="!isOn">
+                        <h4 class="notfoundmsg">{{imageNotAvailable}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

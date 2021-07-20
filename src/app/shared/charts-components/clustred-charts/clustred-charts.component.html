@@ -1,0 +1,115 @@
+<div id="{{'chartdiv'+clusturdChartid}}" [style.width.%]="100" [style.height.px]="500"></div>
+<div bsModal #showDetailModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center">Lead Details (Lead Stage Dist)</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <strong>Total Enquiry Count : {{totalEnquiryCount}}</strong>
+                        <br />
+                        <strong>Total Count : {{enquiryCount}}</strong>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong (click)="print()">
+                                    <i class="fa fa-print" aria-hidden="true"></i>Print</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong (click)="exportEvent()">
+                                    <i class="fa fa-download" aria-hidden="true"></i>Export</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <strong>Report for dates </strong>
+                        <br />
+                        <strong>From : {{date.startDate |date:"d MMM y"}}</strong>
+                        <br />
+                        <strong>To : {{date.endDate |date:"d MMM y"}}</strong>
+                        <br />
+                        <strong>Name : {{loggedInuserDetails.Firstname}} {{loggedInuserDetails.LastName}}</strong>
+                        <br />
+                        <strong>Currently In:</strong>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <strong id="exception" *ngIf="exceptionMsg">No data Found</strong>
+                <div style="overflow-x: auto;">
+                    <table class="table table-bordered" *ngIf="loggedInuserDetails.Role===5">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Current Status</th>
+                                <th>Project</th>
+                                <th>Received On </th>
+                                <th>First Contacted On </th>
+                                <th>Last Note</th>
+                                <th>Presales Name</th>
+                                <th>Last Cantact</th>
+                                <th>Followup Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let detail of showReportDetails| paginate: { itemsPerPage: 5, currentPage: p } ">
+                                <td>{{detail.EnquiryId}}</td>
+                                <td>{{detail.EnquiryName}}</td>
+                                <td>{{detail.CurrentStatus}}</td>
+                                <td>{{detail.PreferredProject}}</td>
+                                <td>{{detail.CreatedOn |date:"d MMM y"}}</td>
+                                <td>{{detail.FirstContactedOn|date:"d MMM y"}}</td>
+                                <td>{{detail.InteractionComments}}</td>
+                                <td>{{detail.PreSalesAgentName}}</td>
+                                <td>{{detail.UpdatedOn |date:"d MMM y"}}</td>
+                                <td>{{detail.FollowUpDate|date:"d MMM y"}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered" *ngIf="loggedInuserDetails.Role===3">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Current Status</th>
+                                <th>Project</th>
+                                <th>Received On </th>
+                                <th>First Contacted On </th>
+                                <th>Last Note</th>
+                                <th>Sales Name</th>
+                                <th>Last Cantact</th>
+                                <th>Followup Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let detail of showReportDetails| paginate: { itemsPerPage: 5, currentPage: p } ">
+                                <td>{{detail.ReferralId}}</td>
+                                <td>{{detail.ReferralName}}</td>
+                                <td>{{detail.CurrentStatus}}</td>
+                                <td>{{detail.PreferredProject}}</td>
+                                <td>{{detail.CreatedOn |date:"d MMM y"}}</td>
+                                <td>{{detail.FirstContactedOn|date:"d MMM y"}}</td>
+                                <td>{{detail.InteractionComments}}</td>
+                                <td>{{detail.SalesAgentName}}</td>
+                                <td>{{detail.UpdatedOn |date:"d MMM y"}}</td>
+                                <td>{{detail.FollowUpDate|date:"d MMM y"}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot  class="pull-right">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

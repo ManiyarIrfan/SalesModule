@@ -1,0 +1,50 @@
+<mat-card>
+    <mat-card-title>
+        <div class="row rowMargin">
+            <div class="col-sm-12 text-center">
+                <strong>Interaction Details : {{architectProjDetails.VendorName |titlecase}} </strong>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+    </mat-card-title>
+    <form #InteractionForm="ngForm">
+        <div class="row">
+            <div class="col-sm-12">
+                <textarea rows="3" class="form-control" required placeholder="Enter Interaction" name="Details"
+                    #Details="ngModel" [class.error]="Details.invalid && Details.touched"
+                    [disabled]="!architectProjDetails.VendorName" [class.has-success]="Details.valid"
+                    [(ngModel)]="InteractionModel.Details"></textarea>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <button class="btn btn-primary btn-md" [disabled]="!InteractionForm.form.valid"
+                    (click)="onCreateNote(InteractionModel)">Submit <i class="fa fa-plus"></i></button>
+            </div>
+        </div>
+        <div class="col-sm-12 srollbar">
+            <div class="timeline" *ngFor='let data of getAllInteractions;trackBy: trackByFn' id="style-2">
+                <div class="timeline__group">
+                    <div class="timeline__box">
+                        <div class="timeline__date">
+                            <span class="timeline__day">{{data.CreatedOn  | date:"d MMM"}} </span>
+                        </div>
+                        <div class="timeline__post">
+                            <div class="timeline__content">
+                                <p><i class="fa fa-sticky-note" aria-hidden="true"></i>
+                                    <strong> {{data.Details}}</strong></p>
+                                <hr>
+                                <strong> <b> Interaction Type : </b> {{data.InteractionType}} </strong>||
+                                <strong *ngIf="data.CreatorId !== null"> <b>Entered By : </b>{{data.CreatorName}}
+                                </strong>
+                                <strong *ngIf="data.CreatorId === null"> <b>Entered By : </b>{{data.ArchitectName}}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</mat-card>

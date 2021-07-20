@@ -1,0 +1,95 @@
+<!-- Modal pop up for display details of selected Checklist Type  -->
+<div bsModal #showActionItemsModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl modal-notify modal-warning">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <!-- <div class="col-sm-12 text-center"> -->
+                <p class="heading lead">Action Items and Tasks Assigned to you</p>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showActionItemsModal.hide()">
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="table-responsive" *ngIf="ActionItemslist.length > 0">
+                        <table class="table table-bordered table-striped table-sm" cellsspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th colspan="7">Action Items Assigned To You</th>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>Meeting</th>
+                                    <th>Agenda</th>
+                                    <th>Action Items</th>
+                                    <th>Assigned Date</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let aItem of ActionItemslist | paginate: { id:'selectedMeetingsAgenda-pagination', itemsPerPage: 6, currentPage: p }; trackBy: trackByFn;let i=index">
+                                    <td>
+                                        <span data-toggle="tooltip" title="{{aItem.Title?aItem.Title:''}}">{{aItem.Title ? ((aItem.Title.length>60) ? (aItem.Title | slice:0:60)+'...' : aItem.Title)
+                                            :''}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-toggle="tooltip" title="{{aItem.AgendaItem?aItem.AgendaItem:''}}">{{aItem.AgendaItem ? ((aItem.AgendaItem.length>60) ? (aItem.AgendaItem | slice:0:60)+'...'
+                                            : aItem.AgendaItem) :''}}</span>
+                                    </td>
+                                    <td>
+                                        <span data-toggle="tooltip" title="{{aItem.ActionItem?aItem.ActionItem:''}}">{{aItem.ActionItem ? ((aItem.ActionItem.length>60) ? (aItem.ActionItem | slice:0:60)+'...'
+                                            : aItem.ActionItem) :''}}</span>
+                                    </td>
+                                    <td>{{aItem.CreatedOn | date:'dd MMM yyyy'}} </td>
+                                    <td>{{aItem.DueDate | date:'dd MMM yyyy'}}</td>
+                                    <td>{{aItem.Status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot  class="pull-right" *ngIf="ActionItemslist.length > 6">
+                            <pagination-controls id='selectedMeetingsAgenda-pagination' (pageChange)="p = $event">
+                            </pagination-controls>
+                        </tfoot>
+                    </div>
+
+                    <div class="table-responsive" *ngIf="Tasklist.length > 0">
+                        <table class="table table-bordered table-striped table-sm" cellsspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th colspan="5">Task Assigned To You</th>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>Task Item</th>
+                                    <th>Assigned Date</th>
+                                    <th>Due Date</th>
+                                    <th>Completion Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let aItem of Tasklist | paginate: { id:'selectedtask-pagination', itemsPerPage: 6, currentPage: q }; trackBy: trackByFn;let i=index">
+                                    <td>
+                                        <span data-toggle="tooltip" title="{{aItem.ActionItem?aItem.ActionItem:''}}">{{aItem.ActionItem ? ((aItem.ActionItem.length>60) ? (aItem.ActionItem | slice:0:60)+'...'
+                                            : aItem.ActionItem) :''}}</span>
+                                    </td>
+                                    <td>{{aItem.CreatedOn | date:'dd MMM yyyy'}} </td>
+                                    <td>{{aItem.DueDate | date:'dd MMM yyyy'}}</td>
+                                    <td>{{aItem.CompletionDate | date:'dd MMM yyyy'}}</td>
+                                    <td>{{aItem.Status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="Tasklist.length > 6">
+                            <pagination-controls id='selectedtask-pagination' (pageChange)="q= $event">
+                            </pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

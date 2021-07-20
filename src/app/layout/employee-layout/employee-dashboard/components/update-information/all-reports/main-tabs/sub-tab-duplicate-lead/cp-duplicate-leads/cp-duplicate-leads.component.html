@@ -1,0 +1,235 @@
+<ngb-tabset #tabset="ngbTabset" (tabChange)="resetDownloadReportsTab()">
+    <ngb-tab *ngIf="loggedInuserDetails.Level !== 'L3'">
+        <ng-template ngbTabTitle>
+            <b>Download Reports</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+            <br>
+            <div class="row">
+                <div class="col-sm-3">
+                    <select class="form-control" id="ReportName"
+                        (change)="ExcelReports($event.target.value , ReportModel.PreferredProject)"
+                        [(ngModel)]="ReportModel.ReportName" name="ReportName">
+                        <option value="">--Select Report Name--</option>
+                        <option *ngFor="let item of AllReportNames" [value]="item.ReportName">{{item.ReportName}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <select type="text" class="form-control" #preferredProject="ngModel" id="preProject"
+                        *ngIf="ReportModel.ReportName" name="preProject" required
+                        [(ngModel)]="ReportModel.PreferredProject"
+                        [class.error]="preferredProject.invalid && preferredProject.touched"
+                        [class.has-success]="preferredProject.valid" placeholder="Preferred Project"
+                        (change)="ExcelReports(ReportModel.ReportName,$event.target.value)">
+                        <option value="">--select--</option>
+                        <option *ngFor="let item of PreferredProjectInfo;trackBy: trackByFn" [value]="item.ProjectId">
+                            {{item.ProjectName}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-1">
+                    <button [disabled]="!enabledButtonExport || ReportModel.ReportName ===''" type="button"
+                        *ngIf="ReportModel.ReportName" class="btn btn-primary" (click)="exportAsExcelFile()">
+                        <i class="fa fa-upload"></i>
+                        Download</button>
+                </div>
+                <div class="col-sm-5">
+                    <h5 class="pull-right" *ngIf="ExcelReport && ExcelReport.length > 0"><span
+                            class="badge badge-dark">Count :
+                            {{ExcelReport.length}}</span> </h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div [hidden]="!DownloadButtonSpinner">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-12"> <strong><span class="required fontSize">{{NoDataFoundMsg}}</span></strong>
+                </div>
+                <div class="col-sm-12">
+                    <br>
+                    <div class="table-responsive scrollbar" id="style-2">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead"
+                            cellsspacing="0" width="100%">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th class="textAlign"
+                                        *ngFor="let tableHead of getHeader; trackBy: trackByFn;let i = index">
+                                        <span>
+                                            {{tableHead}}
+                                        </span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td *ngFor="let items of getHeader; trackBy: trackByFn ;let i = index">
+                                        <input type="text" class="textBoxStyle" name="items{{i}}" placeholder="Search"
+                                            #items{{i}}="ngModel" [(ngModel)]="filterDataSet[items]"
+                                            (keyup)="filterReportData()">
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="pointer text-center"
+                                    *ngFor="let gettableData of ExcelReport ;trackBy: trackByFn;let index = index">
+                                    <td *ngFor="let tableHead of getHeader;trackBy: trackByFn">
+                                        <span>
+                                            {{gettableData[tableHead]
+                                            !=='null' ?
+                                            gettableData[tableHead]: 'NA'}}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-tab>
+    <ngb-tab>
+        <ng-template ngbTabTitle>
+            <div (click)="resetDownloadReportsTab()">
+                <b>Duplicate Leads</b>
+            </div>
+        </ng-template>
+        <ng-template ngbTabContent>
+            <div [hidden]="!duplicateSpinner">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+            <div *ngIf="allDuplicates.length>0" class="tableStyle">
+                <div class="card cardfortable">
+                    <div class="title textweight text-center">
+                        <span>Duplicate Enquiry-Referral Details</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>1st Created By</th>
+                                    <th>Mobile No</th>
+                                    <th>Enq Id</th>
+                                    <th>Enq Name</th>
+                                    <th>Enq Email</th>
+                                    <th>Enq CreatedBy</th>
+                                    <th>Enq CreatedOn</th>
+                                    <th>Enq Source</th>
+                                    <th>Reff Id</th>
+                                    <th>Ref Name</th>
+                                    <th>Reff Email</th>
+                                    <th>Reff CreatedBy</th>
+                                    <th>Reff CreatedOn</th>
+                                    <th>Reff Source</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let duplicate of allDuplicates  | paginate: { itemsPerPage: 10, currentPage: p1 } ">
+                                    <td>{{duplicate.FirstLead}}</td>
+                                    <td> {{duplicate.MobileNo}} </td>
+                                    <td>{{duplicate.EnquiryId}}</td>
+                                    <td> {{duplicate.EnqName}} </td>
+                                    <td>{{duplicate.EnqEmail}}</td>
+                                    <td> {{duplicate.EnqCreatedBy}} </td>
+                                    <td>{{duplicate.EnqCreatedOn |date:"d MMM y"}}</td>
+                                    <td> {{duplicate.EnqSource}} </td>
+                                    <td> {{duplicate.ReferralId}} </td>
+                                    <td> {{duplicate.ReffName}} </td>
+                                    <td>{{duplicate.ReffEmail}}</td>
+                                    <td> {{duplicate.ReffCreatedBy}} </td>
+                                    <td>{{duplicate.ReffCreatedOn |date:"d MMM y"}}</td>
+                                    <td> {{duplicate.ReffSource}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot *ngIf="allDuplicates.length>10" class="pull-right">
+                            <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                        </tfoot>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <span *ngIf="allDuplicates.length > 0" class="required">{{NoDataFoundMessage}}</span>
+        </ng-template>
+    </ngb-tab>
+    <ngb-tab *ngIf="loggedInuserDetails.Level !== 'L3'">
+        <ng-template ngbTabTitle>
+            <b>Email Reports</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+            <br>
+            <div class="row">
+                <div class="col-sm-3">
+                    <select class="form-control" id="ReportName" (change)="getReportTypeList($event.target.value)"
+                        [(ngModel)]="ReportModel.ReportName" name="ReportName">
+                        <option value="">--Select Report Name--</option>
+                        <option *ngFor="let data of reportList" [value]="data.Value">{{data.Value}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-3" *ngIf="ReportModel.ShowReportType">
+                    <select type="text" class="form-control" #preferredProject="ngModel" id="ReportType"
+                        *ngIf="ReportModel.ReportName" name="ReportType" required [(ngModel)]="ReportModel.ReportType"
+                        [class.error]="preferredProject.invalid && preferredProject.touched"
+                        [class.has-success]="preferredProject.valid" placeholder="Preferred Project"
+                        (change)="getEmailReportsDataAction(ReportModel.ReportName, $event.target.value)">
+                        <option value="">--select--</option>
+                        <option *ngFor="let item of ReportTypeList;trackBy: trackByFn" [value]="item">
+                            {{item}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div [hidden]="!DownloadButtonSpinner">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-12"> <strong><span class="required fontSize">{{NoDataFoundMsg}}</span></strong>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <strong for="EmailTo"><span class="required">*</span>To :</strong>
+                        <input type="text" readonly name="EmailTo" id="EmailTo" class="form-control"
+                            placeholder="EmailTo" required [(ngModel)]="loggedInuserDetails.UserEmail">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <strong for="CC"><span class="required">*</span>CC :</strong>
+                        <input type="text" name="CC" id="CC" class="form-control" placeholder="CC" required
+                            [(ngModel)]="DownloadSendEmailModel.CC">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <strong for="subject"><span class="required">*</span>Subject:</strong>
+                        <input type="text" name="subject" id="subject" class="form-control" placeholder="Subject"
+                            required [(ngModel)]="DownloadSendEmailModel.Subject">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <strong for="body">Body:</strong>
+                        <ckeditor [(ngModel)]="DownloadSendEmailModel.HtmlBody" [config]="ckeConfig" debounce="500"
+                            name="Details" #myckeditor>
+                        </ckeditor>
+                    </div>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <button type="button" class="btn btn-primary btn-sm" [disabled]="!DownloadSendEmailModel.Subject"
+                        (click)="SendEmail()">Send
+                        &nbsp;&nbsp;<i class="fa fa-upload text-white"></i></button>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-tab>
+</ngb-tabset>

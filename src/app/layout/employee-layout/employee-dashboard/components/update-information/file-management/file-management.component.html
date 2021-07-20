@@ -1,0 +1,379 @@
+<br>
+<div class="row" *ngIf="!openProjectFolder">
+    <div class="col-sm-12">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Project Folders</strong>
+            </legend>
+            <div class="row">
+                <div class="col-sm-12" align="center">
+                    <div [hidden]="!isLoadingDocumentFolders">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 box" id="boxpos" ngbTooltip="click to display files" align="center"
+                    *ngFor="let item of selectedProjectNames;trackBy: trackByFn; let i=index">
+                    <img class="responsive" src="../../../../../../../assets/images/archives.png" alt="Folder Image"
+                        (click)="openFolder(item.ProjectName)" />
+                    <br>
+                    <strong class="foldername" (click)="openFolder(item.ProjectName)">{{ item.ProjectName }}</strong>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="row" *ngIf="openProjectFolder">
+    <div class="col-sm-12">
+        <form #FileManagementForm="ngForm">
+            <div class="row">
+                <div class="col-sm-6">
+                    <button class="btn btn-dark" (click)="OnClickPreviousButton();clearData(FileManagementForm)">
+                        <i class="fas fa-arrow-left"></i></button> &nbsp;
+                    <strong *ngIf="!collapse" id="title">{{projectName}}'s Documents</strong>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="4 pull-right" id="btnmargin">
+                    <button
+                        *ngIf="loggedInuserDetails.Role===1||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11"
+                        type="button" class="btn btn-primary center-block" (click)="uploadTemplate()">
+                        <i class="fa fa-upload" aria-hidden="true"></i> Upload Template</button>&nbsp;&nbsp;
+                    <button
+                        *ngIf="loggedInuserDetails.Role===1||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11"
+                        type="button" class="btn btn-primary center-block" (click)="uploadBrochure()">
+                        <i class="fa fa-upload" aria-hidden="true"></i> Upload Brochure</button>&nbsp;&nbsp;
+                    <button
+                        *ngIf="loggedInuserDetails.Role===1||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11"
+                        type="button" class="btn btn-primary center-block" (click)="uploadSms()"> <i
+                            class="fa fa-upload" aria-hidden="true"></i> Upload SMS</button>
+                </div>
+                <br>
+            </div>
+        </form>
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Brochure Documents with Layout Details</strong>
+            </legend>
+            <div class="row" *ngIf="selectedBrochureNames.length > 0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th width="8%">Sr No</th>
+                                <th><strong> Brochure Name </strong></th>
+                                <th><strong>Create Date </strong></th>
+                                <th
+                                    *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                                    <strong> Action</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let item of selectedBrochureNames | paginate: { id:'Brochure-pagination', itemsPerPage:5, currentPage: s1 };trackBy: trackByFn; let i=index">
+                                <td>{{i+1}}</td>
+                                <td>
+                                    <a href="{{showPdf +item.ProjectName}}" target="_blank">&nbsp;&nbsp;
+                                        <img id="imageLogo"
+                                            *ngIf="item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'png' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'PNG' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'jpeg' ||item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'jpg' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'JPG' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'JPEG'"
+                                            class="responsive" src="assets\images\image_logo.png" alt="Logo image"
+                                            ngbTooltip="click to open Image" />
+                                    </a>
+                                    <a href="{{showPdf +item.ProjectName}}" target="_blank">
+                                        <img id="imageLogo"
+                                            *ngIf="item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'pdf' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'PDF'"
+                                            class="responsive" src="assets\images\pdf.png" alt="PDF file image"
+                                            ngbTooltip="click to open PDF" />
+                                    </a>
+                                    <a href="{{showPdf + item.ProjectName}}" download>
+                                        <img id="imageLogo"
+                                            *ngIf="item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'docx' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'DOCX' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'doc' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'DOC'"
+                                            class="responsive" src="assets\images\Microsoft_Office_Word.png"
+                                            alt="Microsoft_Office_Word file image" ngbTooltip="click to Download" /></a>
+                                    <a href="{{showPdf + item.ProjectName}}" target="_blank">{{item.ProjectName}} </a>
+                                </td>
+                                <td> {{item.CreatedOn| date:"d MMM y"}}</td>
+                                <td
+                                    *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                                    <button type="button" class="btn btn-link btn-sm required"
+                                        (click)="OnClickDeleteButton(item,'brochure')">
+                                        <i class="fa fa-trash has-error" aria-hidden="true"></i></button> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot  class="pull-right" *ngIf="selectedBrochureNames.length >5">
+                        <pagination-controls id="Brochure-pagination" (pageChange)="s1 = $event"></pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+            <div class="required" *ngIf="selectedBrochureNames.length === 0">
+                <span>{{DataNotFound}}</span>
+            </div>
+        </fieldset>
+
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Template Details</strong>
+            </legend>
+            <div class="row" *ngIf="selectedTemplateNames.length > 0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th>Template Name </th>
+                                <th>Create Date </th>
+                                <th>Updated Date </th>
+                                <th
+                                    *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                                    Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let item of selectedTemplateNames | paginate: { id:'template-pagination', itemsPerPage:5, currentPage: q1 }; let i=index">
+                                <td>
+                                    <button type="button" class="btn  btn-sm" (click)="onUpdateTemplate('show',item)">
+                                        <i class="fa fa-eye"></i> {{item.Key| titlecase}} </button>
+                                </td>
+                                <td>{{item.CreatedOn| date:"d MMM y"}}</td>
+                                <td>{{item.UpdatedOn| date:"d MMM y"}}</td>
+                                <td
+                                    *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                                    <i class="fa fa-edit" (click)="onUpdateTemplate('edit',item)"></i>&nbsp;
+                                    <i class="fa fa-trash has-error" (click)="OnClickDeleteButton(item,'template')">
+                                    </i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot   class="pull-right" *ngIf="selectedTemplateNames.length>5">
+                        <pagination-controls id="template-pagination" (pageChange)="q1 = $event"></pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+            <div class="required" *ngIf="showDataNotFound">
+                <span>{{DataNotFound}}</span>
+            </div>
+        </fieldset>
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>SMS Template Documents</strong>
+            </legend>
+            <div class="row" *ngIf="!showDataNotFoundMessage">
+                <div class="col-sm-6">
+                    <div class="icon-addon addon-md">
+                        <input type="text" class="form-control search" [(ngModel)]="Search" name="search"
+                            placeholder="Search By Template Name">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="required" *ngIf="showDataNotFoundMessage">
+                <span>{{DataNotFoundMessage}}</span>
+            </div>
+            <div class="table-responsive" *ngIf="!showDataNotFoundMessage">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="table-info">
+                        <tr>
+                            <th>Sr No</th>
+                            <th><strong> SMS Template Names </strong></th>
+                            <th><strong> SMS Templates </strong></th>
+                            <th
+                                *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                            </th>
+                            <th
+                                *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="let item of selectedProject | filter:Search | paginate: { id:'Sms-Details-pagination', itemsPerPage:3, currentPage: p1 };trackBy: trackByFn; let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{ item.Key }}</td>
+                            <td width="900px">
+                                <textarea *ngIf="editedIndex !== i" id="formheight" class="form-control"
+                                    [disabled]="true">{{ item.Content }}</textarea>
+                                <textarea *ngIf="editedIndex === i" id="formheight" class="form-control"
+                                    [(ngModel)]="message"></textarea>
+                            </td>
+                            <td
+                                *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                                <button type="button" *ngIf="editedIndex !== i" (click)="OnEditBtnClick(i,item)"
+                                    class="btn btn-primary">
+                                    <i class="fa fa-edit"></i> Edit Content Details</button>
+                                <button class="btn btn-primary" *ngIf="editedIndex === i" type="button"
+                                    (click)="UpdateSMSTemplate(1,item.ID,message)">
+                                    <i class="fa fa-edit"></i> Save
+                                </button></td>
+                            <td
+                                *ngIf="loggedInuserDetails.Role === 1 ||loggedInuserDetails.Role===6||loggedInuserDetails.Role===11">
+                                <button class="btn btn-link btn-sm required" type="button"
+                                    (click)="OnClickDeleteButton(item,'sms')"><i class="fa fa-trash  has-error">
+                                    </i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot  class="pull-right" *ngIf="selectedProject.length>3">
+                    <pagination-controls id="Sms-Details-pagination" (pageChange)="p1 = $event"></pagination-controls>
+                </tfoot>
+            </div>
+
+        </fieldset>
+    </div>
+</div>
+<!-- Modal Pop Up For Template Insert -->
+<div bsModal #showtempalateModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center" id="model">{{popupHeading}}</h4> <img id="cross"
+                    src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <form #uploadTemplateForm="ngForm">
+                    <strong for="ProjectName">
+                        <span class="required"></span>Project Name:</strong>
+                    <input class="form-control" id="ProjectName" #projectname="ngModel" [(ngModel)]="projectName"
+                        name="ProjectName" [class.error]="projectname.invalid && projectname.touched"
+                        [class.has-success]="projectname.valid" readonly>
+
+                    <div *ngIf="ContentType === 'email'">
+                        <strong>Email Template Name:</strong>
+                        <input type="text" class="form-control" id="Templatename" name="Templatename"
+                            [disabled]="disableTemplateFields" [(ngModel)]="fileManagementModel.TemplateName"
+                            placeholder="Enter Template Name..." #Templatename="ngModel"
+                            pattern="^[^-\s][a-zA-Z0-9.,-_ ]*"
+                            [class.error]="Templatename.invalid && Templatename.touched"
+                            [class.has-success]="Templatename.valid">
+                        <strong>Email Template Body:</strong>
+                        <ckeditor [(ngModel)]="fileManagementModel.TemplateModel" [config]="ckeConfig"
+                            [readonly]="disableTemplateFields" debounce="500" name="Details" #myckeditor>
+                        </ckeditor>
+                    </div>
+                </form>
+            </div>
+            <div class="row justify-content-md-center">
+                <button type="button" *ngIf="!templateUpdate" class="btn btn-primary center-block"
+                    (click)="uploadPdf(projectName,fileManagementModel,ContentType,uploadPdfFileList,uploadTemplateForm)"
+                    [disabled]="!uploadTemplateForm.valid ||disableTemplateFields">
+                    <i class="fa fa-upload" aria-hidden="true"></i> Upload</button>
+                <button type="button" *ngIf="templateUpdate && ContentType === 'email'"
+                    class="btn btn-primary center-block"
+                    (click)="UpdateSMSTemplate(1,KeyID,fileManagementModel.TemplateModel)"
+                    [disabled]="!smsBrochureForm.valid||disableTemplateFields">
+                    <i class="fa fa-upload" aria-hidden="true"></i> Update Template</button>
+            </div>
+            <br />
+            <div class="row justify-content-md-center">
+                <div class="alert alert-success" *ngIf="uploadPdfSuccessfullMessage!==''" role="alert">
+                    <h4> <i class="fa fa-check"></i> {{uploadPdfSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-success" *ngIf="uploadPdfUnsuccessfullMessage!==''" role="alert">
+                    <h4> <i class="fa fa-check"></i> {{uploadPdfUnsuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-success" role="alert" *ngIf="showSuccessfullMessage!==''">
+                    <h4> <i class="fa fa-check"></i>{{showSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-warning" role="alert" *ngIf="showNotSuccessfullMessage!==''">
+                    <h4> <i class="fa fa-times-circle"></i>{{showNotSuccessfullMessage}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Pop Up For Sms and Brochure Upload -->
+<div bsModal #showFileModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog  modal-md">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center">{{popupHeading}}</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="closeTemplate()" />
+            </div>
+            <div class="modal-body">
+                <form #smsBrochureForm="ngForm">
+                    <strong for="ProjectName">
+                        <span class="required"></span>Project Name:</strong>
+                    <input class="form-control" id="ProjectName" #projectname="ngModel" [(ngModel)]="projectName"
+                        name="ProjectName" [class.error]="projectname.invalid && projectname.touched"
+                        [class.has-success]="projectname.valid" readonly>
+                    <div *ngIf="ContentType === 'brochure'">
+                        <span class="notfoundmsg">Select only 1 file to upload.</span>
+                        <tru-file-upload [accept]="'.pdf,.PDF,.doc,.docx,.DOC,.DOCX,.PNG,.jpeg,.jpg,.JPG,.JPEG,.png'"
+                            [(inputFiles)]="uploadPdfFileList" [multiple]="false">
+                        </tru-file-upload>
+                    </div>
+                    <div *ngIf="ContentType === 'sms'">
+                        <strong><span class="required">*</span>SMS Template Name:</strong>
+                        <input type="text" class="form-control" id="Templatename" name="Templatename" required
+                            [(ngModel)]="fileManagementModel.TemplateName" placeholder="Enter Template Name..."
+                            #Templatename="ngModel" pattern="^[^-\s][a-zA-Z0-9.,-_ ]*"
+                            [class.error]="Templatename.invalid && Templatename.touched"
+                            [class.has-success]="Templatename.valid">
+                        <strong><span class="required">*</span>SMS Template Body:</strong>
+                        <textarea rows="4" class="form-control" placeholder="Enter Your Message..." required
+                            [(ngModel)]="fileManagementModel.TemplateModel" id="messageField" name="messageField"
+                            #messageField="ngModel"
+                            [class.error]="messageField.invalid && messageField.touched"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="row justify-content-md-center">
+                <button type="button" class="btn btn-primary center-block"
+                    (click)="uploadPdf(projectName,fileManagementModel,ContentType,uploadPdfFileList,smsBrochureForm)"
+                    [disabled]="!smsBrochureForm.valid">
+                    <i class="fa fa-upload" aria-hidden="true"></i> Upload</button>
+            </div>
+            <br />
+            <div class="row justify-content-md-center">
+                <div class="alert alert-success" *ngIf="uploadPdfSuccessfullMessage!==''" role="alert">
+                    <h4> <i class="fa fa-check"></i> {{uploadPdfSuccessfullMessage}}</h4>
+                </div>
+                <div class="alert alert-success" *ngIf="uploadPdfUnsuccessfullMessage!==''" role="alert">
+                    <h4> <i class="fa fa-check"></i> {{uploadPdfUnsuccessfullMessage}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal For Deletion Confirmtion -->
+<div bsModal #ConfirmationModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="exampleModalCenterTitle" s aria-hidden="true">
+    <form #stageChangeForm="ngForm">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header alertModal ">
+                    <h4 class="modal-title center">Alert !!!</h4>
+                    <div>
+                        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="close()" />
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <strong>Are you sure you want to Delete?
+                        Selected File\Template\SMS will be Deleted from your list.
+                    </strong>
+                    <hr />
+                    <div class="row justify-content-md-center">
+                        <button type="button" class="btn btn-success" id="modal-btn-si"
+                            (click)="deleteType === 'brochure'?brochureDelete(0):OnClickConfirmDelete(0)"><i
+                                class="fa fa-check"></i> Confirm</button>&nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="this.ConfirmationModal.hide()"><i
+                                class="fa fa-times-circle"></i> Cancel</button>
+                    </div>
+                    <br />
+                    <div class="alert alert-success" role="alert" *ngIf="showSuccessfullMessage!==''">
+                        <h4> <i class="fa fa-check"></i>{{showSuccessfullMessage}}</h4>
+                    </div>
+                    <div class="alert alert-warning" role="alert" *ngIf="showNotSuccessfullMessage!==''">
+                        <h4> <i class="fa fa-times-circle"></i>{{showNotSuccessfullMessage}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

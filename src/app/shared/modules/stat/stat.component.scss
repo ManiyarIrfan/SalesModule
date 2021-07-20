@@ -1,0 +1,34 @@
+.card-footer a {
+  color: black;
+}
+
+.card:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+  transition: 1s ease;
+}
+
+.count {
+  font-weight: 550;
+  font-size: 2.6em;
+  color: rgb(32, 32, 32);
+}
+.card {
+  border-radius: 0.91rem;
+}
+.name {
+  font-size: 1.2em;
+  font-weight: 500;
+  color: black;
+}
+
+.bg-custom {
+  //background-color: #4a879e !important;
+  background-image: linear-gradient(to right, #4a879e00, #97e2ff) !important;
+  border-right: 3px solid #4a4a4a;
+}
+
+.fa {
+  color: #444242;
+}

@@ -1,0 +1,404 @@
+<br />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <strong class="fontsize">{{cpDetails.EntityId}}</strong>&nbsp;
+                        <strong class="fontsizecolor">{{cpDetails.Name }} </strong>
+                    </div>
+                    <div class="col-sm-2">
+                        <button [disabled]="disableAllFields" type="button" class="btn btn-outline-success"
+                            (click)="preSelectedId()" style="font-weight: bold;">
+                            <i class="fa fa-angle-double-left"></i>
+                            PRE </button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button [disabled]="disableAllFields" type="button" class="btn btn-outline-success"
+                            (click)="nextSelectedId()" style="font-weight: bold;">
+                            NEXT
+                            <i class="fa fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <strong for="mobileNo">Mobile No :</strong>
+                        <input class="form-control" id="mobileNo" name="mobileNo" [disabled]="true" #mobileNo="ngModel"
+                            pattern="^[0-9, ]+( [0-9, ]+)*$" [class.error]="mobileNo.invalid && mobileNo.touched"
+                            [class.has-success]="mobileNo.valid" placeholder="Enter Alternate No..."
+                            [(ngModel)]="cpDetails.MobileNo">
+                    </div>
+                    <div class="col-sm-6">
+                        <strong for="alternateNo">Alternate No. :</strong>
+                        <input class="form-control" id="alternateNo" name="alternateNo" [disabled]="true"
+                            #alternateNo="ngModel" pattern="^[0-9, ]+( [0-9, ]+)*$"
+                            [class.error]="alternateNo.invalid && alternateNo.touched"
+                            [class.has-success]="alternateNo.valid" [(ngModel)]="cpDetails.AlternateNo">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <strong for="organisation">Organisation :</strong>
+                        <input class="form-control" id="organisation" name="organisation" [disabled]="true"
+                            [(ngModel)]="cpDetails.Organization"
+                            [class.error]="organisation.invalid && organisation.touched"
+                            [class.has-success]="organisation.valid" #organisation="ngModel" d="10" multiple>
+                    </div>
+                    <div class="col-sm-6">
+                        <strong for="email">Email :</strong>
+                        <input class="form-control" id="email" name="email" #email="ngModel"
+                            pattern="^[0-9, ]+( [0-9, ]+)*$" [class.error]="email.invalid && email.touched"
+                            [class.has-success]="email.valid" [disabled]="true" [(ngModel)]="cpDetails.Email">
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="container">
+                        <ngb-tabset type="pills">
+                            <ngb-tab>
+                                <ng-template ngbTabTitle>
+                                    <b>
+                                        <i class="fa fa-phone"></i> Call</b>
+                                </ng-template>
+                                <ng-template ngbTabContent>
+                                    <hr class="style13">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <button [disabled]="disableAllFields" class="btn btn-success"
+                                                    ngbTooltip="To: {{To}} From: {{from}}" placement="top"
+                                                    (click)="onDialCall()">
+                                                    <i class="fa fa-phone"></i> Call Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ngb-tab>
+                            <ngb-tab>
+                                <ng-template ngbTabTitle>
+                                    <b>
+                                        <i class="fa fa-envelope"></i> Email</b>
+                                </ng-template>
+                                <ng-template ngbTabContent>
+                                    <hr class="style13">
+                                    <tru-send-email-lead-interaction [EnquiryId]="cpDetails"
+                                        [hidden]="disableAllFields"></tru-send-email-lead-interaction>
+                                </ng-template>
+                            </ngb-tab>
+                            <ngb-tab>
+                                <ng-template ngbTabTitle>
+                                    <b>
+                                        <i class="fa fa-clock-o"></i> Interaction / Followup</b>
+                                </ng-template>
+                                <ng-template ngbTabContent>
+                                    <hr class="style13">
+                                    <form #FollowUpForm="ngForm">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <strong>FollowUp Date</strong>
+                                                    <input class="form-control " type="date" name="date" id="date"
+                                                        [disabled]="disableAllFields"
+                                                        [(ngModel)]="followUpDetails.FollowUpDate" [min]="getToday()"
+                                                        [class.error]="Date.invalid && Date.touched" min='1990-01-01'
+                                                        [class.has-success]="Date.valid" #Date="ngModel"
+                                                        pattern="(?:2018|2019|(?:202)[0-9]{1}|(?:203)[0-9]{1}|(?:204)[0-9]{1})-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <strong>Time</strong>
+                                                    <input class="form-control" atp-time-picker value="{{selectedTime}}"
+                                                        [disabled]="disableAllFields" [(ngModel)]="selectedTime"
+                                                        name="time" id="time" (click)="open()" />
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <strong> Status</strong>
+                                                    <select class="form-control" id="status" name="status"
+                                                        [disabled]="disableAllFields"
+                                                        [(ngModel)]="followUpDetails.FollowUpStatus" #status="ngModel"
+                                                        [class.error]="status.invalid && status.touched"
+                                                        [class.has-success]="status.valid">
+                                                        <option value="">--Select--</option>
+                                                        <option class='option' *ngFor='let status of followUpStatus'
+                                                            [value]="status.key">{{status.value}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <strong>Type</strong>
+                                                    <select class="form-control" id="type" name="type"
+                                                        [disabled]="disableAllFields"
+                                                        [(ngModel)]="followUpDetails.followUpType" #type="ngModel"
+                                                        [class.error]="type.invalid && type.touched"
+                                                        [class.has-success]="type.valid">
+                                                        <option value="">--Select--</option>
+                                                        <option class='option' *ngFor='let type of followUpTypes'
+                                                            [value]="type.key">{{type.value}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <strong>
+                                                <span class="required">*</span>Agenda/Interaction</strong>
+                                            <textarea rows="4" class="form-control" placeholder="Agenda/Notes"
+                                                [disabled]="disableAllFields" id="agenda" name="agenda"
+                                                #Agenda="ngModel" [class.error]="Agenda.invalid && Agenda.touched"
+                                                [class.has-success]="Agenda.valid" required
+                                                [(ngModel)]="followUpDetails.Details"></textarea>
+                                            <br />
+                                            <div class=" row justify-content-md-center">
+                                                <button class="btn btn-primary"
+                                                    (click)="onInteractionSubmit(followUpDetails,FollowUpForm)"
+                                                    [disabled]="!FollowUpForm.form.valid">
+                                                    <i class="fa fa-edit"></i> Save</button>
+                                            </div>
+
+
+                                        </div>
+                                    </form>
+                                </ng-template>
+                            </ngb-tab>
+
+                            <ngb-tab>
+                                <ng-template ngbTabTitle>
+                                    <b>
+                                        <i class="fa fa-envelope"></i> SMS</b>
+                                </ng-template>
+                                <ng-template ngbTabContent>
+                                    <hr class="style13">
+                                    <form #messageForm="ngForm">
+                                        <div class="col-sm-12">
+                                            <strong>
+                                                <span class="required">*</span>To: </strong>
+                                            <span> {{To}}</span>
+                                        </div>
+                                        <br />
+                                        <div class="col-sm-12">
+                                            <strong>
+                                                <span class="required">*</span>Message: </strong>
+                                            <textarea rows="4" class="form-control" placeholder="Enter Your Message"
+                                                [disabled]="disableAllFields" id="message" name="message"
+                                                #message="ngModel" required [(ngModel)]="messageModel.Template"
+                                                [class.error]="message.invalid && message.touched"></textarea>
+                                        </div>
+                                        <br />
+                                        <div class="col-sm-12">
+                                            <div class="row justify-content-md-center">
+                                                <button type="button" class="btn btn-primary"
+                                                    (click)="onSendMessage(messageModel,messageForm)"
+                                                    [disabled]="!messageForm.form.valid">
+                                                    <i class="fa fa-paper-plane"></i> Send Message
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </ng-template>
+                            </ngb-tab>
+                            <ngb-tab>
+                                <ng-template ngbTabTitle>
+                                    <b>
+                                        <i class="fa fa-envelope"></i> TRU Pay</b>
+                                </ng-template>
+                                <ng-template ngbTabContent>
+                                    <hr class="style13">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="card z-depth-1 orangecard-style" ngbTooltip="View Details"
+                                                (click)="brokarageList('predict')">
+                                                <div class="card-body">
+                                                    <h4 class="card-title text-center">Predicted Earning</h4>
+                                                    <hr>
+                                                    <h5 class="text-center">
+                                                        <b>
+                                                            <i class="fa fa-rupee-sign"></i>
+                                                            {{predictAmount?predictAmount:0}}</b>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="card z-depth-1 greencard-style" ngbTooltip="View Details"
+                                                (click)="brokarageList('actual')">
+                                                <div class="card-body">
+                                                    <h4 class="card-title text-center">Actual Earning</h4>
+                                                    <hr>
+                                                    <h5 class="text-center">
+                                                        <b>
+                                                            <i class="fa fa-rupee-sign"></i>
+                                                            {{actualAmount?actualAmount:0}}</b>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ngb-tab>
+                        </ngb-tabset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <fieldset class="scheduler-border">
+            <br>
+            <div class="row">
+                <div class="container">
+                    <ngb-tabset type="pills">
+                        <ngb-tab>
+                            <ng-template ngbTabTitle>
+                                <b>
+                                    <i class="fas fa-user-friends"></i> Interaction Details</b>
+                            </ng-template>
+                            <ng-template ngbTabContent>
+                                <hr class="style13">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <ol>
+                                            <li class="text-muted "
+                                                *ngFor="let data of interactionData | paginate: { id:'Interaction-Details-pagination',itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn">
+                                                <i class="fa fa-book"></i> {{data.Details}}
+                                                <br />
+                                                <span class="text-muted">
+                                                    <strong> CreatedBy:-</strong>
+                                                    {{data.CreatedBy}} ||
+                                                    <strong>CreatedOn:-</strong>
+                                                    {{data.CreatedOn |date:"d MMM y"}} ||
+                                                    <strong> FollowUp:-</strong>
+                                                    {{data.FollowUpRequired}} ||
+                                                    <strong> Interaction Type:-</strong>
+                                                    {{data.InteractionType}}</span>
+                                                <hr>
+                                            </li>
+                                        </ol>
+                                        <tfoot class="pull-right">
+                                            <pagination-controls id="Interaction-Details-pagination"
+                                                (pageChange)="p1 = $event"></pagination-controls>
+                                        </tfoot>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+
+                        <ngb-tab>
+                            <ng-template ngbTabTitle>
+                                <b>
+                                    <i class="fa fa-phone"></i> Call Details</b>
+                            </ng-template>
+                            <ng-template ngbTabContent style="height: 500px;">
+                                <hr class="style13">
+                                <!-- <div *ngIf="callDetails.length > 0">
+                                    <h6 class="required">Audio clips Which can not be played. Please Use Download
+                                        option.
+                                    </h6>
+                                </div> -->
+                                <div>
+                                    <p
+                                        *ngFor="let data of callDetails | paginate: { id:'Call-Details-pagination',itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn">
+                                        <!-- <audio controls>
+                                            <source src={{data.CallUrl}} type="audio/mpeg">
+                                        </audio> -->
+                                        <a href="{{data.CallUrl}}" download target="_blank" class="downloadIcon">
+                                            <i class="fas fa-download"></i> Click To Download
+                                        </a>
+                                        <br />
+                                        <span class="text-muted">
+                                            <strong>Call To:-</strong> {{data.To}} ||
+                                            <strong>
+                                                On</strong>
+                                            {{data.StartTime}} ||
+                                            <strong> Call Status:-</strong> {{data.Status}} ||
+                                            <strong>Direction:-</strong>
+                                            {{data.Direction}}</span>
+                                    </p>
+                                    <tfoot class="pull-right">
+                                        <pagination-controls id="Call-Details-pagination" (pageChange)="p1 = $event">
+                                        </pagination-controls>
+                                    </tfoot>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+
+                        <ngb-tab>
+                            <ng-template ngbTabTitle>
+                                <b>
+                                    <i class="fa fa-envelope"></i> SMS Details</b>
+                            </ng-template>
+                            <ng-template ngbTabContent>
+                                <hr class="style13">
+                                <div>
+                                    <li
+                                        *ngFor="let data of smsDetails | paginate: { id:'Sms-Details-pagination', itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn">
+                                        <i class="fa fa-envelope-open"></i> {{data.Body}}
+                                        <br />
+                                        <span class="text-muted">
+                                            <strong>SentBy:-</strong> {{data.SentBy}} ||
+                                            <strong>SentOn:-</strong>
+                                            {{data.DateSent |date:"d MMM y"}} ||
+                                            <strong>Status:-</strong>
+                                            {{ data.Status }} </span>
+                                        <hr>
+                                    </li>
+                                    <tfoot class="pull-right">
+                                        <pagination-controls id="Sms-Details-pagination" (pageChange)="p1 = $event">
+                                        </pagination-controls>
+                                    </tfoot>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+
+                    </ngb-tabset>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<!-- Modal Pop up For Borkarage Details -->
+<div bsModal #BrokarageDetailsModal="bs-modal" cdkDrag class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">
+                    {{title}}</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="BrokarageDetailsModal.hide()" />
+            </div>
+            <div class="modal-body text-center">
+                <strong *ngIf="BrokarageList.length === 0" class="required">No Data Found</strong>
+                <div class="table-responsive" *ngIf="BrokarageList.length>0">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Transaction Id</th>
+                                <th>Total</th>
+                                <th *ngIf="title==='Actual Earning Details'">Withdrawal Amount</th>
+                                <th *ngIf="title==='Actual Earning Details'">Balance</th>
+                                <!-- <th>Transaction Type</th> -->
+                                <th>Withdrawal On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let actual of BrokarageList| paginate: { itemsPerPage: 15, currentPage: p3 , id:'actualBrokarage'};trackBy: trackByFn;">
+                                <td>{{actual.TransactionId }}</td>
+                                <td>{{actual.Total_Amount}} {{actual.Amount}}</td>
+                                <td *ngIf="title==='Actual Earning Details'">{{actual.TotalWithdrawn_Amount}}</td>
+                                <td *ngIf="title==='Actual Earning Details'">{{actual.Balance_Amount}}</td>
+                                <!-- <td>{{actual.TransactionType}}</td> -->
+                                <td>{{actual.CreatedOn|date:"d MMM y"}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot class="pull-right">
+                        <pagination-controls id="actualBrokarage" (pageChange)="p3 = $event"></pagination-controls>
+                    </tfoot>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

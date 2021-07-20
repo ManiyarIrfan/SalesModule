@@ -1,0 +1,269 @@
+<!-- <app-page-header [heading]="'Project Availability and Status'" [icon]="'fa-bar-chart-o'"></app-page-header> -->
+<form #serchProjectForm="ngForm">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <strong for="preferredLocation">
+                        <span class="required">*</span>Preferred Location </strong>
+                    <select class="form-control" id="preferredLocation" required
+                        [(ngModel)]="channelpartnerSearchModel.preferredLocation" name="preferredLocation"
+                        [class.error]="preferredLocation.invalid && preferredLocation.touched"
+                        [class.has-success]="preferredLocation.valid" #preferredLocation="ngModel"
+                        (change)="onChange($event.target.value)">
+                        <option value="">--Select--</option>
+                        <option *ngFor="let item of preferredLocationLists;trackBy: trackByFn">{{item.Location}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group" *ngIf="preferredProjectLists.length>0">
+                    <strong for="preferredProjects">Selects Projects</strong>
+                    <select class="form-control" id="preferredProjects" required
+                        [(ngModel)]="channelpartnerSearchModel.preferredProjects" name="preferredProjects"
+                        #preferredProjects="ngModel" (change)="onProjectChange($event.target.value)">
+                        <option *ngFor="let item of preferredProjectLists;trackBy: trackByFn">{{item.ProjectName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group" *ngIf="preferredBHKLists.length>0 && preferredProjectLists.length>0">
+                    <strong for="preferredBHK">BHK </strong>
+                    <select class="form-control" id="preferredBHK" required
+                        [(ngModel)]="channelpartnerSearchModel.preferredBHK" name="preferredBHK" #preferredBHK="ngModel"
+                        (change)="onBHKChange($event.target.value)">
+                        <option value="0">All</option>
+                        <option *ngFor="let item of preferredBHKLists;trackBy: trackByFn">{{item.BHK}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3 divpadding">
+                &nbsp;
+                <button type="button" (click)="OnSerchBtnClick()" [disabled]="!serchProjectForm.form.valid"
+                    class="btn btn-primary">
+                    <i class="fa fa-search"></i> Search</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div [hidden]="!showProjectNotFoundMessage">
+    <div *ngIf="listedProjects && listedProjects.length>0">
+        <div class="table-responsive-xl">
+            <table class="table table-bordered table-hover table-striped table-sm text-nowrap" #table>
+                <thead class="thead-light">
+                    <tr>
+                        <th class="tdwidth">Building / Tower </th>
+                        <th>% Sold</th>
+                        <th>Flat No</th>
+                        <th *ngIf="loggedInuserDetails.UserType==='ChannelPartner'">Available</th>
+                        <th *ngIf="loggedInuserDetails.UserType==='CRO'">Available</th>
+                        <th>Flat Block By</th>
+                        <th>NO. Of Views</th>
+                        <th>Floor No</th>
+                        <th>Flat View</th>
+                        <th>Layout Type</th>
+                        <th>Rera Area</th>
+                        <th>BHK</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.BuildingType"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.Result"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.FlatNo"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.Available"
+                                placeholder="Search" (keyup)="FilterTableData()">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.FlatBlockByName"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.Counter"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.Floor"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.FlatView"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.LayoutType"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.ReraArea"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                        <td><input type="text" class="form-control search" [(ngModel)]="filterDataModel.BHK"
+                                (keyup)="FilterTableData()" placeholder="Search">
+                        </td>
+                    </tr>
+                    <tr
+                        *ngFor="let detail of listedProjectsDis | paginate: { itemsPerPage: 12, currentPage: p1};trackBy: trackByFn">
+                        <td>
+                            <button type="button" class="btn btn-sm btn-link" (click)="buildingshow(detail)">
+                                {{detail.BuildingType}}</button>
+                        </td>
+                        <td> {{detail.Result }}</td>
+                        <td> {{detail.FlatNo}}</td>
+                        <td *ngIf="loggedInuserDetails.UserType==='ChannelPartner'">
+                            <span
+                                [ngStyle]="{'background-color': detail.Available=='YES'? 'green' : 'red','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{detail.Available}}</span>
+                            <button type="button" class="btn btn-sm btn-link" (click)="blockUnblock(detail)"
+                                *ngIf="detail.Available ==='NO' && detail.FlatBlockBy ===loggedInuserDetails.UserId">UnBlock</button>
+                            <button type="button" class="btn btn-sm btn-link" (click)="blockUnblock(detail)"
+                                *ngIf="detail.Available ==='YES'">Block</button>
+                            <button type="button" class="btn btn-sm btn-link" (click)="blockUnblock(detail)"
+                                *ngIf="detail.Available ==='NO' && detail.FlatBlockBy !==loggedInuserDetails.UserId">Booked</button>
+                        </td>
+                        <td *ngIf="loggedInuserDetails.UserType==='CRO'">
+                            <span
+                                [ngStyle]="{'background-color': detail.Available=='YES'? 'green' : 'red','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{detail.Available}}</span>
+                        </td>
+                        <td> {{detail.FlatBlockByName  }}</td>
+                        <td> {{detail.Counter }}</td>
+                        <td> {{detail.Floor }}</td>
+                        <td> {{detail.FlatView }}</td>
+                        <td> {{detail.LayoutType }}</td>
+                        <td> {{detail.ReraArea }}</td>
+                        <td> {{detail.BHK }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <tfoot class="pull-right">
+                <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+            </tfoot>
+        </div>
+    </div>
+</div>
+<div [hidden]="showProjectNotFoundMessage">
+    <div>
+        <span class="required">Project details are not availabe, please contact office.</span>
+    </div>
+</div>
+
+<!-- Show selected building/Flat details -->
+<div bsModal #showBuildingModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div id="popHeight" class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title center">Building Status</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+            </div>
+            <div class="modal-body">
+                <div *ngIf="!isLoadingBuildingPopup">
+                    <p class="loading">
+                        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                    </p>
+                </div>
+                <div [hidden]="!showBuildingNotFoundMessage">
+                    <div *ngIf="listofbuildType && listofbuildType.length>0" class="scroll">
+                        <table *ngIf="!isSpinnerActive" class="table  table-bordered ">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>% Completion</th>
+                                    <th>Estimated Completion Date </th>
+                                    <th>Planned Activity</th>
+                                    <th>RERA Area</th>
+                                    <th>Building Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let detail of listofbuildType;trackBy: trackByFn">
+                                    <td>{{detail.CurrentStatus}}</td>
+                                    <td>{{detail.EstimationCompletionDates|date:"d MMM y" }}</td>
+                                    <td>{{detail.PlannedActivity }}</td>
+                                    <td>{{detail.ReraArea }}</td>
+                                    <td>{{detail.BuildingType }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <carousel>
+                        <slide *ngFor="let slide of slides;trackBy: trackByFn; let index=index">
+                            <img [src]="slide.ImageUrl" alt="image slide" class="img">
+                        </slide>
+                    </carousel>
+                </div>
+                <div [hidden]="showBuildingNotFoundMessage">
+                    <div class="justify-content-md-center">
+                        <span class="required">Building Type is not available, please contact office.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- show All brochure and PDF file  -->
+<div [hidden]="!showPDFNotFoundMessage">
+    <div *ngIf="selectedBrochureNames && selectedBrochureNames.length>0">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>Documents</strong>
+            </legend>
+            <div class="row" align="center">
+                <div class="col-sm-2 ui" *ngFor="let item of selectedBrochureNames;trackBy: trackByFn; let i=index">
+                    <img *ngIf="item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'pdf' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'PDF'"
+                        class="responsive" src="assets\images\pdf-Logo.png" alt="PDF file image"
+                        (click)="showFile(item.ProjectName)" ngbTooltip="Click to Open PDF" />
+                    <img *ngIf="item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'docx' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'DOCX' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'doc' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'DOC'"
+                        class="responsive" src="assets\images\Microsoft_Office_Word.png"
+                        alt="Microsoft_Office_Word file image" (click)="showFile(item.ProjectName)"
+                        ngbTooltip="click to open DOC" />
+                    <img id="imageLogo"
+                        *ngIf="item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'png' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'PNG' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'jpeg' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'jpg' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'JPG' || item.ProjectName.substr(item.ProjectName.lastIndexOf('.') + 1) === 'JPEG'"
+                        class="responsive" src="assets\images\image_logo.png" alt="Logo image"
+                        (click)="showFile(item.ProjectName)" ngbTooltip="Click to Open Image" />
+                    <br>
+                    <strong (click)="showFile(item.ProjectName)" class="folderNameStyle">{{ item.ProjectName }}</strong>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div [hidden]="showPDFNotFoundMessage">
+    <div>
+        <span class="required">PDF is not availabe for this Project, please contact office.</span>
+    </div>
+</div>
+
+<!-- Block Unblock flat details popup-->
+<div bsModal #blockunblockFlatmodal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="exampleModalCenterTitle" s aria-hidden="true">
+    <form #stageChangeForm="ngForm">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header title-block">
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+                    <h4>
+                        <strong> Are you sure?</strong>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h5>
+                        <i class="fas fa-exclamation-triangle"></i> {{blockUnblockMsg}}</h5>
+                </div>
+                <div class="modal-footer">
+                    <div class="row justify-content-md-center">
+                        <button type="button" class="btn btn-success" id="modal-btn-si" (click)="confirmBlock()"
+                            *ngIf="!hideConfimBtn">
+                            <i class="fa fa-check"></i>
+                            Confirm</button>
+                        <button class="btn btn-danger" (click)="onClose()">
+                            <i class="fa fa-times-circle"></i>
+                            Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

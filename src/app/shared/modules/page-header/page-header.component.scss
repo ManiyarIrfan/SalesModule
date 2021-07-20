@@ -1,0 +1,30 @@
+.menu {
+  color: white;
+  font-size: 1em;
+  margin: auto;
+  padding: 5px;
+}
+
+.menudynamic {
+  color: white;
+  font-size: 1em;
+  margin: auto;
+  padding: 5px;
+  cursor: auto;
+}
+
+.menudynamic:hover {
+  text-decoration: none;
+}
+.reffer {
+  cursor: pointer;
+}
+
+.breadcrumb {
+  height: 1em !important;
+  background-image: linear-gradient(to right, #1380c1, #c3c3c3) !important;
+}
+
+.breadcrumb-item {
+  margin-top: -0.7em !important;
+}

@@ -1,0 +1,165 @@
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="page-title-box">
+                    <div class="pull-right">
+                        <ol class="breadcrumb-data">
+                            <li class="breadcrumbitem">
+                                <a href="">Home&nbsp;/&nbsp;</a>
+                            </li>
+                            <li class="breadcrumbitem active">
+                                <a href="">Support Tickets</a>
+                            </li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title pt-2">New Ticket</h4>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="main py-2">
+            <div class="row pl-3">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-7 card p-3">
+                    <form #CreateNewIssueForm="ngForm">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong *ngIf="loggedInuserDetails.UserType">
+                                            Investor Id <span class="required">*</span><span class="pull-right">:</span>
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="EntityId" name="EntityId"
+                                            [disabled]="true" [(ngModel)]="loggedInuserDetails.EntityId">
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>
+                                            Project Name
+                                            <span class="required">*</span>
+                                            <span class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="ProjectName" id="ProjectName"
+                                            [disabled]="!isEdit" #ProjectName="ngModel" required
+                                            [(ngModel)]="reportModel.ProjectName"
+                                            [class.error]="ProjectName.invalid && (ProjectName.dirty || ProjectName.touched)"
+                                            [class.has-success]="ProjectName.valid && (ProjectName.dirty || ProjectName.touched)"
+                                            required>
+                                            <option value="">Select Project</option>
+                                            <option value="Not Related To Project">Not Related To Project</option>
+                                            <option *ngFor="let item of selectedProjects;trackBy: trackByFn"
+                                                [hidden]="item.ProjectName === 'Common'">
+                                                {{item.ProjectName}}</option>
+                                        </select>
+                                    </div>
+                                </div>                              
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>
+                                            Issue Type
+                                            <span class="required">*</span>
+                                            <span class="pull-right">:</span>
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="IssueType" id="IssueType"
+                                            [disabled]="!isEdit" #IssueType="ngModel"
+                                            [(ngModel)]="reportModel.IssueType"
+                                            [class.error]="IssueType.invalid && (IssueType.dirty || IssueType.touched)"
+                                            [class.has-success]="IssueType.valid && (IssueType.dirty || IssueType.touched)"
+                                            required>
+                                            <option value="">Select Issue Type</option>
+                                            <option class='option'
+                                                *ngFor='let Issue of issueTypeInfo;trackBy: trackByFn'
+                                                [value]="Issue.value">{{Issue.value}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>Upload Image <span class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <app-community-file-upload [disabledBtn]="filesModel.length > 0"
+                                            [Type]="'Button'" [text]="'Select File'"
+                                            (getuploadedFile)="receiveimage($event)"
+                                            (removeFile)="$event===true ? this.filesModel=[] :this.filesModel"
+                                            [UploadDone]="filesModel">
+                                        </app-community-file-upload>
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-1">
+                                    <div class="col-sm-4">
+                                        <strong> Issue Date
+                                            <span class="required">*</span>
+                                            <span class="pull-right">:</span>
+                                        </strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <mat-form-field appearance="outline" class="w-100">
+                                            <mat-label>Select Issue Date</mat-label>
+                                            <input matInput name="IssueDate" [(ngModel)]="reportModel.IssueDate"
+                                                #IssueDate="ngModel" [max]="getToday()" [disabled]="!isEdit"
+                                                id="IssueDate" [matDatepicker]="picker">
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>
+                                            Subject <span class="required">*</span><span
+                                                class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" name="IssueSubject"
+                                            #IssueSubject="ngModel" placeholder="Enter Subject" [disabled]="!isEdit"
+                                            id="IssueSubject" [(ngModel)]="reportModel.IssueSubject"
+                                            [class.error]="IssueSubject.invalid && (IssueSubject.dirty || IssueSubject.touched)"
+                                            [class.has-success]="IssueSubject.valid && (IssueSubject.dirty || IssueSubject.touched)"
+                                            required pattern="^[^-\s][a-zA-Z0-9.,() ]*">
+                                    </div>
+                                </div>
+                                <div class="row mb-1 p-2">
+                                    <div class="col-sm-4">
+                                        <strong>
+                                            Issue Details <span class="required">*</span> <span
+                                                class="pull-right">:</span></strong>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <textarea class="form-control textareaheight" name="Details" #Details="ngModel"
+                                            [disabled]="!isEdit" id="Details" rows="6" [(ngModel)]="reportModel.Details"
+                                            placeholder="Enter Issue"
+                                            [class.error]="Details.invalid && (Details.dirty || Details.touched)"
+                                            [class.has-success]="Details.valid && (Details.dirty || Details.touched)"
+                                            required pattern="^[^-\s][a-zA-Z0-9,.=() ]*"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-12">
+                                        <mat-divider class="py-2"></mat-divider>
+                                        <button type="button" class="btn pull-right btn-primary px-3 py-2 ml-2 mr-2"
+                                            [disabled]="!CreateNewIssueForm.valid || disableButton"
+                                            (click)="OnSubmitBtnClick(CreateNewIssueForm,loggedInuserDetails,filesModel)">
+                                            Submit
+                                        </button>
+                                        <button (click)="goBacktoHome()"
+                                            class="btn btn-light px-3 py-2 pull-right">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

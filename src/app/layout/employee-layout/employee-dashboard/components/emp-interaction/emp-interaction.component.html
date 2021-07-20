@@ -1,0 +1,47 @@
+<form>
+  <div [hidden]="!isLoading">
+    <p style="text-align: center;padding-top: 50px;">
+      <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+    </p>
+  </div>
+  <div class="card cardfortable">
+    <div class="title text-center">
+      <span>Customer Interaction</span>
+    </div>
+    <div class="table-responsive" *ngIf="!showDataNotFoundMessage">
+      <table class="table table-bordered table-hover  table-sm text-nowrap">
+        <thead class="thead-light">
+          <tr class="text-center">
+            <th>Entity Id</th>
+            <th>Interaction Type</th>
+            <th>Details</th>
+            <!-- <th>Issue ID</th> -->
+            <th>Employee Name</th>
+            <th>Follow-up Request</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let interaction of showInteraction| paginate: {id:'customer-interaction-pagination', itemsPerPage: 3, currentPage: p1 }">
+            <td>{{interaction.EntityId}}</td>
+            <td>{{interaction.InteractionType}}</td>
+            <td><span data-toggle="tooltip"
+                title="{{interaction.Details?interaction.Details:''}}">{{interaction.Details ? ((interaction.Details.length>60) ? (interaction.Details | slice:0:60)+'...' : interaction.Details) :''}}</span>
+            </td>
+            <!-- <td>{{interaction.IssueId}}</td> -->
+            <td>{{interaction.CreatedBy}}</td>
+            <td>{{interaction.FollowUpRequired}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <tfoot class="pull-right">
+        <pagination-controls id="customer-interaction-pagination" (pageChange)="p1 = $event"></pagination-controls>
+      </tfoot>
+    </div>
+  </div>
+  <br />
+  <div style="color: red;" *ngIf="showDataNotFoundMessage">
+    <span>{{NoDataFoundMessage}}</span>
+  </div>
+  <br />
+</form>

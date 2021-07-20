@@ -1,0 +1,228 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<mat-card *ngIf="!isSpinnerActive && isShow">
+    <span class="required">{{showSuccessfullMessage}}</span>
+    <form *ngIf="!showDataNotFoundMessage">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card z-depth-1">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">{{proModel.project}} Overview </h4>
+                        <hr>
+                        <carousel>
+                            <slide *ngFor="let slide of slides;trackBy: trackByFn; let  i = index">
+                                <img [src]="slide && slide" alt="image slide" class="img">
+                            </slide>
+                        </carousel>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-6">
+                <div class="card z-depth-1">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Current Project Status</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <strong for="proName">Project :</strong>
+                                <input type="text" class="form-control" id="proName" [disabled]="true" name="proName"
+                                    [(ngModel)]="proModel.proName">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <strong for="currStatus">Completion Status : </strong> &#37;
+                                <input type="text" class="form-control" id="currStatus" [disabled]="true"
+                                    name="currStatus" [(ngModel)]="proModel.currStatus">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <strong for="estiDate">Estimated Completion Date :</strong>
+                                <input type="text" dateFormatPipe class="form-control" id="estiDate" [disabled]="true"
+                                    name="estiDate" [(ngModel)]="proModel.estiDate">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <strong for="currPrice">Current Price(per Sq ft) :</strong>
+                                <input type="text" class="form-control" id="currPrice" [disabled]="true"
+                                    name="currPrice" [(ngModel)]="proModel.currPrice">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <strong for="planFlat">Plan Activity of Flat :</strong>
+                                <textarea class="form-control" type="text" [(ngModel)]="proModel.planFlat" rows="4"
+                                    name="planFlat" id="planFlat" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <tru-project-details *ngFor="let project of projectDetails;trackBy: trackByFn;let i = index" [index]="i"
+            [projectDetails]="project">
+        </tru-project-details>
+    </form>
+</mat-card>
+<!-- -------For Referral Module ------- -->
+<div *ngIf="!isSpinnerActive && !isShow">
+    <form #serchProjectForm="ngForm">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <strong for="preferredLocation">Preferred Location </strong>
+                        <select class="form-control" id="preferredLocation" required
+                            [(ngModel)]="channelpartnerSearchModel.preferredLocation" name="preferredLocation"
+                            #preferredLocation="ngModel" (change)="GetSelectedProjectsListOnLocation()">
+                            <option value="">---select---</option>
+                            <option *ngFor="let item of preferredLocationLists;trackBy: trackByFn">{{item.Location}}</option>
+                        </select>
+                        <div *ngIf="preferredLocation.errors && (preferredLocation.dirty || preferredLocation.touched)"
+                            class="alert alert-danger">
+                            <div [hidden]="!preferredLocation.errors.required">
+                                Select preferred location!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" *ngIf="preferredProjectLists.length>0">
+                    <div class="form-group">
+                        <strong for="preferredProjects">Selects Projects</strong>
+                        <select class="form-control" id="preferredProjects" required
+                            [(ngModel)]="channelpartnerSearchModel.preferredProjects" name="preferredProjects"
+                            #preferredProjects="ngModel" (change)="GetBHKDetailsOnProject()">
+                            <option *ngFor="let item of preferredProjectLists;trackBy: trackByFn">{{item.ProjectName}}</option>
+                        </select>
+                        <div *ngIf="preferredProjects.errors && (preferredProjects.dirty || preferredProjects.touched)"
+                            class="alert alert-danger">
+                            <div [hidden]="!preferredProjects.errors.required">
+                                Select atlest one project!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" *ngIf="preferredBHKLists.length>0">
+                    <div class="form-group">
+                        <strong for="preferredBHK">BHK </strong>
+                        <select class="form-control" id="preferredBHK" required
+                            [(ngModel)]="channelpartnerSearchModel.preferredBHK" name="preferredBHK"
+                            #preferredBHK="ngModel" (change)="onBHKChange($event.target.value)">
+                            <option *ngFor="let item of preferredBHKLists;trackBy: trackByFn">{{item.BHK}}</option>
+                        </select>
+                        <div *ngIf="preferredBHK.errors && (preferredBHK.dirty || preferredBHK.touched)"
+                            class="alert alert-danger">
+                            <div [hidden]="!preferredBHK.errors.required">
+                                Select BHK!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 btnstyle">
+                    &nbsp;
+                    <button type="button" (click)="OnSerchBtnClick()" [disabled]="!serchProjectForm.form.valid"
+                        class="btn btn-primary">
+                        <i class="fa fa-search"></i> Search Project Details</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div [hidden]="!showProjectNotFoundMessage">
+        <div *ngIf="listedProjects && listedProjects.length>0">
+            <div class="table-responsive-xl">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Building Type</th>
+                            <th>% Sold</th>
+                            <th>Floor No</th>
+                            <th>Layout Type</th>
+                            <th>RERA Area</th>
+                            <th>Base Rate</th>
+                            <th>Base Cost</th>
+                            <th>Flat No</th>
+                            <th>Available</th>
+                            <th>BHK</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let detail of listedProjects| paginate: { itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn">
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link"
+                                    (click)="buildingshow(detail)">{{detail.BuildingType}}</button>
+                            </td>
+                            <td> {{detail.Result}}</td>
+                            <td> {{detail.Floor}}</td>
+                            <td> {{detail.LayoutType}}</td>
+                            <td> {{detail.ReraArea}}</td>
+                            <td> {{detail.Rate}}</td>
+                            <td> {{detail.TotalCost}}</td>
+                            <td> {{detail.FlatNo}}</td>
+                            <td> {{detail.Available}}</td>
+                            <td> {{detail.BHK}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot class="pull-right">
+                    <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                </tfoot>
+            </div>
+        </div>
+    </div>
+    <div [hidden]="showProjectNotFoundMessage">
+        <div>
+            <span class="required">Project details are not availabe, please contact office</span>
+        </div>
+    </div>
+</div>
+<div bsModal #showBuildingModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title center">Building Status</h4>
+                <img id="cross" src="assets/images/cross.png" alt="X" (click)="showBuildingModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <div [hidden]="!showBuildingNotFoundMessage">
+                    <div *ngIf="listofbuildType && listofbuildType.length>0">
+                        <div class="table-responsive">
+                            <table *ngIf="!isSpinnerActive" class="table table-bordered ">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>% Completion</th>
+                                        <th>Estimated Completion Date </th>
+                                        <th>Planned Activity</th>
+                                        <th>RERA Area</th>
+                                        <th>Building Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detail of listofbuildType;trackBy: trackByFn">
+                                        <td>{{detail.CurrentStatus}}</td>
+                                        <td>{{detail.EstimationCompletionDates|date:"d MMM y" }}</td>
+                                        <td>{{detail.PlannedActivity }}</td>
+                                        <td>{{detail.ReraArea }}</td>
+                                        <td>{{detail.BuildingType }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <carousel>
+                        <slide *ngFor="let slide of slides;trackBy: trackByFn; let index=index">
+                            <img [src]="slide.ImageUrl" alt="image slide" class="img">
+                        </slide>
+                    </carousel>
+                </div>
+                <div [hidden]="showBuildingNotFoundMessage">
+                    <div>
+                        <span class="required">Building Type is not availabe, please contact office</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ----------End-------- -->

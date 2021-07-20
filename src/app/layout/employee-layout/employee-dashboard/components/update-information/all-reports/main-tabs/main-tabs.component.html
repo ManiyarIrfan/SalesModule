@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-sm-8">
+        <p-menubar [model]="items"></p-menubar>
+    </div>
+    <div class="col-sm-4">
+        <input type="text" class="form-control" id="date" name="Date" ngxDaterangepickerMd
+            [(ngModel)]="selectedDateRange" (change)="onChangeDate(selectedDateRange)" [showCustomRangeLabel]="true"
+            [alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true" [isInvalidDate]="isInvalidDate"
+            [showClearButton]="true" placeholder="Select Dates..." autocomplete="off" />
+        <div class="input-group-btn">
+            <button class="btn btn-default icon">
+                <i class="fa fa-calendar"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<br />
+<!-- <h4 *ngIf="!show">{{Heading}}</h4> -->
+<span *ngIf="show" class="notfoundmsg">Please Select Date Range!</span>
+
+<!-- Sub Tab Calling for Call Report -->
+<tru-sub-tab-call [dateObj]="dateObj" *ngIf="Heading==='Incoming' && !show"></tru-sub-tab-call>
+<tru-sub-tab-call-outgoing [dateObj]="dateObj" *ngIf="Heading==='Outgoing' && !show"></tru-sub-tab-call-outgoing>
+<tru-sub-tab-call-call-stats [dateObj]="dateObj" *ngIf="Heading==='Call_Stats' && !show"></tru-sub-tab-call-call-stats>
+<tru-sub-tab-call-sales-perform [dateObj]="dateObj" *ngIf="Heading==='Performance' && !show">
+</tru-sub-tab-call-sales-perform>
+<tru-sub-tab-missedcall-analysis [dateObj]="dateObj" *ngIf="Heading==='MissedCallAnalysis' && !show">
+</tru-sub-tab-missedcall-analysis>
+<tru-sub-tab-one-day-call *ngIf="Heading==='OneDayCall' "></tru-sub-tab-one-day-call>
+<!-- End-Call -->
+<tru-sub-tab-call *ngIf="Heading==='Call Reports'&& !show"></tru-sub-tab-call>
+<!-- Lead Analysis Report -->
+<tru-sub-tab-lead-bystatus [dateObj]="dateObj" *ngIf="Heading==='Status' && !show"></tru-sub-tab-lead-bystatus>
+<tru-sub-tab-lead-byproject [dateObj]="dateObj" *ngIf="Heading==='Project' && !show"></tru-sub-tab-lead-byproject>
+<tru-sub-tab-lead-bysource [dateObj]="dateObj" *ngIf="Heading==='Source' && !show"></tru-sub-tab-lead-bysource>
+<tru-sub-tab-lead-bycampaign [dateObj]="dateObj" *ngIf="Heading==='Campaign' && !show"></tru-sub-tab-lead-bycampaign>
+<tru-sub-tab-enquiry-untouched-analysis [dateObj]="dateObj" *ngIf="Heading==='EnquiryUntouchedAnalysis' && !show">
+</tru-sub-tab-enquiry-untouched-analysis>
+<tru-sub-tab-unqualified-leadanalysis [dateObj]="dateObj" *ngIf="Heading==='UnqualifiedLeadAnalysis' && !show">
+</tru-sub-tab-unqualified-leadanalysis>
+
+<tru-sub-tab-duplicate-lead [dateObj]="dateObj" *ngIf="Heading==='Download Reports' && !show">
+</tru-sub-tab-duplicate-lead>
+<!-- Conversation -->
+<tru-sub-tab-conversation [dateObj]="dateObj" [reportType]="Heading"
+    *ngIf="!show && (Heading==='Calls' || Heading==='SiteVisits' || Heading==='FollowUps')"></tru-sub-tab-conversation>
+<div class="row" id="show"></div>

@@ -1,0 +1,95 @@
+<br>
+<div class="row" *ngIf="!isShow">
+    <div class="col-sm-4" *ngFor="let data of getDetails;trackBy: trackByFn;let i=index;">
+        <div class="card z-depth-1">
+            <div class="card-body">
+                <div class="row" *ngIf="data.FileURL.indexOf('.mp4')>0">
+                    <div class="col-sm-4">
+                        <video class="video-fluid z-depth-1 size" controls="false">
+                            <source src="{{data.FileURL}}" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="col-sm-8 text-alignment">
+                        <div class="all-alignment">
+                            <strong class="btn-link" placement="top" matTooltip="Play Video" (click)="openVideo(data)">{{data.DocName}}</strong>
+                            <p>
+                                {{data.Remark}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="data.FileURL.indexOf('.pdf')>0">
+                    <div class="col-sm-4">
+                        <a href="{{data.FileURL}}" target="_blank">
+                            <img src="../../../../../../assets//images/pdfNew.png" class="img-responsive img-size">
+                        </a>
+                    </div>
+                    <div class="col-sm-8 text-alignment">
+                        <div class="all-alignment">
+                            <a href="{{data.FileURL}}" target="_blank">
+                                <strong class="btn-link" placement="top" matTooltip="Play Video">{{data.DocName}}</strong>
+                            </a>
+                            <p>
+                                {{data.Remark}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card z-depth-1">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <a href="{{URL}}" target="_blank">
+                            <img src="../../../../../../assets//images/pdfNew.png" class="img-responsive img-size">
+                        </a>
+                    </div>
+                    <div class="col-sm-8 text-alignment">
+                        <div class="all-alignment">
+                            <a href="{{URL}}" target="_blank">
+                                <strong placement="top" matTooltip="View Document">Process Guide</strong>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 text-center">
+        <strong class="text-danger">{{notFound}}</strong>
+    </div>
+</div>
+
+<div class="container-fluid" *ngIf="isShow">
+    <div class="card z-depth-1">
+        <div class="card-title">
+            <div class="row justify-content-center">
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-light round-btn pull-left" (click)="onback()">
+                        <i class="fa fa-arrow-left"></i>
+                    </button>
+                </div>
+                <div class="col-sm-11 text-center">
+                    <h4>{{getDetails.Name}}</h4>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-6">
+                    <video loop controls class="video">
+                        <source src="{{getDetails.displayURL}}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="col-sm-3">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

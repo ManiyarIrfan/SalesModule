@@ -1,0 +1,30 @@
+<div (contextmenu)="onRightClick($event)">
+    <router-outlet></router-outlet>
+</div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>
+<!--Model For Idle Case-->
+<div mdbModal #form="mdbModal" class="modal fade right modal-scrolling" id="frameModalTop" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+    <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-danger" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <p class="heading">Your session is going to expire in 2 minutes </p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="form.hide()">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-9">
+                        <p><strong>{{idleState}}</strong></p>
+                        <p><strong> Do you want to extend your session?</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

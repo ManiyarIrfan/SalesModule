@@ -1,0 +1,23 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<form>
+    <br />
+    <tru-search-details (eventEmited)="receiveMessage($event)"></tru-search-details>
+    <div class="row" [hidden]="isShowDetails">
+        <div class="col-sm-6">
+            <tru-view-detail></tru-view-detail>
+        </div>
+        <div *ngIf="!isSpinnerActive" class="col-sm-6">
+            <tru-service-request></tru-service-request>
+        </div>
+    </div>
+    <div [hidden]="isShowDetails">
+        <tru-emp-interaction></tru-emp-interaction>
+    </div>
+</form>

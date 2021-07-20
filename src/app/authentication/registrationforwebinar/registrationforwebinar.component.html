@@ -1,0 +1,347 @@
+<form #AllEventsForm="ngForm" class="background bkscroll" style="background-color: black;"
+    *ngIf="!RegistrationModel.HideShowRegister" style="position: sticky;" style="zoom: 94.3%;">
+    <div class="container-fluid">
+        <div class="mt-4 mb-5" style="zoom: 88%;">
+            <div class="header center" style="margin-top: -5em;">
+                <div class="header-right" style="margin-top: -2em;">
+                    <img src="../../../assets/images/logo.png" width="120" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="row rowlist eventscroll" id="style-2" *ngIf="AllEventList.length>0">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h5 class="text-white " style="margin-top: 4px;">
+                            <span class="evnettitle">Events > </span> &nbsp;&nbsp;&nbsp;
+                            <span style=" color: rgb(241, 37, 88) !important;" class="pointer "
+                                (click)="FilterEvents('All')">All</span>
+                            <span (click)="FilterEvents(headitem.value)" class="text-white headbtn linkstyle"
+                                *ngFor="let headitem of EventTypes;">{{headitem.key}}&nbsp;</span>
+                        </h5>
+                    </div>
+                    <div class="col-sm-3">
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+                <hr>
+            </div>
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12 testmobile eventstatusscroll">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <strong class="sec-titleUpcoming pointer text-white"
+                                    (click)="LatestEventListFlag = !LatestEventListFlag">
+                                    {{MenuTitle? MenuTitle : 'All' }} > Current Events ( {{LatestEventList.length}}
+                                    )</strong>
+
+                                <div id="style-2" *ngIf="LatestEventListFlag">
+                                    <ul class="listing" *ngIf="LatestEventList.length>0">
+                                        <li class="listing__card"
+                                            *ngFor="let item of LatestEventList; trackBy: trackByFn;"
+                                            [ngStyle]="getBackground(item)">
+                                            <div>
+                                                <div style="padding-left: 1rem">
+                                                    <span *ngIf="item.EventStatus==='Latest'"
+                                                        class="pull-right register pointer"
+                                                        (click)="getRegister(item)">Register</span>
+                                                    <span
+                                                        style="font-size: 15px;">{{item.EventDate  | date:'dd MMM yyyy'}}</span>
+                                                    <br>
+                                                    <span>{{item.StartTime}} To
+                                                        {{item.EndTime}}</span>
+                                                    <h2><a>{{item.EventName}}</a></h2>
+                                                    <p>{{item.EventDescription}}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="listing" *ngIf="LatestEventList.length===0">
+                                        <strong>No Current Events Found.</strong>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <strong class="sec-titleUpcoming pointer text-white"
+                                    (click)="UpcomingEventListFlag = !UpcomingEventListFlag">
+                                    {{MenuTitle? MenuTitle : 'All' }} > Upcoming Events ( {{UpcomingEventList.length}}
+                                    )</strong>
+                                <div id="style-2" *ngIf="UpcomingEventListFlag">
+                                    <ul class="listing" *ngIf="UpcomingEventList.length>0">
+                                        <li class="listing__card"
+                                            *ngFor="let item of UpcomingEventList; trackBy: trackByFn;"
+                                            [ngStyle]="getBackground(item)">
+                                            <div>
+                                                <div style="padding-left: 1rem">
+                                                    <!-- <span class="pull-right register pointer" disabled
+                                                                (click)="getRegister(item)">Register</span> -->
+                                                    <span
+                                                        style="font-size: 15px;">{{item.EventDate  | date:'dd MMM yyyy'}}</span>
+                                                    <br>
+                                                    <span>{{item.StartTime}} To
+                                                        {{item.EndTime}}</span>
+                                                    <h2><a>{{item.EventName}}</a></h2>
+                                                    <p>{{item.EventDescription}}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="listing" *ngIf="UpcomingEventList.length===0">
+                                        <strong>No Upcoming Events Found.</strong>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <strong class="sec-titleUpcoming pointer text-white"
+                                    (click)="PastEventListFlag = !PastEventListFlag">
+                                    {{MenuTitle? MenuTitle : 'All' }} > Past Events ( {{PastEventList.length}}
+                                    )</strong>
+                                <div id="style-2"  *ngIf="PastEventListFlag">
+                                    <ul class="listing" *ngIf="PastEventList.length>0">
+                                        <li class="listing__card"
+                                            *ngFor="let item of PastEventList; trackBy: trackByFn;"
+                                            [ngStyle]="getBackground(item)">
+                                            <div>
+                                                <div style="padding-left: 1rem">
+                                                    <span
+                                                        style="font-size: 15px;">{{item.EventDate  | date:'dd MMM yyyy'}}</span>
+                                                    <br>
+                                                    <span>{{item.StartTime}} To
+                                                        {{item.EndTime}}</span>
+                                                    <h2><a>{{item.EventName}}</a></h2>
+                                                    <p>{{item.EventDescription}}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="listing" *ngIf="PastEventList.length===0">
+                                        <strong>No Past Events Found.</strong>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- <div class="col-sm-12" *ngIf="RegistrationModel.HideShowAll">
+                                <strong class="sec-titleUpcoming pointer text-white">
+                                    All Events <span *ngIf="SortedEventTitle">></span> {{SortedEventTitle}} (
+                                    {{AllTypeEventList.length}} )</strong>
+                                <div id="style-2">
+                                    <ul class="listing">
+                                        <li class="listing__card"
+                                            *ngFor="let item of AllTypeEventList; trackBy: trackByFn;"
+                                            [ngStyle]="getBackground(item)">
+                                            <div>
+                                                <div>
+                                                    <span *ngIf="item.EventStatus==='Latest'"
+                                                        class="pull-right register pointer"
+                                                        (click)="getRegister(item)">Register</span>
+                                                    <span
+                                                        style="font-size: 15px;">{{item.EventDate  | date:'dd MMM yyyy'}}</span>
+                                                    <br>
+                                                    <span>{{item.StartTime}} To
+                                                        {{item.EndTime}}</span>
+                                                    <h2><a>{{item.EventName}}</a></h2>
+                                                    <p>{{item.EventDescription}}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="listing" *ngIf="AllTypeEventList.length===0">
+                                        <strong class="nodata">No Events Found.</strong>
+                                    </ul>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="AllEventList.length===0">
+            <div class="col-sm-12">
+                <strong class="NOevents">No Events Found.</strong>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="loading" *ngIf="AllEventList.length===0"> Loading&#8230;</div>
+
+
+<div class="background-img" *ngIf="RegistrationModel.HideShowRegister">
+    <img src="../../../assets/images/Background.jpg" alt="">
+    <div class="container-fluid signupp content">
+        <div class="row">
+            <div class="col-sm-12">
+                <div (click)="ViewAllEvents()" style="margin-bottom: 0.41em;">
+                    <i class="fa fa-arrow-left text-white hovermenu"></i> &nbsp;
+                    <a class="text-white hovermenu">
+                        Back
+                    </a>
+                </div>
+                <div class='signup-container'>
+                    <div class='left-container'>
+                        <h1>
+                            <img style="width: 30% !important;" src="../../../assets/images/logo.png" width="100"
+                                alt="">
+                        </h1>
+                        <div (click)="viewLargeModel.show()">
+                            <img src='{{LatestEventImage}}'>
+                        </div>
+                    </div>
+                    <div class='right-container'>
+                        <header *ngIf="RegistrationModel.HideShowBtn">
+                            <h1 class="text-white">Registration</h1>
+                            <div class='set'>
+                                <div class="row">
+                                    <div class="col-sm-6 paddingcol">
+                                        <label for="firstName">First Name :</label>
+                                        <input autocomplete="off" type="text" id="firstName" pattern="^[^-\s][a-zA-Z ]*"
+                                            name="firstName" #firstName="ngModel"
+                                            [(ngModel)]="RegistrationModel.FirstName" required>
+                                        <div *ngIf="firstName.errors && (firstName.dirty || firstName.touched)"
+                                            class="alert alert-danger">
+                                            <div [hidden]="!firstName.errors.required">
+                                                First Name is required!
+                                            </div>
+                                            <div [hidden]="!firstName.errors.pattern">
+                                                Enter Valid First Name!
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 paddingcol">
+                                        <label for="lastName">Last Name :</label>
+                                        <input autocomplete="off" type="text" id="lastName" pattern="^[^-\s][a-zA-Z ]*"
+                                            name="lastName" #lastName="ngModel" [(ngModel)]="RegistrationModel.LastName"
+                                            required>
+                                        <div *ngIf="lastName.errors && (lastName.dirty || lastName.touched)"
+                                            class="alert alert-danger">
+                                            <div [hidden]="!lastName.errors.required">
+                                                Last Name is required!
+                                            </div>
+                                            <div [hidden]="!lastName.errors.pattern">
+                                                Enter Valid Last Name!
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 paddingcol">
+                                        <label for="mobileNo">Mobile No :</label>
+                                        <input autocomplete="off" type="text" id="mobileNo" name="mobileNo"
+                                            #mobileNo="ngModel" [(ngModel)]="RegistrationModel.MobileNo" required
+                                            (blur)="checkDuplicateMobile($event.target.value,'Mobile')"
+                                            [class.error]="mobileNo.invalid && mobileNo.touched" [maxlength]="10"
+                                            [minlength]="10" pattern="^\d{10}$">
+                                        <div *ngIf="mobileNo.errors && (mobileNo.dirty || mobileNo.touched)"
+                                            class="alert alert-danger">
+                                            <div [hidden]="!mobileNo.errors.required">
+                                                Mobile No is required!
+                                            </div>
+                                            <div [hidden]="!mobileNo.errors.pattern">
+                                                Enter Valid Mobile No!
+                                            </div>
+                                        </div>
+                                        <span [hidden]="isMobileAvailable" class="spnastyle">{{showmobile}}</span>
+                                    </div>
+                                    <div class="col-sm-6 paddingcol">
+                                        <label for="emailId">Email Id :</label>
+                                        <input autocomplete="off" type="email" id="emailId" name="emailId"
+                                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" #emailId="ngModel"
+                                            [(ngModel)]="RegistrationModel.EmailId"
+                                            [class.error]="emailId.invalid && emailId.touched"
+                                            [class.has-success]="emailId.valid" required
+                                            (blur)="checkDuplicateEmail($event.target.value,'Email')">
+                                        <div *ngIf="emailId.errors && (emailId.dirty || emailId.touched)"
+                                            class="alert alert-danger">
+                                            <div [hidden]="!emailId.errors.required">
+                                                Email Id is required!
+                                            </div>
+                                            <div [hidden]="!emailId.errors.pattern">
+                                                Enter Valid Email Id!
+                                            </div>
+                                        </div>
+                                        <span [hidden]="isEmailAvailable" class="spnastyle">{{showemail}}</span>
+                                    </div>
+                                    <div class="col-sm-12 paddingcol" *ngIf="RegistrationModel.FirmNameFlag">
+                                        <label for="FirmName">Firm Name :</label>
+                                        <input autocomplete="off" type="text" id="FirmName" name="FirmName"
+                                            pattern="^[^-\s][a-zA-Z ]*" #FirmName="ngModel"
+                                            [(ngModel)]="RegistrationModel.FirmName"
+                                            [class.error]="FirmName.invalid && FirmName.touched"
+                                            [class.has-success]="FirmName.valid">
+                                        <div *ngIf="FirmName.errors && (FirmName.dirty || FirmName.touched)"
+                                            class="alert alert-danger">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <label for="remark">Remarks / Reason for Attending the Event / <br>
+                                            Area of Interest :</label>
+                                        <textarea id="remark" name="remark" #remark="ngModel" cols="2"
+                                            [(ngModel)]="RegistrationModel.Remark"></textarea>
+                                    </div>
+                                    <!--  ||  -->
+                                    <div class="col-sm-12" [hidden]="isLoading">
+                                        <button type="submit" (click)="Register(RegistrationModel)"
+                                            [disabled]="isEmailAvailable === true || isMobileAvailable === true || !RegistrationModel.EmailId || !RegistrationModel.MobileNo">Register
+                                        </button>
+                                    </div>
+                                    <div [hidden]="!isLoading" class=" col-sm-12 text-center justify-content-center">
+                                        <p class="text-center text-white mt-4 " style="font-size: 19px;">
+                                            <i class="fa fa-spinner fa-lg fa-pulse text-white"></i>&nbsp; Loading
+                                            Please
+                                            Wait...!!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+                        <header *ngIf="!RegistrationModel.HideShowBtn">
+                            <div class="succs">
+                                <div class="row  successmsg centercard" *ngIf="MessageFlag">
+                                    <div class="modalbox success col-sm-12   center animate">
+                                        <div class="icon">
+                                            <i class="fa fa-check fastyle" aria-hidden="true"></i>
+                                        </div>
+                                        <h3>Registration Done !</h3>
+                                        <p>We've Sent a Confirmation To Your Registered E-mail.</p>
+                                    </div>
+                                </div>
+                                <div class="row successmsg centercard" *ngIf="!MessageFlag">
+                                    <div class="modalbox error col-sm-12 center animate">
+                                        <div class="icon">
+                                            <i class="fa fa-times fastyle" aria-hidden="true"></i>
+                                        </div>
+                                        <h3>Registration Failed!</h3>
+                                        <p>Oops! Something went wrong,
+                                            <br> You Should Try Again.</p>
+                                        <button style="zoom: 90%;" type="button" class="redo btn"
+                                            (click)="GotoReg()">Try
+                                            again</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div bsModal #viewLargeModel="bs-modal" class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modaldialogstyle modal-dialog-scrollable">
+        <div class="modal-content" (click)="viewLargeModel.hide()">
+            <div class="modal-body">
+                <img src="{{LatestEventImage}}" class="d-block w-100 img-fluid " alt="">
+            </div>
+            <div class="modal-footer">
+                <!-- <div class="row"> -->
+                <div class="col-sm-8">
+                </div>
+                <div class="col-sm-4">
+                    <span type="button" class="btn btn-danger btn-sm pull-right" (click)="viewLargeModel.hide();">
+                        <i class="fa fa-times" aria-hidden="true"></i> Close
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

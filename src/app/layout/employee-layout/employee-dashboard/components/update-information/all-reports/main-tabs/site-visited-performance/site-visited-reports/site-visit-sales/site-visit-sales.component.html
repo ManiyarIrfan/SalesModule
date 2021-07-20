@@ -1,0 +1,14 @@
+<div [hidden]="!isBarChartLoading">
+  <p id="isBarChartLoading">
+      <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+  </p>
+</div>
+<div [hidden]="isBarChartLoading">
+  <div class="card-header">
+     <strong>Site Visit By Sales:-</strong>
+  </div>
+  <br/>
+  <span class="notfoundmsg" *ngIf="notfound">Data not found</span>
+  <tru-split-bar-chart  *ngIf="!notfound && salesChartValues" [chartValues]="salesChartValues" [id]="'sitevisitsales'"></tru-split-bar-chart>
+
+</div>

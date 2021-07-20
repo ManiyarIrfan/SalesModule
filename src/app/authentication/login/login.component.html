@@ -1,0 +1,542 @@
+<div class="login-page" [@routerTransition]
+    style=" background-image: url('assets/images/back-bg.png'); background-position: center;background-repeat: no-repeat;background-size: cover; height: 100%;zoom: 88%; ">
+    <div class="row">
+        <div class="col-md-3 col-lg-4">
+            <!-- <img *ngIf="!EnableCreateAccount" class="img-logo" src="assets/images/logo.png" width="140px"
+                height="100px" /> -->
+        </div>
+        <div class="col-md-6 col-lg-4 text-left" *ngIf="!EnableCreateAccount">
+            <div class="super-parent">
+                <div class="btn-action">
+                    <!-- <button type="button" [routerLink]="['/signup']" class="btn btn-register mb-3"> Register</button> -->
+                    <button class="btn btn-register ml-2 mb-3">
+                        <a href="{{executionURL}}" class="text-white font13"> Click here for
+                            Contractor/Vendor/Consultant login
+                        </a>
+                    </button>
+                </div>
+
+                <!-- <h5>Don't have a Tru account? <strong [routerLink]="['/signup']" class="pointer title-text">Sign Up
+                        Now</strong></h5> -->
+                <div class="Parent parentzoom text-left mt-5">
+                    <div class="row">
+                        <div class="col-sm-12 mb-5">
+                            <img class="img-logo" src="assets/images/logo.png" width="82px" height="54px" />
+                        </div>
+                        <div class="col-sm-12 mt-1">
+                            <h3 class="title-text mb-4">Welcome Back</h3>
+                            <p class="text-white signintext text-left">Sign in to continue</p>
+                            <form #loginForm="ngForm" name="login-form" (keydown)="enterClick($event)">
+                                <div class="row">
+                                    <div class="col-sm-12 mt-3">
+                                        <div class="form-content">
+                                            <div class="form-group text-left">
+                                                <!-- <label for="">Email <span>*</span></label> -->
+                                                <input type="text" [pattern]="emailPattren" [disabled]="Flag"
+                                                    class="form-control pl-1 input-underline" name="email" required
+                                                    [(ngModel)]="loginModel.email" placeholder="Enter UserName"
+                                                    #email="ngModel" (click)="clearErrorMessage()">
+                                                <div *ngIf="email.errors && (email.dirty || email.touched)"
+                                                    class="alert alert-danger error-alert">
+                                                    <div [hidden]="!email.errors.required">
+                                                        Email Id is required!
+                                                    </div>
+                                                    <div [hidden]="!email.errors.pattern">
+                                                        Enter Valid Email!
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-0 show-password text-left">
+                                                <!-- <label for="">Password <span>*</span></label> -->
+                                                <show-hide-password btnStyle="secondary" size="sm" [btnOutline]="true">
+                                                    <input [disabled]="Flag" type="password"
+                                                        class="form-control pl-1  font-17 input-underline"
+                                                        name="Password*" id="Password*" required
+                                                        [(ngModel)]="loginModel.Password" placeholder="Enter Password"
+                                                        (click)="clearErrorMessage()">
+                                                </show-hide-password>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 mt-3 pt-1">
+                                        <button type="submit" style="width: 100%;"
+                                            class="btn btn-dark btn-login text-left" (click)="onLoggedin(loginModel)"
+                                            [disabled]="loginForm.form.invalid || isLoadingForCP">
+                                            LOGIN <i class="fa fa-long-arrow-right pull-right text-white font-23 pr-2"
+                                                aria-hidden="true"></i>
+
+                                        </button>
+                                        <!-- <button type="button" class="btn btn-login" id="mobile-close"
+                                            placement="bottom">
+                                            <a href="https://portal.office.com/">EMAIL LOGIN</a>
+                                        </button> -->
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" bsModal #Warningmodel="bs-modal"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header modalheadersize">
+                                                        <i class="fa fa-exclamation-triangle text-left"
+                                                            style="color: yellow;" aria-hidden="true">
+                                                            &nbsp;&nbsp;&nbsp;
+                                                            <strong class="text-left"
+                                                                style="font-size: x-large; color: rgb(252, 252, 250);">
+                                                                Alert</strong>
+                                                        </i>
+                                                        <img id="cross" class="pull-right"
+                                                            src="assets/images/crossnew.png" alt="X"
+                                                            (click)="Warningmodel.hide()" />
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row msgcolor" *ngIf="Email">
+                                                            <div class="col-sm-12 text-black">
+                                                                {{exceptionMessagepopup}}
+                                                                <br>
+                                                            </div>
+                                                            <div class="col-sm-12 text-right">
+                                                                <i class="fa fa-envelope-square">
+                                                                    &nbsp; <a class="pull-right"
+                                                                        href="mailto:{{Email}}">Contact
+                                                                        via E-mail</a>
+                                                                </i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <!-- <div class="text-warning" *ngIf="Email">
+                                        {{exception}}<a href="mailto:{{Email}}">Contact via E-mail</a>        
+                                        </div> -->
+                                        <div *ngIf="!isLoggedIn">
+                                            <h6 class="text-center mt-4 text-danger">
+                                                <i class="fa fa-warning"></i> Please Enter Valid Credentials
+                                            </h6>
+                                        </div>
+                                        <div [hidden]="!isLoadingForCP">
+                                            <p class="text-center mt-4 white-text">
+                                                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Login in Please Wait...
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 mt-2 mb-2" *ngIf="GotoCommunity['flag']===true">
+                                        <hr class="text-white">
+                                        <!-- <a data-toggle="tooltip" data-placement="top" title="Email Login"
+                                            href="https://portal.office.com/"
+                                            class="loginBtn padd pull-right loginBtn--mail">
+                                            <i class="fa fa-envelope"></i>
+                                        </a> -->
+                                        <!-- <button data-toggle="tooltip" data-placement="top" title="Facebook Login"
+                                            (click)="socialsignIn('Facebook')"
+                                            class="loginBtn pull-right loginBtn--facebook">
+                                            <i class="fa fa-facebook"></i></button> -->
+                                        <!-- <button data-toggle="tooltip" data-placement="top" title="Gmail Login"
+                                            (click)="socialsignIn('Google')"
+                                            class="pointer loginBtn pull-right loginBtn--google text-muted">
+                                             <img width="18px" class="pr-1 pointer"
+                                                src="../../../assets/community/google.png" alt="">
+                                            Google
+                                        </button> -->
+                                        <!-- <span class="text-white pull-right p-1">Sign in using &nbsp; </span> -->
+                                    </div>
+                                    <div class="col-sm-12 mt-4">
+                                        <h5 (click)="showForgetPassword()" class="pointer text-white pull-left">
+                                            <strong>Recover Password ?</strong>
+                                        </h5>
+                                        <h5 class="pull-right"> <strong (click)="register()"
+                                                class="pointer title-text text-white">Create
+                                                Account</strong></h5>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 text-center p-2 " *ngIf="EnableCreateAccount">
+            <div class="super-parent ">
+                <div class="ParentforNewAcc Parent text-left">
+                    <div class="row pt-2 pb-2 card_height" *ngIf="NewAccStep===1">
+                        <div class="col-sm-12">
+                            <img *ngIf="EnableCreateAccount" class="img-logo" src="assets/images/logo_dark.png"
+                                width="82px" height="54px" />
+                        </div>
+                        <div class="col-sm-12 mt-3 mb-3">
+                            <h3 class=" text-dark mb-4"><strong>Create a new Tru Account</strong></h3>
+                            <h4><strong class="text-dark">Welcome, {{NewAccuser.firstName}}
+                                    {{NewAccuser.lastName}}</strong></h4>
+                            <p class="mt-1 m3-1 text-dark">You are just one step away from creating a new Tru account
+                            </p>
+                            <span class="pt-1 pb-1 mt-1"><img src="{{NewAccuser.photoUrl}}" width="70px" height="70px"
+                                    alt=""></span>
+                        </div>
+                        <div class="col-sm-12 mt-3">
+                            <button (click)="NewAccStep=2" type="submit" style="width: 100%;"
+                                class="btn btn-dark btn-login">
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row pt-2 pb-2" *ngIf="NewAccStep===2">
+                        <div class="col-sm-12">
+                            <form #NewAccForm="ngForm">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h4 class="text-dark">Complete Your Profile,</h4>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-content">
+                                            <div class="form-group text-left">
+                                                <label class="text-dark" for="">First Name <span>*</span></label>
+                                                <input type="text" class="form-control text-dark input-underline"
+                                                    name="firstName" required [(ngModel)]="NewAccModel.FirstName"
+                                                    placeholder="Enter First Name" #firstName="ngModel">
+                                                <div *ngIf="firstName.errors && (firstName.dirty || firstName.touched)"
+                                                    class="alert alert-danger error-alert">
+                                                    <div [hidden]="!firstName.errors.required">
+                                                        First Name Id is required!
+                                                    </div>
+                                                    <div [hidden]="!firstName.errors.pattern">
+                                                        Enter Valid First Name!
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-content">
+                                            <div class="form-group text-left">
+                                                <label class="text-dark" for="">Last Name <span>*</span></label>
+                                                <input type="text" class="text-dark form-control input-underline"
+                                                    name="lastName" required [(ngModel)]="NewAccModel.LastName"
+                                                    placeholder="Enter Last Name" #lastName="ngModel">
+                                                <div *ngIf="lastName.errors && (lastName.dirty || lastName.touched)"
+                                                    class="alert alert-danger error-alert">
+                                                    <div [hidden]="!lastName.errors.required">
+                                                        LastName is required!
+                                                    </div>
+                                                    <div [hidden]="!lastName.errors.pattern">
+                                                        Enter Valid LastName!
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group text-left">
+                                            <label class="text-dark" for="">Email <span>*</span></label>
+                                            <input type="text" [pattern]="emailPattren" [disabled]="Flag"
+                                                class="text-dark form-control input-underline" name="email" required
+                                                [(ngModel)]="NewAccModel.Email" placeholder="Enter Email Id"
+                                                #email="ngModel">
+                                            <div *ngIf="email.errors && (email.dirty || email.touched)"
+                                                class="alert alert-danger error-alert">
+                                                <div [hidden]="!email.errors.required">
+                                                    Email Id is required!
+                                                </div>
+                                                <div [hidden]="!email.errors.pattern">
+                                                    Enter Valid Email!
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group text-left">
+                                            <!-- (blur)="getMobileValidation(NewAccModel.MobileNo)" -->
+                                            <label class="text-dark" for="">Mobile No <span>*</span></label>
+                                            <input type="tel" class="text-dark form-control input-underline"
+                                                [ngClass]="isMobileAvailable ?'textBox':''" id="MobileNo"
+                                                name="MobileNo" [class.error]="MobileNo.invalid && MobileNo.touched"
+                                                required [(ngModel)]="NewAccModel.MobileNo" placeholder="Mobile No*"
+                                                #MobileNo="ngModel" minlength=10 maxlength=10 pattern="^\d{10}$">
+                                            <div *ngIf="MobileNo.errors && (MobileNo.dirty || MobileNo.touched)"
+                                                class="alert alert-danger">
+                                                <div [hidden]="!MobileNo.errors.required" class="text-dark">
+                                                    Mobile No is required!
+                                                </div>
+                                                <div [hidden]="!MobileNo.errors.pattern" class="text-dark">
+                                                    Enter Valid Mobile No!
+                                                </div>
+                                            </div>
+                                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group text-left">
+                                            <label class="text-dark" for="">Register As</label>
+                                            <select required [(ngModel)]="NewAccModel.UserType"
+                                                class="form-control input-underline dropdown-toggle" id="usertype"
+                                                #usertype="ngModel" name="usertype">
+                                                <option value="">Select Option</option>
+                                                <option class="DDoption"
+                                                    *ngFor='let user of UserInfo; trackBy: trackByFn;'
+                                                    [value]="user.key">
+                                                    {{user.value}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 mt-3">
+                                        <div class="row">
+                                            <div class="col-sm-5"></div>
+                                            <div class="col-sm-7">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <button (click)="NewAccStep=1" type="submit"
+                                                            style="width: 100%;" class="btn btn-dark btn-login">
+                                                            Back
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <button [disabled]="!NewAccForm.form.valid"
+                                                            (click)="NewAccStep=3;OTPsend(NewAccModel.MobileNo)"
+                                                            type="submit" style="width: 100%;"
+                                                            class="btn btn-dark btn-login">
+                                                            Next
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row pt-2 pb-2 card_height" *ngIf="NewAccStep===3">
+                        <div class="col-sm-12">
+                            <h4 class="text-dark">Verify Mobile No</h4>
+                            <p class="pt-3 text-dark">Your OTP has been sent to your Entered Mobile No</p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="text-dark" for="">Enter OTP</label>
+                                <input type="tel" class="text-dark form-control input-underline" id="otp" name="otp"
+                                    [class.error]="otp.invalid && otp.touched" required [(ngModel)]="NewAccModel.OTP"
+                                    placeholder="Enter Your OTP" #otp="ngModel" minlength=6 maxlength=6
+                                    pattern="^\d{6}$" autocomplete="off">
+                                <div *ngIf="otp.errors && (otp.dirty || otp.touched)" class="alert alert-danger">
+                                    <div [hidden]="!otp.errors.required" class="text-dark">
+                                        OTP is required!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="top: 18%;">
+                            <div class="row">
+                                <div class="col-sm-5"></div>
+                                <div class="col-sm-7">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <button (click)="NewAccStep=2" type="submit" style="width: 100%;"
+                                                class="btn btn-dark btn-login">
+                                                Back
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <button [disabled]="!NewAccModel.OTP"
+                                                (click)="NewAccStep=4;verifyOTP(NewAccModel.OTP)" type="submit"
+                                                style="width: 100%;" class="btn btn-dark btn-login">
+                                                Verify
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-2 pb-2 card_height" *ngIf="NewAccStep===4" style="height: 25em;">
+                        <div class="col-sm-12 text-center" *ngIf="NewAccModel.spinnerFlag===false">
+                            <div class="success center animate" *ngIf="NewAccModel.Success===true">
+                                <div class="icon">
+                                    <i class="fa fa-check fastyle" aria-hidden="true"></i>
+                                </div>
+                                <h3 class="text-dark">Registration Done !</h3>
+                                <p class="text-dark">We've Sent a Confirmation To Your Registered E-mail.</p>
+                            </div>
+                            <div class="errorN center animate mt-2" *ngIf="NewAccModel.Success===false">
+                                <div class="icon">
+                                    <i class="fa fa-times text-white fastyle" aria-hidden="true"></i>
+                                </div>
+                                <h3 class="text-dark">Registration Failed!</h3>
+                                <p class="text-dark">Oops! Something went wrong,
+                                    <br> You Should Try Again.
+                                </p>
+                                <button style="zoom: 90%;" type="button" class="redo btn" (click)="NewAccStep=1">Try
+                                    again</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 text-center" *ngIf="NewAccModel.spinnerFlag===true">
+                            <div class="center animate" style="margin-top: 32%;">
+                                <div class="icon">
+                                    <i class="fa fa-spinner text-dark fa-pulse fastyle" aria-hidden="true"></i>
+                                </div>
+                                <p class="text-dark">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4"></div>
+    </div>
+</div>
+
+
+<div bsModal #forgetPasswordModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #forgetPasswordForm="ngForm">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title text-center">Forgot Password</h4>
+                    <img id="cross" src="assets/images/cross.png" alt="X" (click)="onClose(forgetPasswordForm)" />
+                </div>
+                <div class="modal-body text-center">
+                    <div class="row" *ngIf="!isShowChangePassword && !isShow && !showNum">
+                        <div class=" col-sm-12">
+                            <i class="fa fa-exclamation fa-2x mb-3 animated greenfafa" aria-hidden="true"></i><br>
+                            <strong class="center">Enter your email or mobile number to reset password or to get current
+                                password on email</strong>
+                            <br><br>
+                        </div>
+                    </div>
+                    <div class=" col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-12" *ngIf="!isShowChangePassword && !isShow && !showNum">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <input type="text" #search="ngModel" [(ngModel)]="loginModel.Search"
+                                            (ngModelChange)="cleardata()" class="form-control" id="Search" name="Search"
+                                            (oninput)="checkSearchEmpty()" placeholder="Mobile No Or Email"
+                                            autocomplete="off" required>
+                                    </div>
+                                    <br> <br>
+                                    <div class="col-sm-12 text-center">
+                                        <button type="button" class="btn btn-success "
+                                            [disabled]="forgetPasswordForm.form.invalid"
+                                            (click)="submitEmailNumber(loginModel.Search)">
+                                            Submit
+                                        </button>
+                                    </div><br><br>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" *ngIf="showNum">
+                                <br>
+                                <strong class="center">
+                                    <i class="fa fa-user" aria-hidden="true"></i> &nbsp; <span>Name :
+                                        {{Name}}</span><br>
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i> &nbsp; <span>Email Id :
+                                        {{Useremail}}</span><br><br>
+                                </strong>
+                            </div>
+                            <br>
+                            <div class="col-sm-12" *ngIf="!isShowChangePassword && !isShow">
+                                <div class="row" *ngIf="(Useremail||showNum) && !isShowChangePassword">
+                                    <div class="col-sm-12 text-center">
+                                        <button type="button" class="btn btn-primary"
+                                            [disabled]="isShow || this.SuccessfullMessage ==='Password sent to email'"
+                                            (click)="Resetpass(loginModel.Search)"><i class="fa fa-mobile"
+                                                aria-hidden="true"></i>
+                                            &nbsp; OTP
+                                        </button>
+                                        &nbsp;&nbsp;
+                                        <button type="button" class="btn btn-primary fa fa-plane"
+                                            [disabled]="this.SuccessfullMessage ==='Password sent to email'"
+                                            (click)="SendEmail(Useremail)"><i class="fa fa-envelope-o"
+                                                aria-hidden="true"></i> &nbsp; Email
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br><br>
+                            <div class="row col-sm-12" *ngIf="isShow && !isShowChangePassword">
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control text-center" [(ngModel)]="loginModel.otp"
+                                        id="otp" name="otp" (click)="clearMessage()" placeholder="Mobile OTP*"
+                                        minlength="6" maxlength="6">
+                                </div>
+                                <div class="col-sm-4 center">
+                                    <button type="button" class="btn btn-primary"
+                                        (click)="verifyOTP(loginModel.otp)">Verify</button>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <form *ngIf="isShowChangePassword"
+                                    oninput="result.value=!!confirmPwd.value&&(NewPassword.value==confirmPwd.value)?'Match!':''">
+                                    <div class="form-group">
+                                        <br>
+                                        <strong for="NewPassword">New Password: </strong>
+                                        <input type="password" pattern=".{6,20}"
+                                            class="form-control input-underline input-lg" id="NewPassword"
+                                            name="NewPassword" required [(ngModel)]="loginModel.NewPassword"
+                                            placeholder="Password" (click)="clearMessage()" #Pwd="ngModel" minlength=6
+                                            maxlength=20>
+                                        <div *ngIf="Pwd.errors && (Pwd.dirty || Pwd.touched)"
+                                            class="alert alert-danger">
+                                            <div [hidden]="!Pwd.errors.required">
+                                                Password is Required.
+                                            </div>
+                                            <div [hidden]="!Pwd.errors.pattern">
+                                                Enter minimum 6 digit Password!
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <strong for="ConfirmPassword">Confirm Password: </strong>
+                                        <input type="password" class="form-control input-underline input-lg"
+                                            name="confirmPwd" placeholder="Confirm Password" (click)="clearMessage()"
+                                            [(ngModel)]="loginModel.confirmPwd">
+                                        <output name="result"></output>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <button type="button" *ngIf="isShowChangePassword" class="btn btn-primary chngpass"
+                            [disabled]="loginModel.NewPassword !== loginModel.confirmPwd"
+                            (click)="changePassword(forgetPasswordForm)">Change Password
+                        </button>
+                    </div>
+                    <div *ngIf="isShowLogin" class="row">
+                        <button type="button" class="btn btn-primary backtologin"
+                            (click)="redirectToLogin(forgetPasswordForm)">Back to Login</button>
+                    </div>
+                    <br />
+                    <div class="modal-footer">
+                        <div class="row aligns">
+                            <span class="succmsg">{{SuccessfullMessage}} </span>
+
+                            <span class="failmsg">{{notSuccessfullMessage}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div class="mobile-hide">
+    <video id="avatar" loop src="https://www.botlibre.com/media/a13974711-0.webm" (mouseenter)="showcloseavatar()"
+        (mouseleave)="hidecloseavatar()">
+    </video>
+    <video src="https://www.botlibre.com/media/a13974716-0.webm" id="avatarimg" (mouseenter)="showcloseavatar()"
+        (mouseleave)="hidecloseavatar()"></video>
+    <a>
+        <img class="closeavatar" id="closeavatar" src="https://image.flaticon.com/icons/svg/753/753345.svg"
+            (click)="closeavatar()" (mouseenter)="showcloseavatar()" (mouseleave)="hidecloseavatar()">
+    </a>
+    <a>
+        <img class="playavatar" id="playavatar" src="https://image.flaticon.com/icons/svg/179/179401.svg"
+            (click)="playavatar()" (mouseenter)="showcloseavatar()" (mouseleave)="hidecloseavatar()">
+    </a>
+</div>

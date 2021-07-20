@@ -1,0 +1,5 @@
+<p-tabView>
+  <p-tabPanel [header]="item.key" *ngFor="let item of enquiryStatus; let i = index" [selected]="i == 0">
+      <tru-site-visited-reports  *ngIf="dateObj" [dateObj]="dateObj" [key]="item" ></tru-site-visited-reports>
+  </p-tabPanel> 
+</p-tabView>

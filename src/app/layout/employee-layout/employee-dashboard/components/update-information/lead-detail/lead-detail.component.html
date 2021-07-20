@@ -1,0 +1,739 @@
+<form #enquiryDetailsForm="ngForm">
+    <div class="row">
+        <div class="col-sm-2">
+            <br />
+            <button [disabled]="disableAllFields" type="button" class="btn btn-dark" (click)="preEnquiryId()"
+                style="font-weight: bold;">
+                <i class="fa fa-angle-double-left"></i>
+            </button> &nbsp;
+            <button [disabled]="disableAllFields" type="button" class="btn btn-dark" (click)="nextEnquiryId()"
+                style="font-weight: bold;">
+                <i class="fa fa-angle-double-right"></i>
+            </button>
+        </div>
+        <div class="col-sm-8">
+            <tru-search-enquiry (messageEvent)="receiveData($event)"></tru-search-enquiry>
+        </div>
+        <div *ngIf="loggedInuserDetails.Role===11 && this.CallId !== null" class="col-sm-2 text-right callRating">
+            <button type="button" class="btn btn-primary pull-right" (click)="openRatingPopup()">
+                Call Rating
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-10" *ngIf="!showAfterReceivedData">
+                            <div class="row">
+                                <strong>
+                                    <h3 class="badge badge-primary">{{leadinfoDetails.TEnquiryId}}</h3> &nbsp;&nbsp;
+                                    <span class="fontsizecolor">{{leadinfoDetails.Name |titlecase}}</span> &nbsp;&nbsp;
+                                    <h3 class="badge badge-success" *ngIf="leadinfoDetails.IsNRI">NRI</h3> &nbsp;
+                                    <button class="btn btn-link pull-right" ngbTooltip="Click to edit enquiry name"
+                                        *ngIf="!leadinfoDetails.isEditPreSalesFields" placement="top"
+                                        [disabled]="salesDisableAllFields"
+                                        (click)="leadinfoDetails.isEditPreSalesFields = !leadinfoDetails.isEditPreSalesFields; updateEnquiryName()">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-link pull-right" ngbTooltip="Close"
+                                        *ngIf="leadinfoDetails.isEditPreSalesFields"
+                                        (click)="leadinfoDetails.isEditPreSalesFields = !leadinfoDetails.isEditPreSalesFields;enableUpdateName =isEditFields = false">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </button>
+                                </strong>
+                            </div>
+                            <div class="row">
+                                <strong>Received On : </strong>&nbsp;
+                                <span class="badge badge-primary">{{leadinfoDetails.CreatedOn}}</span>
+                            </div>
+                            <div class="row" *ngIf="salesDisableAllFields">
+                                <h2 class="badge badge-danger mt-1 font-size">You do not have access to make any changes
+                                    to this Enquiry.</h2>
+                            </div>
+                            <div *ngIf="leadSiteInfo && leadSiteInfo.InteractionType==='Site Visit Schedule' && !disableAllFields"
+                                class="row">
+                                <span class="siteVisit badge badge-info">Site Visit Schedule for
+                                    {{leadSiteInfo.ProjectName}}
+                                </span>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-4" *ngIf="leadinfoDetails.EnquiryStatus=='hot'">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <button class="btn btn-primary pull-right" [disabled]="salesDisableAllFields" (click)="confirmModelPopup(leadinfoDetails)">Convert to Opportunity</button>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-primary pull-right" *ngIf="isEditFields"
+                                (click)="updateLeadDetails(leadinfoDetails,updateRemark)"
+                                [disabled]="!enquiryDetailsForm.form.valid || showemail>0 || showmobile>0 || invalidEmail!==''">
+                                <i class="fa fa-edit"></i> Save Details</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="col-sm-12">
+                        <div class="row" *ngIf="enableUpdateName">
+                            <div class="col-sm-6">
+                                <strong for="firstname">First Name :</strong>
+                                <input class="form-control" id="firstname" name="firstname"
+                                    [(ngModel)]="leadinfoDetails.FirstName">
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="lastname">Last Name :</strong>
+                                <input class="form-control" id="lastname" name="lastname"
+                                    [(ngModel)]="leadinfoDetails.LastName">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="leadStatus">
+                                    <span class="required">*</span>Stage and Status :</strong>
+                                <select class="form-control" id="leadStatus" name="leadStatus"
+                                    [disabled]="disableAllFields ||salesDisableAllFields" required
+                                    [(ngModel)]="leadinfoDetails.EnquiryStatus"
+                                    (change)="onChangeStatus($event.target.value)" #leadstatus="ngModel"
+                                    [class.error]="leadstatus.invalid && leadstatus.touched"
+                                    [class.has-success]="leadstatus.valid">
+                                    <option value="">--Select--</option>
+                                    <option class='option' *ngFor='let status of StatusInfo;trackBy: trackByFn'
+                                        [value]="status.key">
+                                        {{status.value}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="stageChangesreason">Stage Changes Reason :</strong>
+                                <input class="form-control" id="stageChangesreason" name="stageChangesreason"
+                                    [disabled]="true" [(ngModel)]="leadinfoDetails.StatusChangeReason">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <strong class="text-size" for="CountryCode">Code :</strong>
+                                        <input class="form-control" id="countryCode" name="countryCode"
+                                            [disabled]="!isEditFields" [(ngModel)]="leadinfoDetails.CountryCode">
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <strong for="mobileNo">Mobile No :</strong>
+                                        <input class="form-control" id="mobileNo" name="mobileNo" [disabled]="true"
+                                            [(ngModel)]="leadinfoDetails.MobileNo">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="alternateNo">Alternate No :</strong>
+                                <input class="form-control" id="alternateNo" name="alternateNo" #alternateNo="ngModel"
+                                    (blur)="getMobileValidation(leadinfoDetails.AlternateNo)" pattern="^\d{10}$"
+                                    minlength=10 maxlength=10 [class.error]="alternateNo.invalid && alternateNo.touched"
+                                    [class.has-success]="alternateNo.valid" placeholder="Enter Alternate No..."
+                                    [disabled]="!isEditFields" [(ngModel)]="leadinfoDetails.AlternateNo">
+                                <div *ngIf="alternateNo.errors && (alternateNo.dirty || alternateNo.touched)"
+                                    class="alert alert-danger">
+                                    <div [hidden]="!alternateNo.errors.required">
+                                        Mobile No is required!
+                                    </div>
+                                    <div [hidden]="!alternateNo.errors.pattern">
+                                        Enter Valid Mobile No!
+                                    </div>
+                                </div>
+
+                                <span *ngIf="showmobile>0" class="required">Mobile Number already exist.</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="preferredProject">Preferred Project :</strong>
+                                <select class="form-control" id="preferredProject" name="preferredProject"
+                                    [disabled]="!isEditFields" [(ngModel)]="leadinfoDetails.PreferredProject"
+                                    #preferredProject="ngModel"
+                                    [class.error]="preferredProject.invalid && preferredProject.touched"
+                                    [class.has-success]="preferredProject.valid">
+                                    <option value="">--Select--</option>
+                                    <option class='option' *ngFor='let proName of projectNames;trackBy: trackByFn'
+                                        [hidden]="proName.ProjectName === 'Common'" [value]="proName.ProjectName">
+                                        {{proName.ProjectName}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="budget">Budget : (In Lacs)</strong>
+                                <select type="text" class="form-control" id="budget" name="budget"
+                                    [disabled]="!isEditFields" [class.error]="budget.invalid && budget.touched"
+                                    [class.has-success]="budget.valid" [(ngModel)]="leadinfoDetails.Budget"
+                                    #budget="ngModel">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let budgets of BudgetInfo;trackBy: trackByFn"
+                                        [value]="budgets.value">{{budgets.value}} &#8377;
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="email">Email :</strong>
+                                <input class="form-control" id="email" name="email" #email="ngModel"
+                                    (blur)="getEmailValidation(leadinfoDetails.Email,'Email')"
+                                    [(ngModel)]="leadinfoDetails.Email" [disabled]="!isEmailEdit"
+                                    [class.error]="email.invalid && email.touched" [class.has-success]="email.valid">
+                                <span *ngIf="showemail>0" class="required">EmailId already exist</span>
+                                <span *ngIf="Email!=null && Email!==''" class="required">{{Email}}</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="alternateemail">Alternate Email :</strong>
+                                <input class="form-control" id="alternateemail" name="alternateemail"
+                                    #alternateemail="ngModel"
+                                    (blur)="getEmailValidation(leadinfoDetails.AlternateEmail,'AlternateEmail')"
+                                    [class.error]="alternateemail.invalid && alternateemail.touched"
+                                    [class.has-success]="alternateemail.valid" placeholder="Enter Alternate Email..."
+                                    [disabled]="!isEditFields" [(ngModel)]="leadinfoDetails.AlternateEmail">
+                                <span *ngIf="showemail>0" class="required">EmailId already exist</span>
+                                <span *ngIf="invalidEmail!=null && invalidEmail!==''"
+                                    class="required">{{invalidEmail}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="source">Source :</strong>
+                                <select class="form-control" id="source" name="source" [disabled]="!isEditFields"
+                                    #source="ngModel" [class.error]="source.invalid && source.touched"
+                                    [class.has-success]="source.valid" [(ngModel)]="leadinfoDetails.Source">
+                                    <option value="">--select--</option>
+                                    <option class='option' *ngFor='let source of sourceInfo;trackBy: trackByFn'
+                                        [value]="source.Name">
+                                        {{source.Name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row" *ngIf="leadinfoDetails.isEditPreSalesFields">
+                                    <div class="col-sm-12">
+                                        <strong for="Name">PreSales Employee :</strong>
+                                        <select class="form-control" id="Name" #Name="ngModel"
+                                            [(ngModel)]="leadinfoDetails.PresalesAgentAssigned" name="Name"
+                                            [class.error]="Name.invalid && Name.touched"
+                                            [class.has-success]="Name.valid" [disabled]="!isEditPresalesFields">
+                                            <option value="">---select---</option>
+                                            <option *ngFor="let item of selectedEmployeeName;trackBy: trackByFn"
+                                                [value]="item.EmployeeId">
+                                                {{item.Name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="!leadinfoDetails.isEditPreSalesFields">
+                                    <div class="col-sm-12">
+                                        <strong for="PreSalesEmployee">PreSales Employee :</strong>
+                                        <input class="form-control" id="PreSalesEmployee" name="PreSalesEmployee"
+                                            #PreSalesEmployee="ngModel" [(ngModel)]="leadinfoDetails.PreSalesEmployee"
+                                            disabled
+                                            [class.error]="PreSalesEmployee.invalid && PreSalesEmployee.touched"
+                                            [class.has-success]="PreSalesEmployee.valid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="propertyType">Property Type :</strong>
+                                <select class="form-control" id="propertyType" name="propertyType"
+                                    #propertyType="ngModel" [(ngModel)]="leadinfoDetails.PropertyType"
+                                    [class.has-success]="propertyType.valid" [disabled]="!isEditFields">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let item of propertyTypeInfo;trackBy: trackByFn"
+                                        [value]="item.value">
+                                        {{item.value}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="bhk">BHK :</strong>
+                                <select class="form-control" id="bhk" name="bhk" #bhk="ngModel"
+                                    [(ngModel)]="leadinfoDetails.Bhk" [class.has-success]="bhk.valid"
+                                    [disabled]="!isEditFields">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let item of bhkInfo;trackBy: trackByFn" [value]="item.value">
+                                        {{item.value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="Possession">Possession :</strong>
+                                <select class="form-control" id="Possession" name="Possession" #possession="ngModel"
+                                    [(ngModel)]="leadinfoDetails.Possession" [class.has-success]="possession.valid"
+                                    [disabled]="!isEditFields">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let item of possesionStatusInfo;trackBy: trackByFn"
+                                        [value]="item.value">
+                                        {{item.value}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="location">Location :</strong>
+                                <input class="form-control" id="Location" name="Location" #location="ngModel"
+                                    placeholder="Location..." [class.error]="location.invalid && location.touched"
+                                    [class.has-success]="location.valid" [(ngModel)]="leadinfoDetails.PreferredLocation"
+                                    [disabled]="!isEditFields">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="purpose">Purpose :</strong>
+                                <select class="form-control" id="purpose" name="purpose" #purpose="ngModel"
+                                    [(ngModel)]="leadinfoDetails.PrimaryPurpose" [class.has-success]="purpose.valid"
+                                    [disabled]="!isEditFields">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let item of purposeInfo;trackBy: trackByFn" [value]="item.value">
+                                        {{item.value}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="funding">Funding Source :</strong>
+                                <select class="form-control" id="funding" name="funding" #funding="ngModel"
+                                    [(ngModel)]="leadinfoDetails.FundingSource" [class.has-success]="funding.valid"
+                                    [disabled]="!isEditFields">
+                                    <option value="">--select--</option>
+                                    <option *ngFor="let item of fundingSourceInfo;trackBy: trackByFn"
+                                        [value]="item.value">
+                                        {{item.value}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="country">Country :</strong>
+                                <input class="form-control" id="country" name="country" #country="ngModel"
+                                    placeholder="Country Name..." [class.error]="country.invalid && country.touched"
+                                    [class.has-success]="country.valid" [disabled]="!isEditFields"
+                                    [(ngModel)]="leadinfoDetails.Country"
+                                    matTooltip="Enter 'India' if enquiry is for India" [matTooltipPosition]="'above'" />
+                            </div>
+                            <div class="col-sm-6">
+                                <strong for="country">Occupation :</strong>
+                                <input class="form-control" id="occupation" name="occupation" #occupation="ngModel"
+                                    placeholder="Occupassion..."
+                                    [class.error]="occupation.invalid && occupation.touched"
+                                    [class.has-success]="occupation.valid" [disabled]="!isEditFields"
+                                    [(ngModel)]="leadinfoDetails.Occupation">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="country">NRI :</strong><br>
+                                <mat-radio-group>
+                                    <input [disabled]="!isEditFields" type="radio" name="IsNRI"
+                                        (click)="forRadioButton(1)" [checked]="leadinfoDetails.IsNRI " />&nbsp; Yes
+                                    &nbsp;
+                                    <input [disabled]="!isEditFields" type="radio" name="IsNRI"
+                                        (click)="forRadioButton(0)"
+                                        [checked]="!leadinfoDetails.IsNRI || leadinfoDetails.IsNRI == null" />&nbsp; No
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row justify-content-md-center">
+                            <button type="button" class="btn btn-primary" *ngIf="!isEditFields" (click)="editDetails()"
+                                [disabled]="!enquiryDetailsForm.form.valid">
+                                <i class="fa fa-edit"></i> Update Details
+                            </button>
+                            <button type="button" class="btn btn-primary" *ngIf="isEditFields"
+                                (click)="updateLeadDetails(leadinfoDetails,updateRemark)"
+                                [disabled]="!enquiryDetailsForm.form.valid || showemail>0 || showmobile>0 || invalidEmail!==''">
+                                <i class="fa fa-edit"></i> Save Details</button>
+                        </div>
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="card">
+                <div class="card-header">
+                    <strong>Re-engaged Leads</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <strong for="reengagedsource">Reengaged Source :</strong>
+                            <textarea class="form-control" rows="2" id="reengagedsource" name="reengagedsource"
+                                [disabled]="true" [(ngModel)]="leadinfoDetails.ReengagedSource"
+                                [class.error]="reengagedsource.invalid && reengagedsource.touched"
+                                placeholder="Reengaged Source..." [class.has-success]="reengagedsource.valid"
+                                #reengagedsource="ngModel"></textarea>
+                        </div>
+                        <div class="col-sm-12">
+                            <strong for="reengagedsubSource">Reengaged SubSource :</strong>
+                            <textarea class="form-control" rows="2" id="reengagedsubSource" name="reengagedsubSource"
+                                [disabled]="true" [(ngModel)]="leadinfoDetails.ReengagedSubSource"
+                                [class.error]="reengagedsubSource.invalid && reengagedsubSource.touched"
+                                placeholder="Reengaged SubSource..." [class.has-success]="reengagedsubSource.valid"
+                                #reengagedsubSource="ngModel"></textarea>
+                        </div>
+                        <div class="col-sm-12">
+                            <strong for="reengagedcampaign">Reengaged Campaign :</strong>
+                            <textarea class="form-control" rows="2" id="reengagedcampaign" name="reengagedcampaign"
+                                [disabled]="true" [(ngModel)]="leadinfoDetails.ReengagedCampaign"
+                                [class.error]="reengagedcampaign.invalid && reengagedcampaign.touched"
+                                placeholder="Reengaged Campaign..." [class.has-success]="reengagedcampaign.valid"
+                                #reengagedcampaign="ngModel"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-7 ">
+            <tru-create-lead-interaction [salesDisableAllFields]="salesDisableAllFields" [EnquiryInfoDetails]="leadInfo"
+                (updatedata)="receiveMessage($event)" (showCallPopup)="callPopUpShow($event)">
+            </tru-create-lead-interaction>
+        </div>
+    </div>
+</form>
+
+<!-- click on "onCall" button show Pop up for call NOTES -->
+<div bsModal cdkDrag #showOnCallNotesPopup="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #callInteractionForm="ngForm">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{leadinfoDetails.TEnquiryId}}&nbsp; {{leadinfoDetails.FirstName |titlecase}}
+                        {{leadinfoDetails.LastName|titlecase}}&nbsp;
+                        {{leadinfoDetails.MobileNo}}
+                    </h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showOnCallNotesPopup.hide()" />
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <strong for="interactionDetails">Notes :</strong>
+                                    <textarea rows="2" class="form-control"
+                                        [disabled]="disableAllFields ||salesDisableAllFields" placeholder="Note/Agenda"
+                                        id="interactionDetails" name="interactionDetails"
+                                        [(ngModel)]="interactionModel.Details" required #interactionDetails="ngModel"
+                                        [class.error]="interactionDetails.invalid && interactionDetails.touched"
+                                        [class.has-success]="interactionDetails.valid"></textarea>
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong for="callleadStatus">Stage and Status :</strong>
+                                    <select class="form-control" id="callleadStatus" name="callleadStatus"
+                                        [disabled]="disableAllFields ||salesDisableAllFields" required
+                                        [(ngModel)]="leadinfoDetails.EnquiryStatus"
+                                        (change)="onChangeStatus($event.target.value)" #callleadStatus="ngModel"
+                                        [class.error]="callleadStatus.invalid && callleadStatus.touched"
+                                        [class.has-success]="callleadStatus.valid">
+                                        <option value="">--Select--</option>
+                                        <option class='option' *ngFor='let status of StatusInfo;trackBy: trackByFn'
+                                            [value]="status.key">
+                                            {{status.value}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="col-sm-12 py-2">
+                            <h5>Call Observations</h5>
+                            <div class="row">
+                                <div class="col-sm-12 text-center" *ngIf="!isLoading">
+                                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="tag-height scrollbar" id="style-2">
+                                        <div class="row">
+                                            <div class="col-sm-6 option"
+                                                *ngFor="let checkList of callCheckList;trackBy:trackByFn;let i=index;">
+                                                <div class="row">
+                                                    <div class="col-sm-4" *ngIf="isLoading">
+                                                        <strong>{{i+1}})&nbsp;</strong>
+                                                        <strong>{{checkList.Tag}}</strong>
+                                                    </div>
+                                                    <div class="col-sm-8" *ngIf="3 > checkList.ArrayList.length">
+                                                        <div class="form-check form-check-inline radio"
+                                                            *ngFor="let btn of checkList.ArrayList;trackBy: trackByFn;let j=index;">
+                                                            <input type="radio" name="name{{i}}" [value]="btn.label"
+                                                                ([ngModel])="checkList.Selected"
+                                                                [checked]="checkList.Selected===btn.label"
+                                                                (click)="onChange($event.target.value,checkList,i,'radio')" />
+                                                            <span class="radio1">{{btn.label}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="col-sm-7" *ngIf="checkList.ArrayList.length > 2">
+                                                        <p-dropdown [options]="checkList.ArrayList" placeholder="select"
+                                                            displayProperty="starCount" [(ngModel)]="checkList.Selected"
+                                                            optionLabel="label" class="   ui-select-choices" [filter]="true"
+                                                            #Title="ngModel" filterBy="label,value.name" name="list"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [style]="{'width':'30%',    'position': 'fixed'}"
+                                                            (onChange)="onChange(checkList.Selected,checkList,i,'select')">
+                                                        </p-dropdown>
+                                                    </div> -->
+                                                    <div class="col-sm-7" *ngIf="checkList.ArrayList.length > 2">
+                                                        <select class="form-control" name="list{{i}}" #list="ngModel"
+                                                            [(ngModel)]="checkList.Selected"
+                                                            [class.error]="list.invalid && list.touched"
+                                                            [class.has-success]="list.valid"
+                                                            (change)="onChange($event.target.value,checkList,i,'select')">
+                                                            <option value="">Select Option</option>
+                                                            <option
+                                                                *ngFor="let item of checkList.ArrayList;trackBy: trackByFn"
+                                                                [value]="item.label">
+                                                                {{item.label}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <button class="btn m-1 btn-danger pull-right" (click)="showOnCallNotesPopup.hide()">
+                                        Close
+                                    </button>
+                                    <button class="btn m-1 btn-primary pull-right"
+                                        (click)="onInteractionSubmit(interactionModel,leadinfoDetails,updateRemark,callInteractionForm);callObservationTransaction()">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Pop If Status is Enquiry Status="Hot","Lost","Cold","unqualified"and"Warm" -->
+<div bsModal #updateEnquiryStatusModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #interactionPopForm="ngForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Update Status</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="leadinfoDetails.EnquiryStatus=='lost' ">
+                        <strong for="stageChanges">
+                            <span class="required">*</span>Stage Changes Reason</strong>
+                        <select class="form-control" id="stageChanges" name="stageChanges" required
+                            [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                            [class.error]="stagechanges.invalid && stagechanges.touched"
+                            [class.has-success]="stagechanges.valid">
+                            <option value="">--Select a Reason--</option>
+                            <option class='option' *ngFor='let stage of lostStatusInfo;trackBy: trackByFn;'
+                                [value]="stage.key">
+                                {{stage.value}}</option>
+                        </select>
+                    </div>
+                    <div *ngIf="leadinfoDetails.EnquiryStatus=='cold'">
+                        <strong for="stageChanges">
+                            <span class="required">*</span>Stage Changes Reason</strong>
+                        <select class="form-control" id="stageChanges" name="stageChanges" required
+                            [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                            [class.error]="stagechanges.invalid && stagechanges.touched"
+                            [class.has-success]="stagechanges.valid">
+                            <option value="">--Select a Reason--</option>
+                            <option class='option' *ngFor='let stage of coldStatusInfo;trackBy: trackByFn'
+                                [value]="stage.key">
+                                {{stage.value}}</option>
+                        </select>
+                    </div>
+                    <div *ngIf="leadinfoDetails.EnquiryStatus=='unqualified'">
+                        <strong for="stageChanges">
+                            <span class="required">*</span>Stage Changes Reason</strong>
+                        <select class="form-control" id="stageChanges" name="stageChanges" required
+                            [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                            [class.error]="stagechanges.invalid && stagechanges.touched"
+                            [class.has-success]="stagechanges.valid">>
+                            <option value="">--Select a Reason--</option>
+                            <option class='option' *ngFor='let stage of unqualifiedStatusInfo;trackBy: trackByFn'
+                                [value]="stage.key">
+                                {{stage.value}}
+                            </option>
+                        </select>
+                    </div>
+                    <div *ngIf="leadinfoDetails.EnquiryStatus=='warm'">
+                        <strong for="stageChanges">
+                            <span class="required">*</span>Stage Changes Reason</strong>
+                        <select class="form-control" id="stageChanges" name="stageChanges" required
+                            [(ngModel)]="leadinfoDetails.StatusChangeReason" #stagechanges="ngModel"
+                            [class.error]="stagechanges.invalid && stagechanges.touched"
+                            [class.has-success]="stagechanges.valid">
+                            <option value="">--Select a Reason--</option>
+                            <option class='option' *ngFor='let stage of warmStatusInfo;trackBy: trackByFn'
+                                [value]="stage.key">
+                                {{stage.value}}</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12"
+                            *ngIf="leadinfoDetails.EnquiryStatus=='hot'||leadinfoDetails.StatusChangeReason=='Budget issues' || leadinfoDetails.StatusChangeReason=='Possession mismatch'|| leadinfoDetails.StatusChangeReason=='Location issue'|| leadinfoDetails.StatusChangeReason=='Not Intrested'||leadinfoDetails.EnquiryStatus=='cold'">
+                            <strong for="remark">
+                                <span class="required">*</span>Remark</strong>
+                            <textarea type="text" class="form-control" required [(ngModel)]="updateRemark.Remark"
+                                #remark="ngModel" id="remark" name="remark" placeholder="Remark"></textarea>
+                        </div>
+                        <div class="col-sm-12" *ngIf="leadinfoDetails.EnquiryStatus!='warm'">
+                            <strong for="previousRemark">Previous Remark</strong>
+                            <textarea type="text" class="form-control" required [(ngModel)]="leadinfoDetails.Remark"
+                                #remark="ngModel" disabled="true" id="previousRemark" name="previousRemark"
+                                placeholder="PreviousRemark"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="modal-footer row justify-content-md-center">
+                        <button type="button" class="btn btn-primary"
+                            (click)="updateLeadDetails(leadinfoDetails,updateRemark)"
+                            [disabled]="!interactionPopForm.form.valid">
+                            <i class="fa fa-edit"></i> Save Status</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div bsModal #callRatingPopup="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #AdminPanelForm="ngForm">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title title pull-left">Call Analysis Rating</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="callRatingPopup.hide()" />
+                </div>
+                <div class="modal-body" style="height: 550px;">
+                    <div class="table-responsive" *ngIf="finalDetails && finalDetails.length>0">
+                        <table class="table table-bordered table-striped table-sm text-nowrap" cellsspacing="0"
+                            width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>
+                                        <span class="pull-left">Components</span>
+                                        <span style="margin-left: 19rem;">Score</span>
+                                        <span style="margin-left: 1.8rem;">Points</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let snapshot of finalDetails;trackBy: trackByFn; let i=index">
+                                    <td>{{snapshot.RatingOn}}</td>
+                                    <td>
+                                        <div *ngFor="let data of snapshot.SubData;trackBy: trackByFn; let j = index;">
+                                            <div class="row">
+                                                <div class="col-sm-5">
+                                                    <span class="pull-left">{{data.SubRatingOn}}</span>&nbsp;
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-1">
+                                                    <span>{{data.Points}}</span>
+                                                </div>
+                                                <div class="col-sm-2 pull-right">
+                                                    <input type="tel" (input)="validation(data)"
+                                                        [(ngModel)]="data.rating" name="rating{{i}}{{j}}"
+                                                        class="form-control input-size" min=0 />
+                                                    <div *ngIf="result">
+                                                        <strong class="text-danger"
+                                                            *ngIf="result===data.CRSubMasterId">{{ErrorMessage}}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Remark</td>
+                                    <td><textarea class="form-control" rows="2" name="remark" #remark="ngModel"
+                                            [(ngModel)]="RatingModel.Remark"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Auto Fail</td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <span class="pull-left">Rude to the Customer</span>
+                                                <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                    class="example-radio-group" name="autoFail1"
+                                                    [(ngModel)]="RatingModel.AutoFail1">
+                                                    <mat-radio-button class="example-radio-button pull-left ml-2"
+                                                        *ngFor="let status of booleanStatus" [value]="status.value">
+                                                        {{status.key}}
+                                                    </mat-radio-button>
+                                                </mat-radio-group>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <span class="pull-left">Wrong Commitment</span>
+                                                <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                    class="example-radio-group" name="autoFail2"
+                                                    [(ngModel)]="RatingModel.AutoFail2">
+                                                    <mat-radio-button class="example-radio-button pull-left ml-2"
+                                                        *ngFor="let status of booleanStatus" [value]="status.value">
+                                                        {{status.key}}
+                                                    </mat-radio-button>
+                                                </mat-radio-group>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-md-center">
+                    <button type="button" class="btn btn-primary" (click)="InsertUpdaterating()"
+                        [disabled]="ErrorMessage">
+                        <i class="fa fa-paper-plane">&nbsp;</i>Submit</button>
+                    <div class="row">
+                        <div class="col-sm-12" align="center">
+                            <div [hidden]="!isSpinner">
+                                <p class="loading">
+                                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- ModelPopup for Confirmation for Convert to Opportunity -->
+<!-- <div bsModal #confirmationModelPopup="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="exampleModalCenterTitle"
+    s aria-hidden="true">
+    <form #stageChangeForm="ngForm">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="confirmationModelPopup.hide()" />
+                    <h4 class="modal-title">
+                        <strong> Are you sure?</strong>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h5> This lead will be moved to Sales Bucket. Will not be visible to you untill Sales Push back to Presales.
+                    </h5>
+                </div>
+                <div class="modal-footer">
+                    <div class="row justify-content-md-center">
+                        <button type="button" class="btn btn-success" id="modal-btn-si" (click)="generateOpportunity(leadinfoDetails)">
+                            <i class="fa fa-check"></i> Confirm</button>
+                        <button class="btn btn-danger" (click)="confirmationModelPopup.hide()">
+                            <i class="fa fa-times-circle"></i>
+                            Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div> -->

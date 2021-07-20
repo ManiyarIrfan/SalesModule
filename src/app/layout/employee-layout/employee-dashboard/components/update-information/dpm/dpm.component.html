@@ -1,0 +1,333 @@
+<fieldset class="scheduler-border">
+    <legend class="scheduler-border">
+        <strong>My Schedule Details</strong>
+    </legend>
+    <button type="button" class="btn btn-success center-block btn-sm"
+        (click)="collapsedCreateSchedule = !collapsedCreateSchedule;">
+        <i class="fa fa-plus"></i> Create Schedule</button>
+
+    &nbsp;<button type="button" class="btn btn-primary btn-sm" (click)="openPendingSchedule()">
+        <i class="fa fa-hourglass"></i> Pending / Approve / Reject Schedule <span
+            class="badge badge-light ml-2">{{PendingScheduleDetails.length}}</span>
+    </button>
+
+    <!-- <button type="button" class="btn btn-success center-block btn-sm" (click)="openPendingSchedule()">
+        <i class="fa fa-hourglass"></i> Pending Schedule</button> -->
+    <fieldset class="scheduler-border" *ngIf="!collapsedCreateSchedule">
+        <legend class="scheduler-border">
+            <strong>{{ledgendTitle}}</strong>
+        </legend>
+        <form #createScheduleForm="ngForm">
+            <div class="row">
+                <div class="col-sm-5">
+                    <strong for="type"><span class="required">*</span>Select Date Range:</strong>
+                    <input ngxDaterangepickerMd type="text" autocomplete="off" [alwaysShowCalendars]="true"
+                        [ranges]="rangesSearchSchedule" [minDate]="minDate" [linkedCalendars]="true" required id="date"
+                        name="Date" #date="ngModel" [(ngModel)]="selectedDateRange" class="form-control"
+                        (change)="onChangeDate(selectedDateRange)" placeholder="Select Date"
+                        [class.error]="date.invalid && date.touched" [class.has-success]="date.valid" />
+                </div>
+                <div class="form-group col-sm-2">
+                    <strong for="preTime">
+                        <span class="required">*</span>Start Time :</strong>
+                    <input [(ngModel)]="createschedule.StartTime" class="form-control" atp-time-picker
+                        value="{{startTime}}" name="time" id="time" (click)="SetStartTime()" autocomplete="off" />
+                </div>
+                <div class="form-group col-sm-2">
+                    <strong for="preTime">
+                        <span class="required">*</span>End Time :</strong>
+                    <input class="form-control" [(ngModel)]="createschedule.EndTime" atp-time-picker value="{{endTime}}"
+                        name="time" id="time" (click)="SetEndTime()" autocomplete="off" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-primary btnhieght"
+                        (click)="InsertPresalesSchedule('INSERT','insert','Pending')"
+                        [disabled]="createScheduleForm.form.invalid || !endTime || !startTime|| disableBtn">
+                        <i class="fa fa-paper-plane"></i> Submit</button>
+                </div>
+            </div>
+            <div class="col-sm-12 text-center" [hidden]="!isLoader">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+            <!-- <div class="row">
+                <div class="form-group col-sm-12 text-center">
+                    <button type="button" *ngIf="disabled" [disabled]="isLoader" class="btn btn-primary center-block"
+                        (click)="InsertPresalesSchedule('INSERT''update')">
+                        <i class="fa fa-edit"></i> Update</button>&nbsp;
+                     <button type="button" *ngIf="disabled" [disabled]="isLoader" class="btn btn-success center-block"
+                        (click)="clearDPMInsert()">
+                        <i class="fa fa-plus"></i> Create New</button>
+                </div>
+            </div> -->
+        </form>
+    </fieldset>
+    <div class="row">
+        <div class="col-sm-5">
+            <strong for="type"><span class="required">*</span>Select Date Range:</strong>
+            <input ngxDaterangepickerMd type="text" autocomplete="off" [alwaysShowCalendars]="true" [ranges]="ranges"
+                [linkedCalendars]="true" id="date" name="Date" #date="ngModel" [(ngModel)]="selectedDateRangeForSearch"
+                class="form-control" (change)="onChangeDateOnSearch(selectedDateRangeForSearch)"
+                placeholder="Select Date" [class.error]="date.invalid && date.touched"
+                [class.has-success]="date.valid" />
+        </div>
+        <div class="col-sm-2 pull-left">
+            <div class="form-group insertBtn col-sm-12">
+                <button type="button" class="btn btn-primary mt-3" (click)=getPresalesSchedule()>
+                    <i class="fa fa-search"></i> Search</button>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="table-responsive scrollbar" id="style-2">
+        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+            <thead class="thead-light">
+                <tr>
+                    <th>Presales Name</th>
+                    <th *ngFor="let head of header; trackBy: trackByFn;">{{head |date:"d MMM y"}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let details of presalesScheduleList | paginate: {id:'Employee-Details-pagination', itemsPerPage: 8, currentPage: p1 }; trackBy: trackByFn;">
+                    <td>
+                        {{details.Name}}
+                    </td>
+                    <td *ngFor="let head of header; trackBy: trackByFn;">
+                        <span>
+                            {{(details[head] && details[head].ST)? details[head].ST : 'NA'}} To
+                            {{(details[head] && details[head].ET) ? details[head].ET  : 'NA'}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <tfoot class="pull-right" *ngIf="presalesScheduleList.length>8">
+            <pagination-controls id="Employee-Details-pagination" (pageChange)="p1 = $event">
+            </pagination-controls>
+        </tfoot>
+        <div class="col-sm-12 text-center" *ngIf="notFound">
+            <strong class="required">No Data Found</strong>
+        </div>
+    </div>
+</fieldset>
+<div class="row">
+    <div class="col-sm-6">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">
+                <strong>My Incentive</strong>
+            </legend>
+            <div class="row">
+                <div class="col-sm-5">
+                    <strong for="type"><span class="required">*</span>Select Date Range:</strong>
+                    <input ngxDaterangepickerMd type="text" autocomplete="off" [alwaysShowCalendars]="true"
+                        [ranges]="ranges" [linkedCalendars]="true" id="date" name="Date" #date="ngModel"
+                        [(ngModel)]="selectedDateRangeForIncentiveSearch" class="form-control"
+                        (change)="onChangeDate(selectedDateRangeForIncentiveSearch)" placeholder="Select Date"
+                        [class.error]="date.invalid && date.touched" [class.has-success]="date.valid" />
+                </div>
+                <div class="form-group col-sm-2">
+                    <div class="form-group insertBtn col-sm-12 text-center">
+                        <button type="button" class="btn btn-primary center-block mt-3" (click)="employeeIncentive()">
+                            <i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive scrollbar" id="style-2" style="min-height: 200px;">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Name</th>
+                            <th *ngFor="let heading of Incentiveheader; trackBy: trackByFn;">
+                                {{heading}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center"
+                            *ngFor="let data of Incentivedata | paginate: { itemsPerPage: 10, currentPage: p1 };trackBy: trackByFn;let i= index;">
+                            <td>{{data.Name}}</td>
+                            <td *ngFor="let heading of Incentiveheader; trackBy: trackByFn;">
+                                <div *ngIf="data[heading] !=='Name'"><button class="btn btn-sm btn-link"
+                                        (click)="selectedIncentiveDetail(heading)"><i class="fa fa-inr"
+                                            aria-hidden="true"></i>{{data[heading]}}</button></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<!-- popup -->
+<div bsModal #showDetailsModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="col-sm-12">
+                    <h3 class="modal-title text-center">{{modalTitle}}</h3>
+                </div>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="close()" />
+            </div>
+            <div class="modal-body">
+                <div *ngIf="!isPopUpLoading">
+                    <p class="loading"> <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading... </p>
+                </div>
+                <div *ngIf="showDateReport">
+                    <div class="text-center" *ngIf="DateWiseIncentive.length===0 && !isPopUpLoading">
+                        <strong class="required"> Records Not Available </strong>
+                    </div>
+                    <div class="table-responsive scrollbar" *ngIf="DateWiseIncentive.length>0 && isPopUpLoading">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>Name</th>
+                                    <th>callcount</th>
+                                    <th>Amount</th>
+                                    <th>Created On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center" *ngFor="let detail of DateWiseIncentive ;trackBy: trackByFn;">
+                                    <td>{{detail.EmployeeName}}</td>
+                                    <td>{{detail.callcount}}</td>
+                                    <td><button class="btn btn-sm btn-link" (click)="SelectedDateDetails(detail)"><i
+                                                class="fa fa-inr" aria-hidden="true"></i>{{detail.Amount}}</button></td>
+                                    <td>{{detail.CreatedOn |date: 'd MMM y'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div *ngIf="!showDateReport">
+                    <button *ngIf="modalTitle==='Total Calls'&& showDateReport === false" class="pull-left"
+                        (click)="showDateReport = true" class="btn btn-md btn-primary"> <i class="fa fa-arrow-left"
+                            aria-hidden="true"></i> Back</button>
+                    <h5 *ngIf="selectedIncentiveData.length" class="pull-right"><span class="badge badge-dark">Count :
+                            {{selectedIncentiveData.length}}</span></h5>
+                    <div class="table-responsive scrollbar" *ngIf="selectedIncentiveData.length>0 && isPopUpLoading">
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th></th>
+                                    <th># Enquiry</th>
+                                    <th># Referral</th>
+                                    <th>Name</th>
+                                    <th *ngIf="modalTitle==='Order'">OrderId</th>
+                                    <th *ngIf="modalTitle==='Site Visit Conducted'">Incentive Amt</th>
+                                    <th *ngIf="modalTitle==='Total Calls'">Duration</th>
+                                    <th *ngIf="modalTitle==='Site Visit Conducted'"> SiteVisit Duration</th>
+                                    <th *ngIf="modalTitle==='Total Calls'">Recording</th>
+                                    <th>Created On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center"
+                                    *ngFor="let detail of selectedIncentiveData;trackBy: trackByFn;let i=index;">
+                                    <td>{{i+1}}</td>
+                                    <td>{{detail.EnquiryId}}</td>
+                                    <td>{{detail.ReferralId}}</td>
+                                    <td>{{detail.Name | titlecase}}</td>
+                                    <td *ngIf="modalTitle==='Order'">{{detail.OrderId}}</td>
+                                    <td *ngIf="modalTitle==='Site Visit Conducted'">{{detail.Amount}}</td>
+                                    <td *ngIf="modalTitle==='Total Calls'">{{detail.Duration}}</td>
+                                    <td *ngIf="modalTitle==='Site Visit Conducted'"> {{detail.SiteVisitDuration}}</td>
+                                    <td *ngIf="modalTitle==='Total Calls' && detail.CallUrl"><a
+                                            href="{{detail.CallUrl}}" download target="_blank" class="downloadIcon">
+                                            <i class="fas fa-download"></i> Download</a></td>
+                                    <td *ngIf="modalTitle==='Total Calls' && !detail.CallUrl">NA</td>
+                                    <td>{{detail.Createdon |date: 'd MMM y'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center" *ngIf="selectedIncentiveData.length===0 ">
+                        <strong class="required"> Records Not Available </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div bsModal #PendingSchedulePopup="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #PendingScheduleForm="ngForm">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title title pull-left">Presales Pending Schedule</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <strong for="type">Select Date Range:</strong>
+                            <input ngxDaterangepickerMd type="text" autocomplete="off" [alwaysShowCalendars]="true"
+                                [ranges]="ranges" [linkedCalendars]="true" id="date" name="Date" #date="ngModel"
+                                [(ngModel)]="selectedDateRangeForPendingSearch" class="form-control"
+                                (change)="onChangeDateOnSearch(selectedDateRangeForPendingSearch)"
+                                placeholder="Select Date" [class.error]="date.invalid && date.touched"
+                                [class.has-success]="date.valid" />
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <div class="form-group insertBtn col-sm-12 text-center">
+                                <button type="button" class="btn btn-primary center-block mt-3"
+                                    (click)=PendingSchedule()>
+                                    <i class="fa fa-search"></i> Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover  table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Schedule Date</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>CreatedOn</th>
+                                    <th>Status / Approve / Reject</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let details of PendingScheduleDetails| paginate: {itemsPerPage: 8, currentPage: CurrentPageId };let i=index; ">
+                                    <td>{{details.Name}} </td>
+                                    <td>{{details.ScheduleDate |date:"d MMM y"}}</td>
+                                    <td>{{details.StartTime}} </td>
+                                    <td>{{details.EndTime}}</td>
+                                    <td>{{details.CreatedOn |date:"d MMM y"}}</td>
+                                    <td>
+                                        <mat-radio-group aria-label="Select an option"
+                                            *ngIf="loggedInuserDetails.UserId!==details.PendingBy">
+                                            <mat-radio-button class="example-radio-button" name="rname{{i}}"
+                                                *ngFor="let section of list;trackBy: trackByFn;" [value]="section.value"
+                                                (change)="radioChange($event,details)">
+                                                {{section.key}}</mat-radio-button>&nbsp;
+                                        </mat-radio-group>
+                                        <label
+                                            *ngIf="loggedInuserDetails.UserId===details.PendingBy">{{details.Status==='Pending'?'Pending For Approval':''}}</label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <tfoot class="pull-right" *ngIf="PendingScheduleDetails.length > 8">
+                            <pagination-controls id="enquiry" (pageChange)="CurrentPageId = $event">
+                            </pagination-controls>
+                        </tfoot>
+                        <div class="text-center" *ngIf="pendingSchedule">
+                            <strong class="required"> No data found </strong>
+                        </div>
+                        <div class="col-sm-12 text-center">
+                            <button type="button" class="btn btn-primary " *ngIf="flag"
+                                [disabled]="PendingScheduleForm.form.invalid"
+                                (click)="InsertPresalesSchedule('UPDATE','approved','Approved')">
+                                <i class="fa fa-paper-plane"></i> Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

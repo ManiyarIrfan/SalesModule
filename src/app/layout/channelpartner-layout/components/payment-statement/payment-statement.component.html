@@ -1,0 +1,186 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <!-- <app-page-header [heading]="'My Customer Order Status'" [icon]="'fa-bar-chart-o'"></app-page-header> -->
+    <strong class="text-danger">{{DataNotFoundError}}</strong>
+    <form *ngIf="!showDataNotFoundError">
+        <div class="table-responsible">
+            <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                <thead class="thead-light">
+                    <tr class="text-center">
+                        <th>Sr No</th>
+                        <th>Customer Name</th>
+                        <th>Order Id</th>
+                        <th>Order Date</th>
+                        <th>Order Status</th>
+                        <th>Agreement Status</th>
+                        <th>Verification Status</th>
+                        <th>Project Name</th>
+                        <th>Flat Number</th>
+                        <th>Total Value</th>
+                        <th>Referral Bonus %</th>
+                        <th>Referral Amt</th>
+                        <th>Invoice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let Payment of showstatement| paginate: { itemsPerPage: 12, currentPage: p1};let i=index;trackBy: trackByFn;">
+                        <td>{{i+1}}</td>
+                        <td>{{Payment.CustomerName ? Payment.CustomerName : 'NA'}}</td>
+                        <td>{{Payment.OrderId}}</td>
+                        <td>{{Payment.BookingDate|date:"d MMM y"}}</td>
+                        <td>
+                            <span
+                                [ngStyle]="{'background-color': Payment.OrderStatus=='Pending'? 'red' : 'green','color':'white','padding':'4px','font-weight': 'bold','border-radius': '8px','font-size':'14px'}">{{Payment.OrderStatus}}</span>
+                        </td>
+                        <td>
+                            {{Payment.AgreementStatus}}
+                        </td>
+                        <td>
+                            <span
+                                [ngClass]="{'badge-danger': Payment.VerificationStatus==='Rejected', 'badge-success':Payment.VerificationStatus==='Approved','badge-warning': Payment.VerificationStatus==='Verification pending'}">{{Payment.VerificationStatus?Payment.VerificationStatus:'NA'}}</span>
+                        </td>
+                        <td>{{Payment.ProjectName}}</td>
+                        <td>{{Payment.FlatNo}}</td>
+                        <td>{{Payment.TotalValue}}</td>
+                        <td>{{Payment.IncentiveProposed}}</td>
+                        <td>{{Payment.IncentiveValue}}</td>
+                        <td *ngIf="Payment.Invoice === null">
+                            <button *ngIf="Payment.AgreementStatus==='Registration Done'" type="button"
+                                class="btn btn-sm btn-link" (click)="createInvoice(Payment)">Upload Invoice</button>
+                        </td>
+                        <td *ngIf="Payment.Invoice !== null">
+                            <a href={{Payment.Invoice}} target="_blank" ngbTooltip="Open Invoice">
+                                <i class="fa fa-picture-o"
+                                    *ngIf="Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'png' || Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'PNG' || Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'jpeg' || Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'jpg' || Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'JPG' || Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'JPEG'"
+                                    aria-hidden="true"></i>
+
+                                <i class="fa fa-file-pdf-o"
+                                    *ngIf="Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'pdf' || Payment.Invoice.substr(Payment.Invoice.lastIndexOf('.') + 1) === 'PDF'"
+                                    aria-hidden="true"></i>
+                            </a> &nbsp;&nbsp;
+                            <i class="fa fa-trash has-error pointer" *ngIf="Payment.VerificationStatus!=='Approved'"
+                                ngbTooltip="Delete Invoice" (click)="confirmDeleteInvoice(Payment)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <tfoot class="pull-right" *ngIf="showstatement.length>12">
+                    <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                </tfoot>
+            </div>
+        </div>
+
+    </form>
+</div>
+<!-- Upload and show Invoice -->
+<div bsModal #uploadInvoiceModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+    <form #updateCpLeadForm="ngForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title center">{{ModalHeader}}</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onCloseBtn()" />
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="!confirmDeleteMsg">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <strong for="orderid">Order Id :</strong>
+                                    <input type="text" class="form-control" id="orderid" [disabled]="true"
+                                        [(ngModel)]="cpOrderDetail.OrderId" name="orderid"
+                                        [class.error]="orderid.invalid && orderid.touched"
+                                        [class.has-success]="orderid.valid" #orderid="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <strong for="custname">Customer Name:</strong>
+                                    <input type="text" class="form-control" id="custname" [disabled]="true"
+                                        [(ngModel)]="cpOrderDetail.CustomerName" name="custname"
+                                        [class.error]="custname.invalid && custname.touched"
+                                        [class.has-success]="custname.valid" #custname="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <strong for="projectname">Project Name:</strong>
+                                    <input type="text" class="form-control" id="projectname" [disabled]="true"
+                                        [(ngModel)]="cpOrderDetail.ProjectName" name="projectname"
+                                        [class.error]="projectname.invalid && projectname.touched"
+                                        [class.has-success]="projectname.valid" #projectname="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <strong for="faltno">Flat No:</strong>
+                                    <input type="text" class="form-control" id="faltno" [disabled]="true"
+                                        [(ngModel)]="cpOrderDetail.FlatNo" name="faltno"
+                                        [class.error]="faltno.invalid && faltno.touched"
+                                        [class.has-success]="faltno.valid" #faltno="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong for="orderinvoice">Order Invoice :</strong>
+                                <tru-file-upload [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png,.pdf,.PDF'"
+                                    [(inputFiles)]="importExcel" [multiple]="false">
+                                </tru-file-upload>
+                                <div class="row" *ngIf="importExcel.length == 0">
+                                    <div class="col-sm-12">
+                                        <span class="required">Select only 1 file to upload.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <strong for="incentivevalue">Incentive Value:</strong>
+                                    <input type="text" class="form-control" id="incentivevalue" [disabled]="true"
+                                        [(ngModel)]="cpOrderDetail.IncentiveValue" name="incentivevalue"
+                                        [class.error]="incentivevalue.invalid && incentivevalue.touched"
+                                        [class.has-success]="incentivevalue.valid" #incentivevalue="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row justify-content-md-center">
+                            <button type="button" class="btn btn-primary"
+                                (click)="uploadAurDeleteInvoice(cpOrderDetail,importExcel,updateCpLeadForm)">
+                                <i class="fa fa-edit"></i> Upload</button>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="text-center" *ngIf="confirmDeleteMsg">
+                        <img src="../../../assets/images/error.png"
+                            class="img-responsive text-center animated rotateIn">
+                        <h4>Are you Sure you want to delete the File? Please Check Once Again.</h4>
+                        <div class="modal-footer text-center">
+                            <button type="button" class="btn btn-success" id="modal-btn-si"
+                                (click)="uploadAurDeleteInvoice(invoiceCpDetails,importExcel,updateCpLeadForm)"
+                                *ngIf="!hideConfimBtn">
+                                <i class="fa fa-check"></i>
+                                Confirm</button>
+                            <button class="btn btn-danger" (click)="onCloseBtn()">
+                                <i class="fa fa-times-circle"></i>
+                                Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

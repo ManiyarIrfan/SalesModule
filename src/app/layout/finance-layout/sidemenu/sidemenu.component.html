@@ -1,0 +1,21 @@
+<div class="page-wrapper chiller-theme toggled">  
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <a> </a>
+        <div id="close-sidebar">
+          <i class="fa fa-times" (click)="closesidebar()"></i>
+        </div>
+      </div>    
+      <div class="sidebar-menu" style="max-height: 550px;overflow: auto;">
+        <ul>
+          <li class="sidebar-dropdown font-sz" *ngFor="let item of HomeTabs;">
+            <a (click)="submenu(item);">
+              <span>{{item.key}}</span>
+            </a>
+          </li>         
+        </ul>
+      </div>
+    </div>   
+  </nav>
+</div>

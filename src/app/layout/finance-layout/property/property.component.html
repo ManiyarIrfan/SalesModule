@@ -1,0 +1,107 @@
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="page-title-box">
+                    <div class="pull-right">
+                        <ol class="breadcrumb-data">
+                            <li class="breadcrumbitem">
+                                <a href="">Home &nbsp; /&nbsp;</a>
+                            </li>
+                            <li class="breadcrumbitem active">
+                                <a href="">Property</a>
+                            </li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title pt-2">Property</h4>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <main class="main flow">
+                    <ul class="cards">
+                        <li class="card" *ngFor="let site of AllSites; trackBy: trackByFn">
+                            <div class="card__img">
+                                <div class="img__cover">
+                                    <ngb-carousel class="mycarousel-Size">
+                                        <ng-template ngbSlide
+                                            *ngFor="let image of SitefilesData[site.SiteId];trackBy: trackByFn;">
+                                            <img *ngIf="image.SiteFiles" class="mylocandina imgheight"
+                                                [src]="image.SiteFiles" alt="Random first slide">
+                                        </ng-template>
+                                    </ngb-carousel>
+                                </div>
+                                <div class="img__profile">
+                                    <img src="./../../../../../../assets/images/logonew.jpg" alt="">
+                                </div>
+                            </div>
+                            <div class="card__text  flow ">
+                                <h2>
+                                    <a>{{site.SiteName | titlecase}}</a>
+                                </h2>
+                                <p class="meta__info">
+                                    <span>Developer:&nbsp;
+                                        {{site.Developer}}</span> <br>
+                                    <span class="meta__posts">Address:&nbsp;{{site.PropertyAddress | titlecase}}
+                                        {{site.State| titlecase}}</span> <br>
+                                    <span>Files :</span>
+                                </p>
+                                <div class="row">
+                                    <div class="col-sm-12 scrollP mb-2" id="style-2">
+                                        <div class="gridstyle">
+                                            <p class="fontweght"
+                                                *ngFor="let file of SitefilesData[site.SiteId]; trackBy: trackByFn;let i=index;">
+                                                <ng-container
+                                                    *ngIf="getFormatedData(file,file.SiteFiles && file.SiteFiles.substr(file.SiteFiles.lastIndexOf('.') + 1))">
+                                                    <img id="imageLogo{{i+1}}" class="docStyle" src="{{file.docStyle}}"
+                                                        alt="Logo image{{i+1}}" />
+                                                </ng-container>
+                                                &nbsp;
+                                                <span>
+                                                    {{file.FileName ? ((file.FileName.length >30) ? (file.FileName |
+                                                    slice:0:30)+'...' : file.FileName) :''}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-sm-12 mt-1 mb-2 p-0">
+                                        <button (click)="getAllPlotlist(site)" type="button"
+                                            class="border pull-right rounded btn btn-light pt-2 pb-2 pl-4 pr-4">View
+                                            Details</button>
+                                        <button (click)="showModel('keyHighlights',site)" type="button"
+                                            class="border mr-2 pull-right rounded btn btn-light pt-2 pb-2 pl-4 pr-4">Key
+                                            highlights</button>
+
+                                    </div> -->
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </main>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal fade" cdkDrag bsModal #viewImageModel="bs-modal" id="viewImageModel" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="false" [config]="{backdrop: false, ignoreBackdropClick: true}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="{{SelectedImg}}" class="d-block w-100 img-fluid mb-2" alt="">
+                <h5 *ngIf="SelectedSectorTitle" class="pull-left p-2">
+                    <strong>{{SelectedSectorTitle | titlecase}}</strong>
+                </h5>
+                <button type="button" class="btn btn-danger pull-right"
+                    (click)="viewImageModel.hide();SelectedSectorTitle=''">
+                    Close&nbsp;<i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div> -->

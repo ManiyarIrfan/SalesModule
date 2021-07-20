@@ -1,0 +1,20 @@
+<div class="card text-white bg-{{bgClass}}">
+    <div class="card-header" [routerLink]="data"  routerLinkActive="active">
+        <div class="row">
+            <div class="col col-xs-3">
+                <i class="fa {{icon}} fa-3x"></i>
+            </div>
+            <div class="col col-xs-9 text-right">
+                <div class="d-block huge count">{{count ? count : '0'}}</div>                
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <span class="float-left name" [routerLink]="data"  routerLinkActive="active">{{label}}</span>
+                <a [routerLink]="data"  routerLinkActive="active" class="float-right card-inverse"> 
+            <span ><i class="fa fa-arrow-circle-right"></i></span>
+        </a>
+    </div>
+</div>
+
+

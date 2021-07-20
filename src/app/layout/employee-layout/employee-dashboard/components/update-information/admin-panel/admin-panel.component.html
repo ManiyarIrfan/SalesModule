@@ -1,0 +1,831 @@
+<br />
+<p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
+    <fieldset class="scheduler-border">
+        <br />
+        <div class="row weight">
+            <div class="col-sm-4" *ngFor="let flag of getAllFlagDetails;let i = index;trackBy: trackByFn">
+                <div class="row flag">
+                    <div class="col-sm-9 ">
+                        <strong>{{i+1}})&nbsp;{{flag.Name}}:</strong>
+                    </div>
+                    <div class="col-sm-2 text-left">
+                        <p-inputSwitch (onChange)="flagChangeUpdate($event,flag.KeyName)" [(ngModel)]="flag.KeyValue"
+                            ngbTooltip="{{flag.Tooltip}}" placement="bottom"></p-inputSwitch>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    </fieldset>
+</p-overlayPanel>
+<div class="row">
+    <br />
+    <div class="col-sm-1 text-center" *ngIf="!hideForPresalesAdmin">
+        <button type="button" class="btn btn-outline-success" (click)="openModal(1,null,AdminPanelForm)">
+            <i class="fa fa-plus"></i> Create New</button>
+    </div>
+    <div class="col-sm-2 icon-addon addon-md">
+        <input type="text" class="form-control search" [(ngModel)]="name" placeholder="Search Employee Details here">
+        <i class="fa fa-search"></i>
+    </div>
+    <div class="col-sm-2 text-right" *ngIf="!hideForPresalesAdmin">
+        <button type="text" Class="btn btn-primary  " (click)="openReferralImport()">Import Referral</button>
+    </div>
+    <div class="col-sm-6" *ngIf = "!EmpolyeeAuditTable">
+        <button type="text" Class="btn btn-primary" (click)="openMigrationImport()">Import Migration</button>
+        &nbsp;&nbsp;&nbsp;
+        <button type="text" Class="btn btn-primary" (click)="openEnquiryImport()">Import Enquiry</button>
+        &nbsp;&nbsp;&nbsp;
+        <button type="text" Class="btn btn-primary" (click)="op.toggle($event)">Utility Flag</button>
+        &nbsp;&nbsp;&nbsp;
+        <button type="text" Class="btn btn-primary" (click)="EmpolyeeAuditTable = true; todaysDateSelect()">Employee Audit</button>
+    </div>
+    <div class="col-sm-5" *ngIf = "EmpolyeeAuditTable && hideForPresalesAdmin">
+        <button type="text" Class="btn btn-primary" (click)="EmpolyeeAuditTable = false">Employee Details</button>
+    </div>
+    <div class="col-sm-2" *ngIf = "EmpolyeeAuditTable && !hideForPresalesAdmin">
+        <button type="text" Class="btn btn-primary" (click)="EmpolyeeAuditTable = false">Employee Details</button>
+    </div>
+    <div class="col-sm-5" *ngIf = "EmpolyeeAuditTable">
+            <input type="text" autocomplete="off" [alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true"
+            required ngxDaterangepickerMd id="date" name="Date" #date="ngModel" [(ngModel)]="selectedDateRange"
+            class="form-control calender" placeholder="Select Start Date and End Date"
+            (change)="onChangeDate(selectedDateRange)"/>
+    </div>
+</div>
+<br />
+<form #AdminPanelScreenForm="ngForm">
+    <div class="row">
+        <div class="col-sm-12" align="center">
+            <div [hidden]="!isLoading">
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="Listlength>0 && !EmpolyeeAuditTable">
+        <div class="card cardfortable">
+            <div class="title textweight text-center">
+                <span>Employee Details</span>
+            </div>
+            <div class="table-responsive scrollbar" id="style-2" style="height: 434px;">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Employee Id</th>
+                            <th>Name</th>
+                            <th>Mobile No</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Assign Area</th>
+                            <th>Assigned Project 1</th>
+                            <th>Assigned Project 2</th>
+                            <th>Assigned Project 3</th>
+                            <th>RepotingTo</th>
+                            <th>Level</th>
+                            <th>Weekly off</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr 
+                            *ngFor="let details of EmployeeDetail| filter:name | paginate: {id:'Employee-Details-pagination', itemsPerPage: 8, currentPage: p1 };trackBy: trackByFn">
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link"
+                                    (click)="openModal(2,details,AdminPanelForm)">{{details.EmployeeId}}</button>
+                            </td>
+                            <td class="text-left">{{details.FirstName}} {{details.LastName}}</td>
+                            <td>{{details.MobileNo}} </td>
+                            <td class="text-left">{{details.Email}}</td>
+                            <td class="text-left">{{details.Role}}</td>
+                            <td>{{details.AssingedArea}}</td>
+                            <td>{{details.AssingedProject1}}</td>
+                            <td>{{details.AssingedProject2}}</td>
+                            <td>{{details.AssingedProject3}}</td>
+                            <td class="text-left">{{details.ReportingToName}}</td>
+                            <td>{{details.Level}}</td>
+                            <td>{{details.WeeklyOff}}</td>
+                            <td>
+                                <span
+                                    [ngClass]="{'badge-danger': details.EmployeeStatus==='New', 'badge-success': details.EmployeeStatus==='Active','badge-warning': details.EmployeeStatus==='Pending For Approval','badge-default':details.EmployeeStatus==='Deactive' }">{{details.EmployeeStatus}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot class="pull-right">
+                    <pagination-controls id="Employee-Details-pagination" (pageChange)="p1 = $event">
+                    </pagination-controls>
+                </tfoot>
+            </div>
+        </div>
+    </div>
+
+    <!-- ******************* Channel Partner Related Admin Control ******************* -->
+    <tru-channelpartner-admin-control *ngIf="!hideForPresalesAdmin && !EmpolyeeAuditTable" ></tru-channelpartner-admin-control>
+    <!-- ******************* End ******************* -->
+</form>
+
+  <button type="button" class="btn btn-primary pull-right mt-3" (click)="openmodal()" *ngIf= "!EmpolyeeAuditTable"><i
+        class="fa fa-plus"></i>
+    Add Source/Camapign</button>    
+
+<!-- Add and Update Employee Deatails -->
+<div bsModal #adminDetails="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #AdminPanelForm="ngForm">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-sm-12">
+                        <h4 class="modal-title title text-center">{{Modal_Title}}
+                        </h4>
+                        <mat-checkbox (change)="onClick($event)" [disabled]="Modal_Title==='Update Employee Details'"
+                            [checked]="adminPanelModel.EmployeeId===0?true:false"
+                            [(ngModel)]="adminPanelModel.registerTemp" name="registeremp"><strong
+                                style="color: white;">Temporary Register</strong></mat-checkbox>
+                    </div>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onCloseUpdate(AdminPanelForm)" />
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <strong for="FirstName">
+                                <span class="required">*</span>First Name :</strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" id="FirstName"
+                                name="FirstName" required [(ngModel)]="adminPanelModel.FirstName"
+                                placeholder="Enter First Name..." required #FirstName="ngModel"
+                                [class.error]="FirstName.invalid && FirstName.touched"
+                                [class.has-success]="FirstName.valid">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <strong for="LastName">
+                                <span class="required">*</span>Last Name :</strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" id="LastName"
+                                name="LastName" [(ngModel)]="adminPanelModel.LastName" placeholder="Enter Last Name..."
+                                required #LastName="ngModel" [class.error]="LastName.invalid && LastName.touched"
+                                [class.has-success]="LastName.valid">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <strong for="MobileNo">
+                                <span class="required">*</span>Mobile Number :</strong>
+                            <input (blur)="getMobileValidation(adminPanelModel.MobileNo)" type="text" pattern="^\d{10}$"
+                                class="form-control" [ngClass]="isMobileAvailable ?'textBox':''" id="MobileNo"
+                                name="MobileNo" required [(ngModel)]="adminPanelModel.MobileNo" placeholder="Mobile No*"
+                                minlength=10 maxlength=10 #MobileNo="ngModel"
+                                [class.error]="MobileNo.invalid && MobileNo.touched"
+                                [class.has-success]="MobileNo.valid">
+                            <div *ngIf="MobileNo.errors && (MobileNo.dirty || MobileNo.touched)"
+                                class="alert alert-danger">
+                                <div [hidden]="!MobileNo.errors.required">Mobile No is required!</div>
+                                <div [hidden]="!MobileNo.errors.pattern">Enter Valid Mobile No!</div>
+                            </div>
+                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                            <!-- <span [hidden]="!isMobileAvailable" class="green">{{showmobile}}</span> -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4" *ngIf="this.Button_Name!='Update'">
+                            <strong for="EmailId">
+                                <span class="required">*</span>Email Id :</strong>
+                            <input type="email" (blur)="getEmailValidation(adminPanelModel.Email)"
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" class="form-control" id="EmailId"
+                                name="EmailId" required [(ngModel)]="adminPanelModel.Email" placeholder="Email*"
+                                #email="ngModel" [class.error]="email.invalid && email.touched"
+                                [class.has-success]="email.valid">
+                            <div *ngIf="email.errors && (email.dirty || email.touched)" class="alert alert-danger">
+                                <div [hidden]="!email.errors.required">Email Id is required!</div>
+                                <div [hidden]="!email.errors.pattern">Enter Valid Email!</div>
+                            </div>
+                            <span [hidden]="isEmailAvailable" class="required">{{showemail}}</span>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="this.Button_Name=='Update'">
+                            <strong for="EmailId">
+                                <span class="required">*</span>Email Id :</strong>
+                            <input type="email" class="form-control" id="EmailId" name="EmailId"
+                                [(ngModel)]="adminPanelModel.Email" readonly>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="!hideFields && this.Button_Name!='Update'">
+                            <strong for="Role">
+                                <span class="required">*</span>Select Role :</strong>
+                            <select class="form-control" id="Role" #Role="ngModel" required
+                                [(ngModel)]="adminPanelModel.Role" name="Role"
+                                (change)="selectedRole(adminPanelModel.Role)"
+                                [class.error]="Role.invalid && Role.touched" [class.has-success]="Role.valid">
+                                <option value="">---Select Role---</option>
+                                <option *ngFor="let item of selectedEmployeeRoles;trackBy:trackByFn">{{item.Role}}
+                                </option>
+                            </select>
+                        </div> <div class="form-group col-sm-4" *ngIf="!hideFields && this.Button_Name=='Update'">
+                            <strong for="Role">
+                                <span class="required">*</span>Select Role :</strong>
+                            <select class="form-control" id="Role" #Role="ngModel" disabled
+                                [(ngModel)]="adminPanelModel.Role" name="Role"
+                                (change)="selectedRole(adminPanelModel.Role)"
+                                [class.error]="Role.invalid && Role.touched" [class.has-success]="Role.valid">
+                                <option value="">---Select Role---</option>
+                                <option *ngFor="let item of selectedEmployeeRoles;trackBy:trackByFn">{{item.Role}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="Level">Level :</strong>
+                            <select class="form-control" id="Level" #Level="ngModel" [(ngModel)]="adminPanelModel.Level"
+                                name="Level" [class.error]="Level.invalid && Level.touched"
+                                [class.has-success]="Level.valid">
+                                <option value="">---Select Level---</option>
+                                <option *ngFor="let item of levelInfo;trackBy:trackByFn" [value]="item.value">
+                                    {{item.value}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="modulename"> Landing Module:</strong>
+                            <select class="form-control" id="modulename" name="modulename"
+                                [(ngModel)]="adminPanelModel.ModuleName" #modulename="ngModel"
+                                [class.error]="modulename.invalid && modulename.touched"
+                                [class.has-success]="modulename.valid">
+                                <option value="">---Select Type---</option>
+                                <option class='option' *ngFor='let item of ModuleDetails;trackBy: trackByFn'
+                                    [value]="item.value">
+                                    {{item.key}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="Name">Reporting To :</strong>
+                            <select class="form-control" id="Name" #Name="ngModel"
+                                [(ngModel)]="adminPanelModel.ReportingTo" (change)="GetReportingId($event.target.value)"
+                                name="Name" [class.error]="Name.invalid && Name.touched"
+                                [class.has-success]="Name.valid">
+                                <option value="">---Select Reporting To---</option>
+                                <option *ngFor="let item of selectedEmployeeName;trackBy: trackByFn"
+                                    [value]="item.EmployeeId">
+                                    {{item.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="adminPanelModel.Role !== 'PRESALES' && !hideFields">
+                            <strong for="ProjectName">
+                                <span class="required">*</span>Project Name 1 :</strong>
+                            <select class="form-control" id="ProjectName1" #ProjectName="ngModel" required
+                                [(ngModel)]="adminPanelModel.AssingedProject1" name="ProjectName"
+                                [class.error]="ProjectName.invalid && ProjectName.touched"
+                                [class.has-success]="ProjectName.valid">
+                                <option value="">---Select Project Name 1---</option>
+                                <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn"
+                                    [hidden]="item.ProjectName === 'Common'">{{item.ProjectName}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="adminPanelModel.Role === 'PRESALES'">
+                            <strong for="ProjectName">Project Name 1 :</strong>
+                            <select class="form-control" id="ProjectName1"
+                                [(ngModel)]="adminPanelModel.AssingedProject1" name="ProjectName">
+                                <option value="">---Select Project Name 1---</option>
+                                <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn"
+                                    [hidden]="item.ProjectName === 'Common'">{{item.ProjectName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="ProjectName2">Project Name 2 :</strong>
+                            <select class="form-control" id="ProjectName2" #ProjectName2="ngModel"
+                                [(ngModel)]="adminPanelModel.AssingedProject2" name="ProjectName2"
+                                [class.error]="ProjectName2.invalid && ProjectName2.touched"
+                                [class.has-success]="ProjectName2.valid">
+                                <option value="">---Select Project Name 2---</option>
+                                <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn"
+                                    [hidden]="item.ProjectName === 'Common'">{{item.ProjectName}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="ProjectName3">Project Name 3 :</strong>
+                            <select class="form-control" id="ProjectName3" #ProjectName3="ngModel"
+                                [(ngModel)]="adminPanelModel.AssingedProject3" name="ProjectName3"
+                                [class.error]="ProjectName3.invalid && ProjectName3.touched"
+                                [class.has-success]="ProjectName3.valid">
+                                <option value="">---Select Project Name 3---</option>
+                                <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn"
+                                    [hidden]="item.ProjectId === 335">
+                                    {{item.ProjectName}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="Location">
+                                <span class="required"></span>Assinged Area :</strong>
+                            <select class="form-control" id="Location" #Location="ngModel"
+                                [(ngModel)]="adminPanelModel.AssingedArea" name="Location"
+                                [class.error]="Location.invalid && Location.touched"
+                                [class.has-success]="Location.valid">
+                                <option value="">---Select Assinged Area---</option>
+                                <option *ngFor="let item of selectedLocations;trackBy: trackByFn">{{item.Location}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="AssignedCity">
+                                <span class="required">*</span>Assigned City :</strong>
+                            <select class="form-control" id="AssignedCity" name="AssignedCity"
+                                [(ngModel)]="adminPanelModel.City" required #assignedCity="ngModel"
+                                [class.error]="assignedCity.invalid && assignedCity.touched"
+                                [class.has-success]="assignedCity.valid">
+                                <option value="">---Select Assigned City---</option>
+                                <option class='option' *ngFor='let item of assignedCityInfo;trackBy: trackByFn'
+                                    [value]="item.value">
+                                    {{item.value}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="adminPanelModel.Role !== 'PRESALES' && !hideFields">
+                            <strong for="Week_off"><span class="required">*</span>Weekly Off :</strong>
+                            <p-multiSelect [options]="WeekDay" [(ngModel)]="adminPanelModel.WeeklyOff"
+                                defaultLabel="Select Weekly Off" id="Week_off" name="Week_off" optionLabel="value"
+                                [style]="{'width':'100%'}" [required]="true">
+                            </p-multiSelect>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="adminPanelModel.Role === 'PRESALES' && !hideFields">
+                            <strong for="Week_off">Weekly Off :</strong>
+                            <p-multiSelect [options]="WeekDay" [(ngModel)]="adminPanelModel.WeeklyOff"
+                                defaultLabel="Select Weekly Off" id="Week_off" name="Week_off" optionLabel="value"
+                                [style]="{'width':'100%'}">
+                            </p-multiSelect>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="weekOff">This week days off:</strong>
+                            <p-multiSelect [options]="WeekDay" [(ngModel)]="adminPanelModel.noleadsDay"
+                                defaultLabel="Select Week days Off" id="weekOff" name="weekOff" optionLabel="value"
+                                [style]="{'width':'100%'}">
+                            </p-multiSelect>
+                        </div>
+                        <div class="form-group col-sm-4"
+                            *ngIf="(adminPanelModel.Role === 'PRESALES'||adminPanelModel.Role === 'SALES') && !hideFields">
+                            <strong for="switchrole">Switch Role (Sales and Presales):</strong>
+                            <div class="col-sm-2 text-left">
+                                <p-inputSwitch name="switchrole" [(ngModel)]="adminPanelModel.SwitchRole">
+                                </p-inputSwitch>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4" *ngIf="!hideFields">
+                            <strong for="engagementType">
+                                Engagement Type :</strong>
+                            <select class="form-control" id="engagementType" name="engagementType"
+                                [(ngModel)]="adminPanelModel.EngagementType" #engagementType="ngModel"
+                                [class.error]="engagementType.invalid && engagementType.touched"
+                                [class.has-success]="engagementType.valid">
+                                <option value="">---Select Type---</option>
+                                <option class='option' *ngFor='let item of empTypeList;trackBy: trackByFn'
+                                    [value]="item.value">
+                                    {{item.key}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row justify-content-md-center">
+                        <button type="button" class="btn btn-primary center-block"
+                            (click)="OnSubmitBtnClick(AdminPanelForm)"
+                            [disabled]="!AdminPanelForm.form.valid || !isEmailAvailable || (adminPanelModel.Role !== 'PRESALES' && (adminPanelModel.WeeklyOff && adminPanelModel.WeeklyOff.length === 0))"
+                            *ngIf="this.Button_Name!=='Update' && this.Button_Name!=='Register'">
+                            <i class="fa fa-paper-plane"></i> Submit</button>
+
+                        <button type="button" class="btn btn-primary center-block"
+                            (click)="OnSubmitBtnClick(AdminPanelForm)"
+                            [disabled]="!adminPanelModel.FirstName || !adminPanelModel.LastName || !adminPanelModel.MobileNo || !adminPanelModel.Email"
+                            *ngIf="this.Button_Name==='Register'">
+                            <i class="fa fa-paper-plane"></i> Register</button>
+                        <!-- <button type="button" class="btn btn-primary center-block"
+                            (click)="OnSubmitBtnClick(AdminPanelForm)"
+                            [disabled]="!AdminPanelForm.form.valid  ||!isEmailAvailable || (adminPanelModel.Role !== 'PRESALES'")
+                            *ngIf="this.Button_Name='Register' || hideFields">
+                            <i class="fa fa-paper-plane"></i>Register</button> -->
+
+                        <button type="button" class="btn btn-primary center-block"
+                            (click)="OnSubmitBtnClick(AdminPanelForm)"
+                            [disabled]="!AdminPanelForm.form.valid|| !isMobileAvailable || (adminPanelModel.Role !== 'PRESALES' && (adminPanelModel.WeeklyOff && adminPanelModel.WeeklyOff.length === 0))"
+                            *ngIf="this.Button_Name==='Update'">
+                            <i class="fa fa-edit"></i> Update</button>
+                    </div>
+                    <br>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- modal Pop For Import the Enquiry and Leads -->
+<div bsModal #importpopup="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #ImportLeadForm="ngForm">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title title text-center">{{headerModal}}</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span> Download <a href="assets/ExcelSheet.xlsx" target="_blank"
+                                            class="text-blue">sample
+                                            xls</a> file and import your data</span>
+                                </div>
+                                <br><br>
+                                <div class="col-sm-4">
+                                    <span class="pull-left requiredColor">Upload Excel *</span>
+                                </div>
+                                <div class="col-sm-8 border-left">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <tru-file-upload [accept]="'.xlsx,.xls,.xltx,.xlt,.xltm'"
+                                                        [(inputFiles)]="importExcel" [multiple]="false">
+                                                    </tru-file-upload>
+                                                </div>
+                                                <div class="col-sm-8 mt-2 pl-4">
+                                                    <span class="small text-muted" *ngIf="importExcel.length===0">No
+                                                        file
+                                                        selected</span>
+                                                    <span *ngIf="importExcel.length > 0">Select only 1 file to
+                                                        upload</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-5">
+                                                    <strong for="source">Source:<span class="required">*</span></strong>
+                                                    <select class="form-control" id="source" name="source"
+                                                        [class.error]="source.invalid && source.touched"
+                                                        [class.has-success]="source.valid"
+                                                        [(ngModel)]="importModel.Source" #source="ngModel">
+                                                        <option value="">Select Source</option>
+                                                        <option class='option'
+                                                            *ngFor='let source of sourceInfo;trackBy: trackByFn'
+                                                            [value]="source.Name">
+                                                            {{source.Name}}
+                                                        </option>
+                                                    </select>
+                                                    <span class="required">If source column is in excelsheet please
+                                                        ignore
+                                                        selected dropdown
+                                                        source.</span>
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <strong for="Budget">Campaign :</strong>
+                                                    <select type="text" class="form-control" id="Campaign"
+                                                        name="campaign" #campaign="ngModel"
+                                                        [(ngModel)]="importModel.Campaign">
+                                                        <option value="">Select Campaign </option>
+                                                        <option *ngFor="let item of campaignInfo;trackBy: trackByFn"
+                                                            [value]="item.Name">
+                                                            {{item.Name}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div *ngIf="headerModal ==='Enquiry Import'">
+                        <strong>Select 'checkbox/Employee' for Enquiry assignment:</strong>
+                        <br />
+                        <div class='row px-3 checkboxscroll'>
+                            <!-- <div class="col-sm-2"
+                                *ngFor="let employee of enquiryEmployeeName;let i=index;trackBy: trackByFn">
+                                <div class="checkbox checkbox-primary">
+                                    <label for="employee">
+                                        <input type="checkbox" name="employee[{{i}}]" [value]="employee.EmployeeId"
+                                            (change)="selectedEmployee($event.target.checked,$event.target.value)" />
+                                        {{employee.Name}}
+                                    </label>
+                                </div>
+                            </div> -->
+                            <div class="col-sm-2"
+                                *ngFor="let employee of enquiryEmployeeName;let i=index;trackBy: trackByFn">
+                                <div class="form-check p-1">
+                                    <input (change)="selectedEmployee($event.target.checked,$event.target.value)"
+                                        [value]="employee.EmployeeId" type="checkbox" name="employee[{{i}}]"
+                                        class="form-check-input" id="exampleCheck12[{{i}}]">
+                                    <label class="form-check-label" for="exampleCheck12"> {{employee.Name}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="headerModal ==='Referral Import'">
+                        <strong>Select 'checkbox/Employee' for Lead assignment:</strong>
+
+
+                        <div class='row p-2'>
+                            <!-- <div class="col-sm-2" *ngFor="let employee of employeeName;let i=index;trackBy: trackByFn">
+                                <div class=" ">
+                                    <input class="mr-2" type="checkbox" name="salesemployee[{{i}}]" [value]="employee.EmployeeId"
+                                        (change)="selectedEmployee($event.target.checked,$event.target.value)" />
+                                    <span class="ml-2 pl-2"> &nbsp;&nbsp; {{employee.Name}}</span>
+                                </div>
+                            </div> -->
+                            <div class="col-sm-2" *ngFor="let employee of employeeName;let i=index;trackBy: trackByFn">
+                                <div class="form-check">
+                                    <input (change)="selectedEmployee($event.target.checked,$event.target.value)"
+                                        type="checkbox" class="form-check-input" id="exampleCheck1[{{i}}]"
+                                        [value]="employee.EmployeeId">
+                                    <label class="form-check-label" for="exampleCheck1">{{employee.Name}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <button type="button" class="btn btn-primary mx-1" (click)="importLeadExcel(importExcel)"
+                                [disabled]=disableBtn(importModel,importExcel)>
+                                <i class="fa fa-edit"></i> Upload </button>
+                            <button type="button" class="btn btn-light mx-1 px-2 py-1" (click)="onClose()">
+                                <i class="fa fa-times"></i> Cancel </button>
+                            <button *ngIf="!viewLogDetailsButton" type="button" class="btn btn-primary border"
+                                (click)="viewLogDetails()">
+                                View Log </button>
+                        </div>
+                        <div class="col-sm-12" *ngIf="Message !==''">
+                            <h5>{{Message}}</h5>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12" align="center">
+                            <div [hidden]="!isSpinner">
+                                <p class="loading">
+                                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row justify-content-md-center">
+                        <div class="alert alert-info" role="alert" *ngIf="showSuccessfullImportMessage!==''">
+                            <h4> {{showSuccessfullImportMessage}}</h4>
+                        </div>
+                    </div> -->
+                    <div *ngIf="showLogDetailsGrid">
+                        <div class="card cardfortable">
+                            <div class="title textweight text-center">
+                                <span>All Log Details</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover  table-sm text-nowrap">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Mobile No.</th>
+                                            <th>Email</th>
+                                            <th>Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let details of allLogDetails| paginate: { itemsPerPage: 6, currentPage: q, id:'enquiry' };trackBy: trackByFn ">
+                                            <td>{{details.Name}} </td>
+                                            <td>{{details.MobileNo}}</td>
+                                            <td>{{details.Email}} </td>
+                                            <td>{{details.Type}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <tfoot class="pull-right" *ngIf="allLogDetails.length>6">
+                                    <pagination-controls id="enquiry" (pageChange)="q = $event"></pagination-controls>
+                                </tfoot>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div bsModal #createProjectStatusModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title text-center"> Add Source/Camapign</h4>
+            <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onpopClose()" />
+          </div>
+         
+          <form #sourceCampaignForm="ngForm">
+            <div class="modal-body">
+                   <div class="row">
+                    <div class="col-sm-6">
+                    <strong for="type"><span class="required">*</span>Type :</strong>
+                   
+                    <select class="form-control" id="type" name="type" [(ngModel)]="sourcecampaignModel.Type" required
+                        #type="ngModel" (change)="sourceCamapign(sourcecampaignModel.Type)"
+                        [class.error]="type.invalid && type.touched" [class.has-success]="type.valid">
+                        <option [value]="">--- Select Type ---</option>
+                        <option *ngFor="let type of sourceCampaignType;trackBy: trackByFn" [value]="type.key">
+                            {{type.value}}</option>
+                    </select>
+                    </div>
+                <div class="form-group col-sm-6">
+                    <strong for="source">
+                        <span class="required">*</span>Name :</strong>
+                    <input type="text" class="form-control" id="LastName" name="LastName"
+                        [(ngModel)]="sourcecampaignModel.Name" placeholder="Enter Source"
+                        (blur)="checkDuplication(sourcecampaignModel.Name)" required #source="ngModel"
+                        [class.error]="source.invalid && source.touched" [class.has-success]="source.valid">
+                    <span *ngIf="disableFields" class="required">{{sourcecampaignModel.Type}} is Already Exist</span>
+                </div>
+                <div class="form-group col-sm-6" *ngIf="checkType">
+                    <strong for="source">
+                        <span class="required">*</span>Campaign No :</strong>
+                    <input type="text" class="form-control" id="cNo" name="cNo"
+                        [(ngModel)]="sourcecampaignModel.campaignNo" placeholder="Enter Campaign No" required
+                        #cNo="ngModel" pattern="^[^-\s][0-9 ]*" [class.error]=" cNo.invalid && cNo.touched"
+                        [class.has-success]="cNo.valid">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6" *ngIf="sourcecampaignModel.Type==='Source'">
+                    <strong for="Role">Existing Source :</strong>
+                    <select class="form-control" id="source" name="source">
+                        <option *ngFor="let item of sourceCampaignList;trackBy: trackByFn">{{item.Name}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-6" *ngIf="sourcecampaignModel.Type==='Campaign'">
+                    <strong for="Role"> Previous Camapign :</strong>
+                    <select class="form-control" id="campaign" name="campaign">
+                        <option *ngFor="let item of sourceCampaignList;trackBy: trackByFn">{{item.Name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div Class="row">
+                <div class="form-group text-center col-sm-12 ">
+                    <button type="button" class="btn btn-primary center-block"
+                        (click)="onInsertButton(sourcecampaignModel,sourceCampaignForm)"
+                        [disabled]="sourceCampaignForm.invalid||disableFields">
+                        <i class="fa fa-paper-plane"></i> Submit</button>
+                </div>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="alert alert-info" role="alert" *ngIf="showSuccessfullMessage!==''">
+                    <h4> {{showSuccessfullMessage}}</h4>
+                </div>
+            </div>        
+            <br>
+        </div>
+        </form>
+
+        </div>
+        </div>
+</div>
+
+<div bsModal #importMigrationpopup="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #importMigrationForm="ngForm">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title title text-center">{{headerModal}}</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose()" />
+                </div>
+                <div class="modal-body">
+                    <div class="row justify-content-md-center">
+                        <div class="col-sm-2">
+                            <span class="required">*</span><strong>Upload Excel :</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <tru-file-upload [accept]="'.xlsx,.xls,.xltx,.xlt,.xltm'" [(inputFiles)]="importExcel"
+                                [multiple]="false">
+                            </tru-file-upload>
+                        </div>
+                        <div class="row" *ngIf="importExcel.length == 0">
+                            <span class="required">Select only 1 file to upload.</span>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="row justify-content-md-center">
+                        <button type="button" [disabled]="importExcel.length == 0" class="btn btn-primary"
+                            (click)="importMigrationExcel(importExcel)">
+                            <i class="fa fa-edit"></i> Upload </button>&nbsp;
+                        <div *ngIf="!viewLogDetailsButton">
+                            <button type="button" class="btn btn-primary" (click)="viewLogDetails()">
+                                View Log </button>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12" align="center">
+                            <div [hidden]="!isSpinner">
+                                <p class="loading">
+                                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <div class="alert alert-info" role="alert" *ngIf="showSuccessfullImportMessage!==''">
+                            <h4> {{showSuccessfullImportMessage}}</h4>
+                        </div>
+                        <div class="alert" role="alert" *ngIf="showReenagedLeadsMessage !== ''">
+                            <h4> {{showReenagedLeadsMessage}}</h4>
+                        </div>
+                    </div>
+                    <div *ngIf="showLogDetailsGrid">
+                        <div class="card cardfortable">
+                            <div class="title textweight text-center">
+                                <span>All Log Details</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover  table-sm text-nowrap">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Mobile No.</th>
+                                            <th>Email</th>
+                                            <th>Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let details of allLogDetails| paginate: { itemsPerPage: 6, currentPage: p2, id:'enquiry' };trackBy: trackByFn ">
+                                            <td>{{details.Name}} </td>
+                                            <td>{{details.MobileNo}}</td>
+                                            <td>{{details.Email}} </td>
+                                            <td>{{details.Type}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <tfoot class="pull-right" *ngIf="allLogDetails.length > 6">
+                                    <pagination-controls id="enquiry" (pageChange)="p2 = $event"></pagination-controls>
+                                </tfoot>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- this is for audit table representation -->
+<div *ngIf="EmpolyeeAuditTable">
+        <div class="card cardfortable">
+            <div class="title textweight text-center">
+                <span>Employee Audit Details</span>
+            </div>
+            <div class="table-responsive scrollbar" id="style-2" style="height: 434px;">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>User</th>
+                            <th>Updated Details</th>
+                            <th>Updated By</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor = "let Au of auditList| filter:name | paginate: {id:'Audit-pagination', itemsPerPage: 8, currentPage: p1 }; let i = index ;trackBy: trackByFn">
+                            <td>{{i+1}}</td>
+                            <td>{{Au.UpdatedEmployee}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link" (click)="showDetailsPopUp(Au.Details,'open')">
+                                    <span ngbTooltip="{{Au.Details?Au.Details:''}}">{{Au.Details ? ((Au.Details.length>66) ? (Au.Details | slice:0:66)+'...' : Au.Details) :''}}</span>
+                                </button>
+                            </td>
+                            <td>{{Au.CreatedBy}}</td>
+                            <td>{{Au.CreatedOn | date: 'd MMM y'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot class="pull-right" style="float: left;">
+                    <pagination-controls id="Audit-pagination" (pageChange)="p1 = $event">
+                    </pagination-controls>
+                </tfoot>
+            </div>
+        </div>
+</div>
+ <!-- modal pop up for the audit detail info -->
+<div bsModal #AuditDetailsModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+  aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title title pull-left">Updated Empolyee Detail</h4>
+        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showDetailsPopUp(null,'close')" />
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="row">
+              <span> <b> Updated Information:</b> {{AuditDetails}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

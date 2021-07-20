@@ -1,0 +1,82 @@
+.fontsize {
+  font-size: 16px;
+}
+
+.fontsizecolor {
+  font-size: larger;
+}
+
+.paddingbottom {
+  padding-top: 8px;
+}
+.btn {
+  border-radius: 20px;
+}
+
+.lablestyle {
+  color: #02485d;
+  font-weight: 550;
+}
+
+.badge-primary {
+  font-size: 16px;
+}
+#sitevisit:not([multiple]) {
+  height: calc(2.25rem + -8px);
+  width: 12em;
+}
+#model-content {
+  width: 73em;
+  margin-left: -7em;
+}
+input[type="radio"] {
+  transform: scale(1.8);
+}
+
+/* styling the spans adjacent to the radio inputs: */
+input[type="radio"] + span {
+  display: inline-block;
+  margin: 0 0.5em;
+}
+/* styling the span following the checked radio: */
+input[type="radio"]:checked + span {
+  background-color: rgb(7, 133, 122);
+  color: white;
+}
+.radio1 {
+  padding-left: 1px;
+}
+.option {
+  height: 55px;
+  padding: 1px 20px;
+}
+
+.tag-height {
+  height: 452px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.newcard {
+  border: 1px solid #404040;
+  border-radius: 7px;
+  padding-bottom: 0.81em;
+}
+.title {
+  border-bottom: 1.5px solid black;
+  background-color: #424242;
+  color: white;
+  border-radius: 10px;
+}
+
+.strngfont {
+  font-size: 20px;
+}
+
+.rowscroll {
+  max-height: 14em;
+  overflow: auto;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: calc(2.5rem + -3px);
+}

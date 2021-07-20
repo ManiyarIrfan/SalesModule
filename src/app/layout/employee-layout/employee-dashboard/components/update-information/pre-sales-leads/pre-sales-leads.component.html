@@ -1,0 +1,773 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-1">
+        <br />
+        <button type="button" class="btn btn-outline-success btn-xs circle" ngbTooltip="Create New"
+            (click)="openmodal()">
+            <i class="fa fa-plus"></i>
+        </button>
+        &nbsp;
+        <button class="btn btn-outline-primary btn-xs circle" (click)="switchToSummery()"
+            ngbTooltip={{SwitchSummeryTitle}}>
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="col-sm-2">
+        <strong>Status :</strong>
+        <select type="text" class="form-control dropDown formstyle" id="status" name="status" [disabled]="Count==1"
+            [(ngModel)]="enquiryStatus" #status="ngModel" (change)="onChangeStatus($event.target.value)">
+            <option *ngFor="let item of StatusInfo;trackBy: trackByFn" [value]="item.key">{{item.value}}</option>
+        </select>
+    </div>
+    <div class="col-sm-5">
+        <br />
+        <input type="text" autocomplete="off" [alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true"
+            required ngxDaterangepickerMd id="date" name="Date" #date="ngModel" [(ngModel)]="selectedDateRange"
+            class="form-control formstyle" placeholder="Select Dates" [attr.disabled]="disabled?'':null"
+            [class.error]="date.invalid && date.touched" (change)="onChangeDate(selectedDateRange)"
+            [class.has-success]="date.valid" [showClearButton]="true" />
+    </div>
+    <div class="col-sm-2">
+        <strong>AssignedTo :</strong>
+        <select class="form-control dropDown formstyle" id="reportingTo" name="reportingTo" [disabled]="Count==1"
+            [(ngModel)]="reportingNameId" (change)="onChangeReporting($event.target.value)">
+            <option class='option' *ngFor='let reportname of selectedReportingto;trackBy: trackByFn'
+                [value]="reportname.ID">{{reportname.Name}} </option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <strong>Select Project :</strong>
+        <select class="form-control dropDown formstyle" id="project" name="project" [(ngModel)]="ProjectId"
+            (change)="onChangeProject($event.target.value)" [disabled]="Count==1">
+            <option value=null>--Select--</option>
+            <option class='option' *ngFor='let project of PreferredProjectInfo;trackBy: trackByFn'
+                [value]="project.ProjectId">
+                {{project.ProjectName}} </option>
+        </select>
+    </div>
+</div>
+<div class="row" *ngIf="Count==1">
+    <div class="form-group col-sm-2">
+        <br />
+        <select class="form-control dropDown" id="summary form" name="summary" [(ngModel)]="SummaryName"
+            (change)="getEnquirySummary()">
+            <option value="">---Select---</option>
+            <option class='option' *ngFor='let summaryname of SummaryNameList;trackBy: trackByFn'
+                [value]="summaryname.key">{{summaryname.value}} </option>
+        </select>
+    </div>
+    <div class="form-group col-sm-2"
+        *ngIf="(this.SummaryName==='BySource' || this.SummaryName==='ByPresales') && selectedDateRange">
+        <br />
+        <select class="form-control dropDown" id="project form" name="project" [(ngModel)]="ProjectId"
+            (change)="getEnquirySummary()">
+            <option value="">--Select--</option>
+            <option class='option' *ngFor='let project of PreferredProjectInfo;trackBy: trackByFn'
+                [value]="project.ProjectId">
+                {{project.ProjectName}} </option>
+        </select>
+    </div>
+    <div class="col-sm-3 export" *ngIf="(getEnquirySummaryData.length > 0 &&  !isLoading)">
+        <br />
+        <button type="button" class="btn btn-primary" (click)="exportSummaryEvent()"
+            [disabled]="loggedInuserDetails.Level === 'L3'">
+            Export &nbsp;<i class="fa fa-download"></i></button>
+    </div>
+</div>
+<div class="row" *ngIf="Count==1">
+    <div *ngIf="NoSummaryData"><span class="text-danger">No Data Found</span></div>
+    <div class="col-sm-12 text-center" *ngIf="isLoading">
+        <div>
+            <p class="loading">
+                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+            </p>
+        </div>
+    </div>
+    <div class="col-sm-8 text-center" *ngIf="!isLoading && getEnquirySummaryData.length>0 ">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">New Enquiry Summary</legend>
+            <div class="table-responsive scrollbar" id="style-2">
+                <div *ngIf="getEnquirySummaryData.length>0 ">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead"
+                        cellsspacing="0" width="100%">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th>{{tableheader}}</th>
+                                <th>Incoming</th>
+                                <th>Prospect</th>
+                                <th>Warm</th>
+                                <th>Hot</th>
+                                <th>Cold</th>
+                                <th>Unqualified</th>
+                                <th>Lost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pointer text-center"
+                                *ngFor="let data of getEnquirySummaryData ;let i = index;trackBy: trackByFn">
+                                <td>{{data.ColName | titlecase}} ({{data.Total?data.Total:0}})
+                                </td>
+                                <td *ngIf="i<getEnquirySummaryData.length-1"
+                                    (click)="getSummaryDetail(data,'Incoming')">
+                                    <button class="btn btn-sm btn-link">{{data.Incoming ? data.Incoming :0}}</button>
+                                </td>
+                                <td *ngIf="i===getEnquirySummaryData.length-1">
+                                    {{data.Incoming ? data.Incoming :0}}
+                                </td>
+                                <td *ngIf="i<getEnquirySummaryData.length-1"
+                                    (click)="getSummaryDetail(data,'Prospect')">
+                                    <button class="btn btn-sm btn-link">{{data.Prospect ? data.Prospect :0}}</button>
+                                </td>
+                                <td *ngIf="i===getEnquirySummaryData.length-1"> {{data.Prospect ? data.Prospect :0}}
+                                </td>
+                                <td *ngIf="i<getEnquirySummaryData.length-1" (click)="getSummaryDetail(data,'Warm')">
+                                    <button class="btn btn-sm btn-link">{{data.Warm ? data.Warm :0}}</button>
+                                </td>
+                                <td *ngIf="i===getEnquirySummaryData.length-1">
+                                    {{data.Warm ? data.Warm :0}}
+                                </td>
+                                <td *ngIf="i<getEnquirySummaryData.length-1" (click)="getSummaryDetail(data,'Hot')">
+                                    <button class="btn btn-sm btn-link">{{data.Hot ? data.Hot :0}}</button>
+                                </td>
+                                <td *ngIf="i===getEnquirySummaryData.length-1">
+                                    {{data.Hot ? data.Hot :0}}
+                                </td>
+                                <td *ngIf="i<getEnquirySummaryData.length-1" (click)="getSummaryDetail(data,'Cold')">
+                                    <button class="btn btn-sm btn-link">{{data.Cold ? data.Cold :0}}</button>
+                                </td>
+                                <td *ngIf="i===getEnquirySummaryData.length-1">
+                                    {{data.Cold ? data.Cold :0}}
+                                </td>
+                                <td *ngIf="i<getEnquirySummaryData.length-1"
+                                    (click)="getSummaryDetail(data,'Unqualified')">
+                                    <button class="btn btn-sm btn-link">{{data.Unqualified ? data.Unqualified
+                                        :0}}</button>
+                                </td>
+                                <td *ngIf="i===getEnquirySummaryData.length-1">
+                                    {{data.Unqualified ? data.Unqualified :0}}
+                                </td>
+                                <td *ngIf="i<getEnquirySummaryData.length-1" (click)="getSummaryDetail(data,'Lost')">
+                                    <button class="btn btn-sm btn-link">{{data.Lost ? data.Lost :0}}</button>
+                                </td>
+                                <td *ngIf="i===getEnquirySummaryData.length-1">
+                                    {{data.Lost ? data.Lost :0}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-sm-1">
+        <button class="btn btn-primary"
+            *ngIf="(loggedInuserDetails.Role === 11 || loggedInuserDetails.Role === 1) && Count==0"
+            (click)="(multiReassign=!multiReassign)">Multiple Reassign</button>
+    </div>
+    <div class="col-sm-3">
+        <div class="row" *ngIf='multiReassign'>
+            <div class="col-sm-6 text-right">
+                <strong class="strongClass">Pre-Sales Employee : </strong> &nbsp;
+            </div>
+            <div class="col-sm-6">
+                <select class="form-control formstyle" id="Name form" #Name="ngModel" [disabled]="showDataNotFoundError"
+                    [(ngModel)]="reassignModel.PresalesAgentAssigned" name="Name"
+                    [class.error]="Name.invalid && Name.touched" [class.has-success]="Name.valid">
+                    <option value="">---select---</option>
+                    <option *ngFor="let item of selectedEmployeeName;trackBy: trackByFn" [value]="item.EmployeeId">
+                        {{item.Name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-1">
+        <button class="btn btn-primary" *ngIf='multiReassign' (click)="reassigntoEmployee(reassignModel)"
+            [disabled]="!reassignModel.PresalesAgentAssigned || showDataNotFoundError">
+            <i class="fas fa-paper-plane"></i> Submit</button>
+    </div>
+    <div class="col-sm-7" *ngIf="!showDataNotFoundError">
+        <div class="row">
+            <div class="col-sm-9">
+                <select style="width: 45%"
+                    *ngIf="presalesInfoModel.Status=='Unqualified/Lost' && !showDataNotFoundError && !isLoading"
+                    class="form-control pull-right" id="stageChanges" name="stageChanges"
+                    (change)="onChangeSubStatus($event.target.value)" required [(ngModel)]="StatusChangeReason"
+                    #stagechanges="ngModel">
+                    <option value="">--Select Unqualified/Lost Reason--</option>
+                    <option class='option' *ngFor='let stage of unqualifiedStatusInfo;trackBy: trackByFn'
+                        [value]="stage.key">
+                        {{stage.value}}</option>
+                </select>
+                <select style="width: 45%"
+                    *ngIf="presalesInfoModel.Status=='Warm' && !showDataNotFoundError &&!isLoading"
+                    class="form-control pull-right" id="stageChanges" name="stageChanges"
+                    (change)="onChangeSubStatus($event.target.value)" required [(ngModel)]="StatusChangeReason"
+                    #stagechanges="ngModel">
+                    <option value="">--Select Warm Reason--</option>
+                    <option class='option' *ngFor='let stage of warmStatusInfo;trackBy: trackByFn' [value]="stage.key">
+                        {{stage.value}}</option>
+                </select>
+                <select style="width: 45%"
+                    *ngIf="presalesInfoModel.Status=='Cold' && !showDataNotFoundError && !isLoading"
+                    class="form-control pull-right" id="stageChanges" name="stageChanges"
+                    (change)="onChangeSubStatus($event.target.value)" required [(ngModel)]="StatusChangeReason"
+                    #stagechanges="ngModel">
+                    <option value="">--Select Cold Reason--</option>
+                    <option class='option' *ngFor='let stage of coldStatusInfo;trackBy: trackByFn' [value]="stage.key">
+                        {{stage.value}}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-primary btnCount">
+                    Count <span class="badge badge-light countbtn">{{countOnStatus}}</span>
+                </button> &nbsp; &nbsp;
+                <button type="button" class="btn btn-outline-success btnmargin" (click)="getPresalesLead()">
+                    <i class="fa fa-refresh" aria-hidden="true"></i></button>
+            </div>
+        </div>
+        <!-- <strong for="stageChanges" *ngIf="presalesInfoModel.Status=='Unqualified/Lost'"><span
+                    class="required">*</span>Stage Changes Reason</strong> -->
+    </div>
+    <!-- <div class="col-sm-5 text-right" *ngIf="!showDataNotFoundError && Count==0">
+
+        <strong> Count <span class="badge badge-light countbtn">{{countOnStatus}}</span></strong>
+
+        <button type="button" class="btn btn-outline-success btnmargin" (click)="getPresalesLead()"> <i
+                class="fa fa-refresh" aria-hidden="true"></i></button>
+    </div> -->
+
+</div>
+
+<div cdkDrag bsModal #createPreSalesLead="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+    aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <form #enquiryRegistrationForm="ngForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title"> Create New Enquiry</h4>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X"
+                        (click)="onClose(enquiryRegistrationForm)" />
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong for="refFirst">
+                                <span class="required">*</span>First Name :</strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" id="refFirst form"
+                                name="refFirst" [class.error]="refFirst.invalid && refFirst.touched"
+                                [class.has-success]="refFirst.valid" [(ngModel)]="enquiryRegModel.refFirst"
+                                placeholder="Enter First Name..." required #refFirst="ngModel">
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="refLast">Last Name :</strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z ]*" class="form-control" id="refLast form"
+                                name="refLast" [class.error]="refLast.invalid && refLast.touched"
+                                [class.has-success]="refLast.valid" [(ngModel)]="enquiryRegModel.refLast"
+                                placeholder="Enter Last Name..." #refLast="ngModel">
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="refCountryCode">
+                                <span class="required">*</span>Country Code :</strong>
+                            <input type="tel" class="form-control input-underline" id="refCountryCode form"
+                                (blur)="enquiryRegModel.refCountryCode = ($event.target.value);show($event.target.value)"
+                                name="refCountryCode" [class.error]="refCountryCode.invalid && refCountryCode.touched"
+                                [class.has-success]="refCountryCode.valid" required
+                                [(ngModel)]="enquiryRegModel.refCountryCode" placeholder="Enter Country Code..."
+                                required #refCountryCode="ngModel" minlength=0 maxlength=4 pattern="d[1-0]{4}"
+                                onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false:true">
+                        </div>
+                        <div class="col-sm-3" *ngIf="showme===true">
+                            <strong for="refMobileNo">
+                                <span class="required">*</span>Mobile Number :</strong>
+                            <input type="tel" (blur)="getMobileValidation(enquiryRegModel.refMobileNo)"
+                                pattern="^\d{10}$" class="form-control input-underline" id="refMobileNo form"
+                                name="refMobileNo" [class.error]="refMobileNo.invalid && refMobileNo.touched"
+                                [class.has-success]="refMobileNo.valid" placeholder="Enter Mobile Number..." required
+                                [(ngModel)]="enquiryRegModel.refMobileNo" #refMobileNo="ngModel" minlength=10
+                                maxlength=10
+                                onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false:true">
+                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                        </div>
+                        <div class="col-sm-3" *ngIf="showme===false">
+                            <strong for="refMobileNo1">
+                                <span class="required">*</span>Mobile Number :</strong>
+                            <input (blur)="valid(enquiryRegModel.refMobileNo)" class="form-control input-underline"
+                                maxlength=12 id="refMobileNo1" name="refMobileNo1"
+                                [class.error]="refMobileNo1.invalid && refMobileNo1.touched" required
+                                #refMobileNo1="ngModel" [(ngModel)]="enquiryRegModel.refMobileNo"
+                                placeholder="Enter Mobile Number..."
+                                onkeypress="return (event.charCode != 46 && event.charCode > 31 && (event.charCode < 48 || event.charCode > 57)) ? false:true">
+                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong for="refEmail">Email ID :</strong>
+                            <input type="email" (blur)="getEmailValidation(enquiryRegModel.refEmail)"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$" class="form-control"
+                                id="refEmail form" name="refEmail" [class.error]="refEmail.invalid && refEmail.touched"
+                                [class.has-success]="refEmail.valid" [(ngModel)]="enquiryRegModel.refEmail"
+                                placeholder="email@abc.com" #refEmail="ngModel">
+                            <span [hidden]="isEmailAvailable" class="required">{{showemail}}</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="PropertyType">Property Type :</strong>
+                            <select type="text" class="form-control" id="PropertyType" name="PropertyType"
+                                [class.has-success]="propertyType.valid" [(ngModel)]="enquiryRegModel.PropertyType"
+                                #propertyType="ngModel">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of propertyTypeInfo;trackBy: trackByFn" [value]="item.value">
+                                    {{item.value}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="source">
+                                <span class="required">*</span>Source:</strong>
+                            <select class="form-control" id="source form" name="source"
+                                [class.error]="source.invalid && source.touched" [class.has-success]="source.valid"
+                                required [(ngModel)]="enquiryRegModel.Source" #source="ngModel">
+                                <option value="">--select--</option>
+                                <option class='option' *ngFor='let source of sourceInfo;trackBy: trackByFn'
+                                    [value]="source.Name">{{source.Name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="preCity">Preferred City :</strong>
+                            <select type="text" class="form-control" id="preCity form" name="preCity"
+                                [class.error]="preCity.invalid && preCity.touched" [class.has-success]="preCity.valid"
+                                [(ngModel)]="enquiryRegModel.preCity" #preCity="ngModel">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of preferredCityInfo;trackBy: trackByFn" [value]="item.value">
+                                    {{item.value}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong for="preProject">Preferred Project :</strong>
+                            <select type="text" class="form-control" id="preProject form" name="preProject"
+                                [(ngModel)]="enquiryRegModel.PreferredProject" placeholder="Preffered Project">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of PreferredProjectInfo;trackBy: trackByFn"
+                                    [hidden]="item.ProjectName === 'Common'" [value]="item.ProjectName">
+                                    {{item.ProjectName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="Budget">Budget :</strong>
+                            <select type="text" class="form-control" id="Budget form" name="Budget"
+                                [(ngModel)]="enquiryRegModel.Budget" placeholder="Enter Budget...">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of BudgetInfo;trackBy: trackByFn" [value]="item.value">
+                                    {{item.value}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="refCity">City :</strong>
+                            <input type="text" class="form-control" id="refCity form" name="refCity"
+                                [class.error]="refCity.invalid && refCity.touched" [class.has-success]="refCity.valid"
+                                pattern="^[^-\s][a-zA-Z ]*" [(ngModel)]="enquiryRegModel.City"
+                                placeholder="Enter City..." #refCity="ngModel">
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="TypeOfLead">Type Of Enquiry:</strong>
+                            <input class="form-control" id="TypeOfLead" name="TypeOfLead"
+                                [class.has-success]="typeOfLead.valid" [(ngModel)]="enquiryRegModel.TypeOfLead"
+                                #typeOfLead="ngModel" pattern="^[^-\s][a-zA-Z ]*" placeholder="Enter Type Of Enquiry..."
+                                [class.error]="typeOfLead.invalid && typeOfLead.touched">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="ContactedBy">Contacted By :</strong>
+                            <input type="text" class="form-control" id="ContactedBy form" name="ContactedBy"
+                                [(ngModel)]="enquiryRegModel.ContactedBy" placeholder="Enter Name..."
+                                #contactedBy="ngModel" pattern="^[^-\s][a-zA-Z ]*"
+                                [class.error]="contactedBy.invalid && contactedBy.touched">
+                        </div>
+                        <div class="col-sm-6">
+                            <strong for="MsgDetails">Message Details :</strong>
+                            <input type="text" class="form-control" id="MsgDetails form" name="MsgDetails"
+                                [class.error]="msgDetails.invalid && msgDetails.touched"
+                                [class.has-success]="msgDetails.valid" pattern="^[^-\s][a-zA-Z ]*"
+                                [(ngModel)]="enquiryRegModel.MsgDetails" placeholder="Enter Message Details..."
+                                #msgDetails="ngModel">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong for="Budget">Campaign :</strong>
+                            <select type="text" class="form-control" id="Campaign form" name="campaign"
+                                #campaign="ngModel" [(ngModel)]="enquiryRegModel.Campaign">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of campaignInfo;trackBy: trackByFn" [value]="item.Name">
+                                    {{item.Name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div align="center">
+                        <button type="button" id="submit" name="submit" value="Submit"
+                            (click)="OnSubmitBtnClick(enquiryRegModel,enquiryRegistrationForm)" class="btn btn-primary"
+                            [disabled]="!enquiryRegistrationForm.form.valid || !isMobileAvailable ">
+                            <i class="fa fa-paper-plane"></i> Submit</button>
+                        <br>
+                        <div class="row justify-content-md-center">
+                            <div class="alert alert-info" role="alert" *ngIf="showSuccessfullMessage!==''">
+                                <h4> {{showSuccessfullMessage}}</h4>
+                            </div>
+                            <div class="alert alert-info" role="alert" *ngIf="showNotSuccessfullMessage!==''">
+                                <h4> {{showNotSuccessfullMessage}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<form #allenqForm="ngForm" *ngIf="Count==0">
+    <span *ngIf="showDataNotFoundError" class="notfoundmsg">{{DataNotFoundError}}</span>
+    <div *ngIf="!isSpinnerActive">
+        <div *ngIf=" !showDataNotFoundError" class="marginTop">
+            <div class="table-responsive scrollbar" id="style-2">
+                <table class="table table-bordered table-striped table-sm text-nowrap" *ngIf='!multiReassign'
+                    cellsspacing="0" width="100%">
+                    <thead class="thead-light">
+                        <tr class="text-center">
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Requirement</th>
+                            <th>Budget</th>
+                            <th>Status</th>
+                            <th>Source</th>
+                            <th>Received On</th>
+                            <th>Re-engaged On</th>
+                            <th>Counter</th>
+                            <th>Follow Up</th>
+                            <th>SiteVisit</th>
+                            <th *ngIf="loggedInuserDetails.Role===5 && loggedInuserDetails.EngagementType!=='OnDemand'">
+                                Presales Assigned
+                            </th>
+                            <!-- <th>Type Of Lead</th>
+                            <th>Contacted By</th>
+                            <th>Property Type</th> -->
+                            <th>Message Details</th>
+                            <!-- <th>Sub Source</th> -->
+                            <th>Campaign</th>
+                        </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input class="form-control form" type="number" name="EnquiryId"
+                                    [(ngModel)]="filterDataModel.EnquiryId" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input class="form-control form" type="text" name="LeadName"
+                                    [(ngModel)]="filterDataModel.Name" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input class="form-control form" type="text" name="PreferredProject"
+                                    [(ngModel)]="filterDataModel.PreferredProject" (keyup)="filterLeadData()">
+                            </td>
+                            <td colspan="1"></td>
+                            <td>
+                                <input class="form-control form" type="text" name="EnquiryStatus"
+                                    [(ngModel)]="filterDataModel.EnquiryStatus" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input class="form-control form" type="text" name="Source"
+                                    [(ngModel)]="filterDataModel.Source" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input class="form-control form" type="text" name="CreatedOn"
+                                    [(ngModel)]="filterDataModel.CreatedOn" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input class="form-control form" type="text" name="ReengagedOn"
+                                    [(ngModel)]="filterDataModel.ReengagedOn" (keyup)="filterLeadData()">
+                            </td>
+                            <td colspan="1"></td>
+                            <td>
+                                <input type="text" class="form-control form" name="FollowUpStatus"
+                                    [(ngModel)]="filterDataModel.FollowUpStatus" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form" name="PreferredDate"
+                                    [(ngModel)]="filterDataModel.PreferredDate" (keyup)="filterLeadData()">
+                            </td>
+                            <td *ngIf="loggedInuserDetails.Role===5 && loggedInuserDetails.EngagementType!=='OnDemand'">
+                                <input type="text" class="form-control form" name="PresalesAgentAssigned"
+                                    [(ngModel)]="filterDataModel.PresalesAgentAssigned" (keyup)="filterLeadData()">
+                            </td>
+                            <td colspan="1"></td>
+                            <td>
+                                <input class="form-control form" type="text" name="Campaign"
+                                    [(ngModel)]="filterDataModel.Campaign" (keyup)="filterLeadData()">
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr class="pointer" (click)="changeStatus(enquiryDetails)"
+                            *ngFor="let enquiryDetails of allPresalesLead | paginate: { itemsPerPage: 10, currentPage: p1 } ;trackBy: trackByFn">
+                            <td>{{enquiryDetails.TEnquiryId}}</td>
+                            <td>{{enquiryDetails.Name|titlecase}}</td>
+                            <!-- <td>{{enquiryDetails.MobileNo}}</td> -->
+                            <td>{{enquiryDetails.Bhk}}
+                                {{enquiryDetails.RequirementType |titlecase}}
+                                {{enquiryDetails.PreferredCity |titlecase}}
+                                {{enquiryDetails.PreferredLocation |titlecase}}
+                                {{enquiryDetails.PreferredProject |titlecase}}
+                            </td>
+                            <td>{{enquiryDetails.Budget}}</td>
+                            <td>
+                                <span id="greenBtn"
+                                    *ngIf="enquiryDetails.EnquiryStatus == 'incoming' || enquiryDetails.EnquiryStatus == 'prospect' || enquiryDetails.EnquiryStatus == 'Incoming' || enquiryDetails.EnquiryStatus == 'Prospect' ">{{enquiryDetails.EnquiryStatus|titlecase}}</span>
+                                <span id="yellowBtn"
+                                    *ngIf="enquiryDetails.EnquiryStatus == 'hot' || enquiryDetails.EnquiryStatus == 'warm' || enquiryDetails.EnquiryStatus == 'Hot' || enquiryDetails.EnquiryStatus == 'Warm'">{{enquiryDetails.EnquiryStatus|titlecase}}</span>
+                                <span id="redBtn"
+                                    *ngIf="enquiryDetails.EnquiryStatus == 'lost' || enquiryDetails.EnquiryStatus == 'unqualified'|| enquiryDetails.EnquiryStatus == 'cold' || enquiryDetails.EnquiryStatus == 'Lost' || enquiryDetails.EnquiryStatus == 'Unqualified'|| enquiryDetails.EnquiryStatus == 'Cold'">{{enquiryDetails.EnquiryStatus|titlecase}}</span>
+                            </td>
+                            <td>{{enquiryDetails.Source |titlecase}}</td>
+                            <td>{{enquiryDetails.CreatedOn |date:"d-MM-y"}}</td>
+                            <td>{{enquiryDetails.ReengagedOn |date:'d MMM y'}}</td>
+                            <td>{{enquiryDetails.Counter}}</td>
+                            <td>{{enquiryDetails.FollowUpStatus |titlecase}}
+                                <button type="button" class="btn btn-link btn-sm"
+                                    ngbTooltip="Date: {{enquiryDetails.FollowUpDate|date:'d MMM y'}} || Time: {{enquiryDetails.FollowUpTime}} || Type: {{enquiryDetails.FollowUpType}}">
+                                    <i class="far fa-calendar-alt"></i>
+                                </button>
+                            </td>
+                            <td>
+                                {{ enquiryDetails.PreferredDate|date:'d-MM-y' }} <button type="button"
+                                    class="btn btn-link btn-sm"
+                                    ngbTooltip="Project Name: {{enquiryDetails.ProjectVisited}} || Time: {{enquiryDetails.PreferredTime}}">
+                                    <i class="far fa fa-building-o"></i>
+                                </button>
+                            </td>
+                            <!-- <td>{{enquiryDetails.CallStatus |titlecase}}</td> -->
+                            <!-- <td>{{enquiryDetails.Email}}</td> -->
+                            <td *ngIf="loggedInuserDetails.Role===5 && loggedInuserDetails.EngagementType!=='OnDemand'">
+                                {{enquiryDetails.PresalesAgentAssigned |titlecase}}</td>
+                            <!-- <td>{{enquiryDetails.TypeOfLead |titlecase}}</td> -->
+                            <!-- <td>{{enquiryDetails.ContactedBy |titlecase}}</td> -->
+                            <!-- <td>{{enquiryDetails.PropertyType |titlecase}}</td> -->
+                            <td>{{enquiryDetails.MsgDetails |titlecase}}</td>
+                            <!-- <td>{{enquiryDetails.SubSource |titlecase}}</td> -->
+                            <td>{{enquiryDetails.Campaign |titlecase}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Table for Multiple Reassign -->
+                <strong *ngIf="selectedAll" class="text-danger">Note:- You have selected All Records Of all
+                    Pages.</strong>
+                <table class="table table-bordered table-striped table-sm text-nowrap" *ngIf='multiReassign'
+                    cellsspacing="0" width="100%">
+                    <thead class="thead-light sticky">
+                        <tr class="text-center">
+                            <th *ngIf="multiReassign" width="2%">
+                                <input class="checkBox" type="checkbox" name="salectAll"
+                                    (click)="selectAllReassignIds($event.target.checked)">
+                            </th>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <!-- <th>Mobile Number</th> -->
+                            <th>Requirement</th>
+                            <th>Budget</th>
+                            <th>Status</th>
+                            <th>Source</th>
+                            <th>Received On</th>
+                            <th>Counter</th>
+                            <th>Follow Up</th>
+                            <th>SiteVisit</th>
+                            <th>Call Status</th>
+                            <th>Sub Source</th>
+                            <th>Email</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input class="id-width form-control" type="number" name="enquiryId"
+                                    [(ngModel)]="filterDataModel.EnquiryId" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input class="name-width form-control" type="text" name="Name"
+                                    [(ngModel)]="filterDataModel.Name" (keyup)="filterLeadData()">
+                            </td>
+                            <td colspan="2"></td>
+                            <td>
+                                <input class="form-control" type="text" name="enquiryStatus"
+                                    [(ngModel)]="filterDataModel.EnquiryStatus" (keyup)="filterLeadData()">
+                            </td>
+                            <td>
+                                <input class="form-control" type="text" name="source"
+                                    [(ngModel)]="filterDataModel.Source" (keyup)="filterLeadData()">
+                            </td>
+                        </tr>
+                    <tbody>
+                        <tr
+                            *ngFor="let enquiryDetails of allPresalesLead | filter:LeadName| paginate: { itemsPerPage: 10, currentPage: p1 } ;trackBy: trackByFn;let i of index; ">
+                            <td *ngIf="multiReassign" class="pointer">
+                                <input class="checkBox" type="checkbox" name="multiId[{{i}}]"
+                                    [(ngModel)]="enquiryDetails.checked"
+                                    (click)="selectedMultipleIds($event.target.checked,enquiryDetails)">
+                            </td>
+                            <td>{{enquiryDetails.TEnquiryId}}</td>
+                            <td>{{enquiryDetails.Name|titlecase}}</td>
+                            <!-- <td>{{enquiryDetails.MobileNo}}</td> -->
+                            <td>{{enquiryDetails.Bhk}} {{enquiryDetails.RequirementType |titlecase}}
+                                {{enquiryDetails.PreferredCity |titlecase}}
+                                {{enquiryDetails.PreferredLocation |titlecase}}
+                                {{enquiryDetails.PreferredProject |titlecase}} </td>
+                            <td>{{enquiryDetails.Budget}}</td>
+                            <td>
+                                <span id="greenBtn"
+                                    *ngIf="enquiryDetails.EnquiryStatus == 'incoming' || enquiryDetails.EnquiryStatus == 'prospect' || enquiryDetails.EnquiryStatus == 'Incoming' || enquiryDetails.EnquiryStatus == 'Prospect' ">{{enquiryDetails.EnquiryStatus|titlecase}}</span>
+                                <span id="yellowBtn"
+                                    *ngIf="enquiryDetails.EnquiryStatus == 'hot' || enquiryDetails.EnquiryStatus == 'warm' || enquiryDetails.EnquiryStatus == 'Hot' || enquiryDetails.EnquiryStatus == 'Warm'">{{enquiryDetails.EnquiryStatus|titlecase}}</span>
+                                <span id="redBtn"
+                                    *ngIf="enquiryDetails.EnquiryStatus == 'lost' || enquiryDetails.EnquiryStatus == 'unqualified'|| enquiryDetails.EnquiryStatus == 'cold' || enquiryDetails.EnquiryStatus == 'Lost' || enquiryDetails.EnquiryStatus == 'Unqualified'|| enquiryDetails.EnquiryStatus == 'Cold'">{{enquiryDetails.EnquiryStatus|titlecase}}</span>
+                            </td>
+                            <td>{{enquiryDetails.Source |titlecase}}</td>
+                            <td>{{enquiryDetails.CreatedOn |date:"d MMM y"}}</td>
+                            <td>{{enquiryDetails.Counter}}</td>
+                            <td>{{enquiryDetails.FollowUpStatus |titlecase}}
+                                <button type="button" class="btn btn-link btn-sm"
+                                    ngbTooltip="Date: {{enquiryDetails.FollowUpDate|date:'d MMM y'}} || Time: {{enquiryDetails.FollowUpTime}} || Type: {{enquiryDetails.FollowUpType}}">
+                                    <i class="far fa-calendar-alt"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-link btn-sm"
+                                    ngbTooltip="Project Name: {{enquiryDetails.ProjectVisited}} || Date: {{enquiryDetails.PreferredDate|date:'d MMM y'}} || Time: {{enquiryDetails.PreferredTime}}">
+                                    <i class="far fa fa-building-o"></i>
+                                </button>
+                            </td>
+                            <td>{{enquiryDetails.CallStatus |titlecase}}</td>
+                            <td>{{enquiryDetails.SubSource |titlecase}}</td>
+                            <td>{{enquiryDetails.Email}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot class="pull-right">
+                    <pagination-controls (pageChange)="p1 = $event ; pageChangeEvent($event)"></pagination-controls>
+                </tfoot>
+            </div>
+        </div>
+    </div>
+</form>
+<div bsModal #summaryDetailModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <div class="row">
+                    <div class="col-sm-12 text-center ">
+                        <h3 class="modal-title">Enquiry Details</h3>
+                    </div>
+                    <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="summaryDetailModal.hide()" />
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row" *ngIf="ismodalLoading">
+                    <div class="col-sm-12 text-center">
+                        <p class="loading">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                        </p>
+                    </div>
+                </div>
+                <div class="row" *ngIf="!ismodalLoading">
+                    <div class="col-sm-10"></div>
+                    <div class="col-sm-2 export " *ngIf="getEnquiryDetail.length> 0">
+                        <button type="button" class="btn btn-primary" (click)="exportPopEvent()"
+                            [disabled]="loggedInuserDetails.Level ==='L3'">
+                            Export &nbsp;<i class="fa fa-download"></i></button>
+                    </div>
+                    <div class="col-sm-12" *ngIf="getEnquiryDetail.length === 0">
+                        <span class="text-danger">No Data Found</span>
+                    </div>
+                    <div class="col-sm-12 text-center">
+                        <div class="table-responsive" *ngIf="getEnquiryDetail.length>0">
+                            <table class="table table-bordered table-striped table-sm text-nowrap" cellsspacing="0"
+                                width="100%" #table>
+                                <thead class="thead-light sticky">
+                                    <tr class="text-center">
+                                        <th>Sr. No.</th>
+                                        <th>EnquiryId</th>
+                                        <th> Name</th>
+                                        <th>CreatedOn</th>
+                                        <th *ngIf="Status==='Cold' || Status==='Unqualified' || Status==='Lost'">
+                                            StatusChangeReason</th>
+                                        <th>Source</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center" (click)="showDetails(TableData)"
+                                        *ngFor=" let TableData of getEnquiryDetail | paginate: { id:'pq' ,itemsPerPage: 10, currentPage: p2 };let i = index;trackBy: trackByFn">
+                                        <td>{{i+1}}</td>
+                                        <td>{{TableData.TEnquiryId}}</td>
+                                        <td>
+                                            {{TableData.Name?TableData.Name:'' |titlecase}}
+                                        </td>
+                                        <td> {{TableData.CreatedOn |date:"d MMM y"}}</td>
+                                        <td *ngIf="Status==='Cold' || Status==='Unqualified' || Status==='Lost'">
+                                            {{TableData.StatusChangeReason}} </td>
+                                        <td>{{TableData.Source}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <tfoot class="pull-right" *ngIf="getEnquiryDetail.length > 10">
+                                <pagination-controls id="pq" (pageChange)="p2 = $event"></pagination-controls>
+                            </tfoot>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"
+                    *ngIf="((Status==='Cold' || Status==='Unqualified' || Status==='Lost') && (!ismodalLoading && getEnquiryDetail.length > 0))">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div class="table-responsive" *ngIf="getEnquiryDetail.length>0">
+                            <table class="table table-striped table-bordered table-sm text-nowrap" cellsspacing="0"
+                                width="100%">
+                                <thead class="thead-light sticky">
+                                    <tr class="text-center">
+                                        <th>StatusChangeReason</th>
+                                        <th>Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center"
+                                        *ngFor=" let TableData of getEnquiryCountByReason | paginate: { id:'qs' ,itemsPerPage: 10, currentPage: q1 };let j = index;trackBy: trackByFn">
+                                        <td> {{TableData.StatusChangeReason}} </td>
+                                        <td> {{TableData.EnquiryCount}} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <tfoot class="pull-right" *ngIf="getEnquiryCountByReason.length > 10">
+                                <pagination-controls id="qs" (pageChange)="q1 = $event"></pagination-controls>
+                            </tfoot>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="celender"></div>

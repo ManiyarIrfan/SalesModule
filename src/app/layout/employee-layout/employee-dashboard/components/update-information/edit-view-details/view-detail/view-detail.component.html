@@ -1,0 +1,149 @@
+<br/>
+<div [hidden]="!isLoading">
+  <p class="loading">
+    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+  </p>
+</div>
+<div class="card" *ngIf="isShowDetails">
+  <div class="card-header">
+    <strong>{{showData.UserType}} Details</strong>
+  </div>
+  <div class="card-body">
+    <div class="row bdyalign">
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong>
+            <i class="fa fa-user"></i> First Name: </strong>
+          <span>{{showData.FirstName}}</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong>
+            <i class="fa fa-user"></i> Last Name: </strong>
+          <span>{{showData.LastName}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row bdyalign">
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong>
+            <i class="fa fa-book"></i> Project Name:</strong>
+          <span>{{showData.ProjectName}}</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong>
+            <i class="fa fa-home"></i> Flat NO:</strong>
+          <span>{{showData.FlatNo}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row bdyalign">
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong>
+            <i class="fa fa-building-o"></i> Building Type:</strong>
+          <span>{{showData.BuildingType}}</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong>
+            <i class="fa fa-phone"></i> phone: </strong>
+          <span>{{showData.MobileNo}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row bdyalign">
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong><i class="fa fa-envelope"></i> Email:</strong>
+          <span>{{showData.Email}}</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div *ngIf="showData">
+          <strong><i class="fa fa-user"></i> Occupation:</strong>
+          <span>{{showData.Occupation}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row bdyalign" *ngIf="showData && showData.UserType==='ChannelPartner'">
+      <div class="col-sm-6">
+        <div>
+          <strong>
+            <i class="fa fa-address-book-o"></i> Type:</strong>
+          <span>{{showData.Type}}</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div>
+          <strong>
+            <i class="fa fa-address-book-o"></i> Organization:</strong>
+          <span>{{showData.Organization}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row bdyalign" *ngIf="showData && showData.UserType==='ChannelPartner'">
+      <div class="col-sm-6">
+        <div>
+          <strong><i class="fa fa-hand-o-right"></i> RERA No.:</strong>
+          <span>{{showData.ReraNo}}</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div>
+          <strong><i class="fa fa-hand-o-right"></i> GSTIN No.:</strong>
+          <span>{{showData.GSTIN}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row bdyalign" *ngIf="showData && showData.UserType==='ChannelPartner'">
+      <div class="col-sm-6">
+        <div>
+          <strong><i class="fa fa-address-card-o"></i> Aadhar No.:</strong>
+          <span>
+            <button type="button" class="btn btn-sm btn-link" (click)="showImage(aadhar)">{{showData.AadharNo}}</button>
+          </span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div>
+          <strong><i class="fa fa-address-card-o"></i> Pan No.:</strong>
+          <span>
+            <button type="button" class="btn btn-sm btn-link" (click)="showImage(pan)">{{showData.PanNo}}</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div bsModal #showImageModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="mylargeModalLabel"
+  s aria-hidden="true">
+  <div class="modal-dialog  modal-lg">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h4 class="modal-title center">Image</h4>
+        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onCloseImage()" />
+      </div>
+      <div class="modal-body">
+        <div [hidden]="!isLoading">
+          <p class="loading">
+            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+          </p>
+        </div>
+        <div>
+          <div *ngIf="isShow">
+            <img [src]="images" class="img" alt="image slide">
+          </div>
+          <div *ngIf="!isShow">
+            <h4 class="notfoundmsg">{{imageNotAvailable}}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

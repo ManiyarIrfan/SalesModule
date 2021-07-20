@@ -1,0 +1,112 @@
+<br />
+<div class="row text-center">
+  <div class="col-sm-4">
+    <input type="text" autocomplete="off" [alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true"
+      required ngxDaterangepickerMd id="date" name="Date" #date="ngModel" [(ngModel)]="selectedDateRange"
+      class="form-control calender" placeholder="Select Start Date and End Date"
+      (change)="onChangeDate(selectedDateRange)" [class.error]="date.invalid && date.touched"
+      [class.has-success]="date.valid" />
+  </div>
+  <div class="col-sm-4 pull-right">
+    <span class="required pull-right">{{TodaysDateMsg}}</span>
+  </div>
+</div>
+<br />
+<div class="row">
+  <div class="col-sm-12" *ngIf="IssueDetails.length > 0">
+    <div class="card cardfortable" id="cardheight">
+      <div class="title textweight text-center">
+        <span>Issue Details</span>
+      </div>
+      <div class="table-responsive scrollbar tablemargin" id="Style-2">
+        <table class="table table-bordered table-hover table-sm text-nowrap  ">
+          <thead class="thead-light">
+            <tr>
+              <th>#</th>
+              <th>Issue Id</th>
+              <th>UserName</th>
+              <th>UserType</th>
+              <th>Recieved On</th>
+              <th>Issue Type</th>
+              <th>StoreProcedure</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor=" let issue of IssueDetails| paginate: {id:'issue-Details-pagination',itemsPerPage:10, currentPage: p1 };let i=index;">
+              <td>{{i+1}}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-link"
+                  (click)="showDetailsPopUp(issue,'open')">{{issue.Id}}</button>
+              </td>
+              <td>{{issue.UserName}}</td>
+              <td>{{issue.UserType}}</td>
+              <td>{{issue.CreatedOn}}</td>
+              <td>{{issue.IssueType}}</td>
+              <td>{{issue.StoreProcedure}}</td>
+              <td>
+                <button class="btn btn-link text-danger" *ngIf="issue.Status==='New'"
+                  (click)="showStatusPopUp(issue,'open')">
+                  {{issue.Status}}
+                </button>
+                <span *ngIf="issue.Status==='Solved'" class="badge badge-success">{{issue.Status}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <tfoot class="pull-right" *ngIf="IssueDetails.length >10">
+          <pagination-controls id="issue-Details-pagination" (pageChange)="p1 = $event"></pagination-controls>
+        </tfoot>
+      </div>
+    </div>
+  </div>
+</div>
+<span class="required">{{noDataMsg}}</span>
+<div id="celender"></div>
+<!--------------------------Model PopUp to Issues -->
+<div bsModal #issueDetailsModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+  aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title title pull-left">Issue Detail</h4>
+        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showDetailsPopUp(null,'close')" />
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="row">
+              <span>Request: {{IsusueRequest}}</span>
+            </div>
+            <br />
+            <div class="row">
+              <span>Response: {{IsusueResponse}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--------------------------Model PopUp to conferm Status Change -->
+<div bsModal #issueUpdateModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+  aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title titleStatus ">Warning!!</h4>
+        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showStatusPopUp(null,'close')" />
+      </div>
+      <div class="modal-body">
+        <i class="fa fa-question-circle"></i>
+        <strong class="text-head">Do you want to change Issue Status?</strong>
+      </div>
+      <div class="modal-footer">
+        <div class="col-sm-12 text-center">
+          <button class="btn btn-primary" type="button" (click)="updateIssuesDetails()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

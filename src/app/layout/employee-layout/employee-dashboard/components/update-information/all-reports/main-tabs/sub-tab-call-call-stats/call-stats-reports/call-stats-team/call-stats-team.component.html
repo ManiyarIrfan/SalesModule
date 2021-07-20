@@ -1,0 +1,54 @@
+<div class="card-header">
+  <strong>
+    <h5>Call Stats - Comparision Report [Team] </h5>
+  </strong>
+</div><br />
+<div class="row">
+  <div class="col-sm-4">
+    <!-- <select name="Option_value" [(ngModel)]="optionValue" id="Option_value"> -->
+        <select name="Option_value" [(ngModel)]="optionValue" id="Option">
+      <option [ngValue]="'undefined'" selected> Select Option </option>
+      <option *ngFor="let item of options" [value]="item.value">{{item.value}}</option>
+    </select>
+    <!-- <p-dropdown [options]="options" [(ngModel)]="Option_value" optionLabel="value" autoWidth="false" [style]="{'width':'100%'}" placeholder="Select option"></p-dropdown> -->
+  </div>
+  <div class="col-sm-4">
+    <select name="name" [(ngModel)]="Name" id="Name">
+      <option [ngValue]="'undefined'" selected> Select Team </option>
+      <option [value]="'Presales'"> Presales</option>
+      <option *ngFor="let item of teamdata" [value]="item.ProjectName">{{item.ProjectName}}</option>
+    </select>
+    <!-- <p-dropdown [options]="salesdata" [(ngModel)]="Name" optionLabel="Name" readonly="true" autoWidth="false" [style]="{'width':'100%'}" placeholder="Select sales"></p-dropdown> -->
+    <!-- <p-multiSelect [options]="salesdata" [(ngModel)]="Name" optionLabel="Name" readonly="true" [style]="{'width':'100%'}" [filter]="false"  defaultLabel="Select sales"></p-multiSelect> -->
+  </div>
+  <div class="col-sm-4">
+    <button type="button" class="btn btn-primary" label="Clear" (click)="getReport(optionValue,Name)"><i class="fa fa-search"></i>
+      Search</button>
+  </div>
+</div>
+<div *ngIf="message" class="notfoundmsgreport">Please Select Options </div>
+<div [hidden]="!isBarChartLoading">
+  <p id="isBarChartLoading">
+    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+  </p>
+</div>
+<div [hidden]="isBarChartLoading"><br />
+  <div *ngIf="chartValues">
+    <div class="card-header">
+      <strong>
+        <h5>Call Stats Report on Daily basis</h5>
+      </strong>
+    </div><br>
+    <!-- <tru-line-chart [Value]="chartValues" id="CallStatsDaily"></tru-line-chart>  -->
+    <tru-group-bar-chart [Value]="chartValues" [id]="'CallStatsDailyTeam'"></tru-group-bar-chart>
+  </div><br /><br />
+  <div *ngIf="chartvalue">
+    <div class="card-header">
+      <strong>
+        <h5>Call Stats Report on Hourly basis</h5>
+      </strong>
+    </div><br>
+    <!-- <tru-line-chart [Value]="chartvalue" id="CallStatsHourly"></tru-line-chart> -->
+    <tru-group-bar-chart [Value]="chartvalue" [id]="'CallStatsHourlyTeam'"></tru-group-bar-chart>
+  </div>
+</div>

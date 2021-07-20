@@ -1,0 +1,75 @@
+<div class="row mb-5">
+    <div class="col-sm-12 mb-2">
+        <h5><strong>New Group</strong></h5>
+        <hr>
+    </div>
+    <div class="col-sm-3">
+        <div class="row">
+            <app-community-file-upload [Type]="'NewGroup'" [UploadDone]="UploadDone"
+                (getuploadedFile)="receiveimage($event)"> </app-community-file-upload>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="row rowpadd">
+            <div class="col-sm-6 p-2">
+                <label for="exampleForm2">Group Name :</label>
+                <input autocomplete="off" placeholder="Enter Group Name" required type="text" id="groupName"
+                    name="groupName" #groupName="ngModel" class="form-control" [(ngModel)]="newGroupModel.GroupName">
+            </div>
+            <div class="col-sm-6 p-2">
+                <label for="exampleForm2">Project :</label>
+                <select class="browser-default custom-select" placeholder="Select Project"
+                    [(ngModel)]="newGroupModel.ProjectId" name="ProjectId"
+                    [class.error]="ProjectId.invalid && ProjectId.touched" [class.has-success]="ProjectId.valid"
+                    #ProjectId="ngModel">
+                    <option selected>Select Project</option>
+                    <option *ngFor="let item of ProjectsNames;trackBy:trackByFn;" [value]="item.ProjectId">
+                        {{item.ProjectName}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-12 p-2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label for="exampleForm2">Add Recipients :</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <mat-form-field class="example-chip-list" appearance="outline">
+                            <mat-chip-list #chipList aria-label="Recipients selection">
+                                <mat-chip *ngFor="let item of FinalUserList;trackBy:trackByFn;"
+                                    [selectable]="selectable" [removable]="removable" (removed)="removeUser(item)">
+                                    {{item.FullName | titlecase}}
+
+                                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                </mat-chip>
+                                <input placeholder="Recipients" #userdetails [matAutocomplete]="auto"
+                                    [(ngModel)]="newGroupModel.SearchRecipients"
+                                    (keyup)="search($event,newGroupModel.SearchRecipients)" name="searchRecipients"
+                                    #searchRecipients="ngModel" [matChipInputFor]="chipList"
+                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                    (matChipInputTokenEnd)="addUser($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedUsers($event)">
+                                <mat-option *ngFor="let selected of filteredUsers | async;trackBy: trackByFn;"
+                                    [value]="selected">
+                                    {{selected.FullName | titlecase}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 mt-3  mb-2">
+                <button (click)="insertGroup('Insert')" type="button"
+                    [disabled]="!newGroupModel.GroupName || FinalUserList.length===0 || disableButton || this.inputFiles.length===0"
+                    class="btn btnstyle btnpost btn-sm pull-right">
+                    &nbsp;&nbsp;Add&nbsp;&nbsp;
+                </button>
+                <button type="button" class="btn btnstyle  btn-sm pull-right">
+                    Cancel
+                </button>
+                <span class="margntop6 pull-right responseMsg {{messageRes['css']}}">{{messageRes['msg']}}</span>
+            </div>
+        </div>
+    </div>
+</div>

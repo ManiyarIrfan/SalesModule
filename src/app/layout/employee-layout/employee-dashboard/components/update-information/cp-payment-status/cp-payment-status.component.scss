@@ -1,0 +1,33 @@
+  .list-group-item:last-child{
+      margin-bottom: -19px;
+  }
+
+  .card{
+    width: 99%;
+  } 
+  #myUL {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+#myUL li a {
+    border: 1px solid #ddd; /* Add a border to all links */
+    margin-top: -1px; /* Prevent double borders */
+    background-color: #f6f6f6;
+    padding: 3px; /* Add some padding */
+    text-decoration: none; /* Remove default text underline */
+    font-size: 15px;
+    color: black; 
+    display: block; /* Make it into a block element to fill the whole list */
+    cursor: pointer;
+}
+#myUL li a:hover:not(.header) {
+    background-color: #eee; 
+}
+.btnfont{
+    font-size:24px;
+}
+.font{
+    font-size:30px;
+}

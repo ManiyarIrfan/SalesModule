@@ -1,0 +1,454 @@
+<div class="responsive-image header-height">
+    <header class=" header-text">
+        <div class="row">
+            <div class="col-sm-7"></div>
+            <div class="col-sm-5">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <h4 class="text-white pull-right">
+                            {{this.loggedInuserDetails.Firstname | titlecase}}
+                            &nbsp;{{this.loggedInuserDetails.LastName | titlecase}} <br>
+                            <span
+                                class="badge badge-primary rounded-pill pt-1 pb-1 pl-3 pr-3">{{loggedInuserDetails.UserType}}</span>
+                        </h4>
+                    </div>
+                    <div class="col-sm-2 hide"><img class="rounded-circle hide" src="{{userProfile}}" width="65px"
+                            height="65px" alt=""></div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+<div class="main-container">
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="breadcrumbs">
+                        <div class="breadcrumbsitem-text">
+                            <a (click)="goHome()" [routerLink]="['/community']">Community </a>
+                            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+                            <a (click)="tab='profile'">User Profile</a><span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+                            <a>{{tab | titlecase}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 mt-3">
+            <div class="cardstyle">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="centerImg">
+                            <img src="{{userProfile}}" class="rounded-circle userprofile" alt="">
+                        </div>
+                        <div class="pt-4 text-d">
+                            <h4>{{this.loggedInuserDetails.Firstname | titlecase}}&nbsp;&nbsp;{{this.loggedInuserDetails.LastName | titlecase}}
+                                &nbsp;<i class="fa text-success font11 fa-circle" aria-hidden="true"></i></h4>
+                            <h6>Pune,Maharashtra</h6>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 joinfrom">
+                        <div class="row mt-3">
+                            <div class="col-sm-12">
+                                <h6 class="pull-right">Joined : 21 Sept 2020</h6>
+                            </div>
+                            <div class="col-sm-12">
+                                <h6 class="pull-right">Total Post : {{myPosts.length}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 mt-1">
+            <div class="cardstyle card-height sidem">
+                <div class="row pl-2">
+                    <div class="col-sm-12">
+                        <ul class="pointer">
+                            <li [ngClass]="{'selected': tab === 'profile'}" (click)="selectedTab('profile')"
+                                class="middl menu"><i class="fa padd6 fa-user font13 pull-left pr-3"
+                                    aria-hidden="true"></i>
+                                View Profile </li>
+                            <li [ngClass]="{'selected': tab === 'post'}" (click)="selectedTab('post')"
+                                class="middl menu"><i class="fa padd6 fa-address-card font13 pr-3 pull-left"
+                                    aria-hidden="true"></i>
+                                Posts </li>
+                            <li [ngClass]="{'selected': tab === 'message'}" (click)="selectedTab('message')"
+                                class="middl menu"><i class="fa padd6 fa-commenting font13 pr-3 pull-left"
+                                    aria-hidden="true"></i>
+                                Messages </li>
+                            <li [ngClass]="{'selected': tab === 'settings'}" (click)="selectedTab('settings')"
+                                class="middl menu"><i class="fa padd6 fa-unlock-alt font13 pr-3 pull-left"
+                                    aria-hidden="true"></i>
+                                Settings </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9  mt-1">
+            <div class="cardstyle card-height maincardM pl-3" [ngSwitch]="tab">
+                <div class="row viewprofile_card inbox_msg" *ngSwitchCase="'profile'">
+                    <div class="col-sm-12">
+                        <span
+                            class="pointer mr-2 pull-right border border-primary text-primary pt-1 pl-2 pr-2 editbtn rounded">Edit
+                            &nbsp;<i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="col-sm-6 p-2">
+                        <label for="exampleForm2">First Name</label>
+                        <input placeholder="Enter your First Name" type="text" id="firstName" class="form-control"
+                            [class.error]="firstName.invalid && firstName.touched" [class.has-success]="firstName.valid"
+                            name="firstName" required [(ngModel)]="userProfileModel.Firstname" #firstName="ngModel"
+                            pattern="^[^-\s][a-zA-Z ]*" autocomplete="off">
+                    </div>
+                    <div class="col-sm-6 p-2">
+                        <label for="exampleForm2">Last Name</label>
+                        <input placeholder="Enter your Last Name" type="text" id="lastName" class="form-control"
+                            [class.error]="lastName.invalid && lastName.touched" [class.has-success]="lastName.valid"
+                            name="lastName" required [(ngModel)]="userProfileModel.LastName" #lastName="ngModel"
+                            pattern="^[^-\s][a-zA-Z ]*" autocomplete="off">
+                    </div>
+                    <div class="col-sm-6 p-2">
+                        <label for="exampleForm2">Email Id</label> <input placeholder="Enter your Email Id" type="text"
+                            id="emailId" class="form-control" [class.error]="emailId.invalid && emailId.touched"
+                            [class.has-success]="emailId.valid" name="emailId" required
+                            [(ngModel)]="userProfileModel.UserEmail" #emailId="ngModel"
+                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" autocomplete="off">
+                    </div>
+                    <div class="col-sm-6 p-2">
+                        <label for="exampleForm2">Mobile No</label> <input type="number"
+                            placeholder="Enter your Mobile No" type="text" id="mobileNo" class="form-control"
+                            [class.error]="mobileNo.invalid && mobileNo.touched" [class.has-success]="mobileNo.valid"
+                            name="mobileNo" required [(ngModel)]="userProfileModel.MobileNo" #mobileNo="ngModel"
+                            pattern="^\d{10}$" minlength=10 maxlength=10 autocomplete="off">
+                    </div>
+                    <div class="col-sm-12 mt-5">
+                        <button type="button" class="pull-right btn btn-primary  pl-2 pr-2 rounded mr-2">Save</button>
+                        <button type="button" class="btn pull-right btn-light pl-2 pr-2 rounded mr-2">Cancel</button>
+                    </div>
+                </div>
+                <div class="row card-height post_card" *ngSwitchCase="'post'">
+                    <div class="col-sm-12 inbox_msg">
+                        <i (click)="PostTab='grid'" title="Grid View Show Posts" data-toggle="tooltip"
+                            data-placement="top" class="fa pull-right m-3 fa-th" aria-hidden="true"></i>
+                        <i (click)="PostTab='list'" title="List View Show Posts" data-toggle="tooltip"
+                            data-placement="top" class="fa pull-right m-3 fa-list" aria-hidden="true"></i>
+                        <div class="headind_srch">
+                            <div class="recent_heading">
+                                <h4>Your Posts:</h4>
+                            </div>
+                            <div class="srch_bar">
+                                <div class="stylish-input-group">
+                                    <input type="text" class="search-bar" placeholder="Search" name="test"
+                                        [(ngModel)]="searchPosts" autocomplete="off">
+                                    <span class="input-group-addon">
+                                        <button type="button">
+                                            <i class="fa fa-search outlinenone" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row postscroll" *ngIf="PostTab==='grid' && !showPostFlag">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-6" *ngFor="let item of myPosts | filter:searchPosts">
+                                        <div class="card">
+                                            <div class="card--text">
+                                                <div class="card--title">
+                                                    {{item.Subject |titlecase}}
+                                                </div>
+                                                <div class="card--sub" [innerHTML]="item.shortMessage">
+                                                </div>
+                                            </div>
+                                            <span (click)="viewPostDetails(item)" class="cta pull-righ ">
+                                                Read More
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="PostTab==='list' && !showPostFlag">
+                            <div class="col-sm-12">
+                                <div class="table-responsive p-2" *ngIf="myPosts.length>0" style="height: 480px;">
+                                    <table class=" table table-bordered table-sm text-nowrap tableFixHead"
+                                        cellsspacing="0" width="100%">
+                                        <thead>
+                                            <tr class="text-left">
+                                                <th>
+                                                    <h5 class="tbltitle">Posts</h5>
+                                                </th>
+                                                <th class="text-right">Posted On</th>
+                                                <th>Views</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let item of myPosts | filter:searchPosts | paginate: {id:'myPostspg', itemsPerPage: 10, currentPage: currentPageId }; trackBy: trackByFn;let i=index;">
+                                                <td class="pointer">
+                                                    <div class="row" (click)="viewPostDetails(item)">
+                                                        <div class="col-sm-12">
+                                                            <h6 class="pull-left pt-2"><span
+                                                                    class="head_text txt_link">{{i+1}})
+                                                                    {{item.Subject |titlecase}}</span>
+                                                            </h6>
+                                                        </div>
+                                                        <div class="col-sm-12"><span
+                                                                class="pull-left font13 text-muted txt_link"
+                                                                [innerHTML]="item.shortMessage">
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="pointer">
+                                                    <span class="pull-right pr-2">{{item.CreatedOn}}
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">{{item.Views}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <tfoot *ngIf="myPosts.length > 10" class="pull-right">
+                                        <pagination-controls id="myPostspg" (pageChange)="currentPageId = $event">
+                                        </pagination-controls>
+                                    </tfoot>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="showPostFlag">
+                            <div class="col-sm-12">
+                                <div class="row p-3">
+                                    <div class="col-sm-12" *ngFor="let item of showPostdata;">
+                                        <h5> <i (click)="showPostFlag=!showPostFlag" class="pr-3 fa fa-arrow-left"
+                                                aria-hidden="true"></i> {{item.Subject |titlecase}} <span
+                                                class="font13 pull-right text-muted">Created : {{item.CreatedOn}}</span>
+                                        </h5>
+                                        <hr>
+                                        <p class="postdetails" [innerHTML]="item.Message"></p>
+                                        <span class="m-1 m-1 pull-left">
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Views :
+                                            {{item.Views}}</span>
+                                        <span title="Likes" data-toggle="tooltip" data-placement="top"
+                                            class="m-1 pull-right">
+                                            <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                            {{item.Dislikes}}</span>
+                                        <span title="Dislikes" data-toggle="tooltip" data-placement="top"
+                                            class="m-1 pull-right">
+                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                            {{item.Likes}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span *ngIf="myPosts.length===0" class="text-danger">No Post's Found</span>
+                    </div>
+                </div>
+                <div class="row" *ngSwitchCase="'message'">
+                    <div class="col-sm-12">
+                        <div class="messaging">
+                            <div class="inbox_msg">
+                                <div class="inbox_people">
+                                    <div class="headind_srch">
+                                        <div class="recent_heading">
+                                            <h4>Recent</h4>
+                                        </div>
+                                        <div class="srch_bar">
+                                            <div class="stylish-input-group">
+                                                <input type="text" class="search-bar" placeholder="Search" name="test"
+                                                    [(ngModel)]="searchText" autocomplete="off">
+                                                <span class="input-group-addon">
+                                                    <button (click)="search(searchText)" type="button">
+                                                        <i class="fa fa-search outlinenone" aria-hidden="true"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="inbox_chat">
+                                        <div class="chat_list active_chat"
+                                            *ngFor="let item of chatList | filter:searchText">
+                                            <div *ngIf="item.UserName !==null" class="chat_people pointer"
+                                                (click)="startChat('Recent',item)">
+                                                <div class="chat_img">
+                                                    <img class="chat_profile rounded-circle"
+                                                        src="{{item.ProfilePic ? item.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                                                        alt="">
+                                                </div>
+                                                <div class="chat_ib">
+                                                    <div class="row">
+                                                        <div class="col-sm-12 pt-1">
+                                                            <h5 *ngIf="item.UserName !==null" class="pull-left">
+                                                                {{item.UserName | titlecase}}
+                                                            </h5>
+                                                            <!-- <span class="rounded-circle pull-right badge badge-danger"
+                                                                *ngIf="item.IsRead!==0">{{item.IsRead}}</span> -->
+                                                        </div>
+                                                        <!-- <div class="col-sm-3">
+                                                            <span
+                                                                class="pull-right">{{item.CreatedOn | date:"hh:mm" }}</span>
+                                                        </div> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chat_list active_chat"
+                                            *ngFor="let item of GroupList | filter:searchText">
+                                            <div class="chat_people pointer" (click)="startChat('Group',item)">
+                                                <div class="chat_img channelItem">
+                                                    <div class="userProfileImages"
+                                                        *ngIf="item.UserProfilePic.split(', ').length > 0">
+                                                        <div>
+                                                            <img *ngIf="item.UserProfilePic.split(', ')[0]"
+                                                                src="{{item.UserProfilePic.split(', ')[0]}}" />
+                                                            <img *ngIf="item.UserProfilePic.split(', ')[1]"
+                                                                src="{{item.UserProfilePic.split(', ')[1]}}" />
+                                                        </div>
+                                                        <div>
+                                                            <img *ngIf="item.UserProfilePic.split(', ')[2]"
+                                                                src="{{item.UserProfilePic.split(', ')[2]}}" />
+                                                            <img *ngIf="item.UserProfilePic.split(', ')[3]"
+                                                                src="{{item.UserProfilePic.split(', ')[3]}}" />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="channelName">{{item.GroupName}}</h5>
+                                                        <!-- <h5 class="channelMsgPlaceholder">
+                                                            {{item.LastMsg ? ((item.LastMsg.length >20) ? (item.LastMsg | slice:0:20)+'...' : item.LastMsg) :''}}
+                                                        </h5> -->
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <span class="p-1" *ngIf="this.totalList.length > 0">Your
+                                                Searched
+                                                Result</span>
+                                            <div class="chat_list active_chat" *ngFor="let item of totalList">
+                                                <div class="chat_people pointer" (click)="startChat('New',item)">
+                                                    <div class="chat_img">
+                                                        <img class="rounded-circle"
+                                                            src="{{item.ProfilePic ? item.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                                                            alt="">
+                                                    </div>
+                                                    <div class="chat_ib">
+                                                        <h5>{{item.FullName | titlecase}}
+                                                            <!-- <span class="chat_date">{{item.Timeelapsed}}</span> -->
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="Flag">
+                                                <span *ngIf="totalList.length===0">No User Found</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mesgs">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span> <img width="50px" *ngIf="chatModel.UserName" class="chat_profile"
+                                                    src="{{chatModel.ProfilePic ?chatModel.ProfilePic :'../../../../../../../assets/images/user.png'}}"
+                                                    alt="">
+                                                {{chatModel.UserName | titlecase}}
+                                            </span>
+                                            <hr class="hrstyle" *ngIf="chatModel.UserName">
+                                        </div>
+                                        <div class="col-sm-12 chatscroll">
+                                            <div class="chat-histry" #scrollMe
+                                                *ngFor="let date of chatHeader; trackBy: trackByFn">
+                                                <div class="justify-content-md-center text-center pt-1 pb-2">
+                                                    <span class="badge-secondary pt-1 pb-1 pl-2 pr-2">
+                                                        {{date}}
+                                                    </span>
+                                                </div>
+                                                <div *ngFor="let item of chatData[date];">
+                                                    <div class="incoming_msg" *ngIf="item.Reply==='ReplyFrom'">
+                                                        <div class="incoming_msg_img">
+                                                            <img class="chat_profile"
+                                                                src="{{item.ProfilePic ? item.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                                                                alt="sunil">
+                                                        </div>
+                                                        <div class="received_msg">
+                                                            <div class="received_withd_msg">
+                                                                <p> {{item.Message}}</p>
+                                                                <span
+                                                                    class="time_date pull-left">{{item.CreatedOn | date:"hh:mm" }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="outgoing_msg" *ngIf="item.Reply==='ReplyTo'">
+                                                        <div class="sent_msg">
+                                                            <p>{{item.Message}}</p>
+                                                            <span
+                                                                class="time_date pull-right">{{item.CreatedOn | date:"hh:mm" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="chat-histry" *ngIf="InteractionType==='Group'">
+                                                <!-- <span class="text-center">{{date}}</span> -->
+                                                <div #scrollMe *ngFor="let item of chatData;">
+                                                    <div class="outgoing_msg" *ngIf="item.Reply==='ReplyFrom'">
+                                                        <div class="sent_msg">
+                                                            <!-- <span>{{item.UserName | titlecase}}</span> -->
+                                                            <p>{{item.Message}}</p>
+                                                            <span
+                                                                class="time_date pull-right">{{item.CreatedOn | date:"hh:mm" }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="incoming_msg" *ngIf="item.Reply==='ReplyTo'">
+                                                        <div class="incoming_msg_img">
+                                                            <img class="chat_profile"
+                                                                src="{{item.UserPic ? item.UserPic : '../../../../../../../assets/images/user.png'}}"
+                                                                alt="sunil">
+                                                        </div>
+                                                        <div class="received_msg">
+                                                            <div class="received_withd_msg">
+                                                                <span>{{item.UserName | titlecase}}</span>
+                                                                <p> {{item.Message}}</p>
+                                                                <span
+                                                                    class="time_date pull-left">{{item.CreatedOn | date:"hh:mm" }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!chatModel.SendToUserId" class="centerText">
+                                                <span class="nochatroom">Please select a chat to start
+                                                    messaging</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12" *ngIf="chatModel.SendToUserId">
+                                            <div class="type_msg" (keydown)="enterClick($event,chatModel)">
+                                                <div class="input_msg_write">
+                                                    <input [(ngModel)]="chatModel.SendMessage" autocomplete="off"
+                                                        autofocus name="message" #message="ngModel" type="text"
+                                                        class="write_msg outlinenone" placeholder="Type a message" />
+                                                    <button (click)="sendMessage(chatModel)" class="msg_send_btn"
+                                                        [disabled]="!chatModel.SendMessage" type="button">
+                                                        <i class="fa ml3 fa-paper-plane-o outlinenone"
+                                                            aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pl-3 card-height" *ngSwitchCase="'settings'">
+                    <div class="col-sm-12">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

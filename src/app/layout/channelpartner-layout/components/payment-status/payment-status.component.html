@@ -1,0 +1,49 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <!-- <app-page-header [heading]="'My Payment Status'" [icon]="'fa-bar-chart-o'"></app-page-header> -->
+    <span class="required">{{DataNotFoundError}}</span>
+    <form #FinancialStatusForm="ngForm">
+        <div class="table-responsive-xl" *ngIf="!showDataNotFoundError">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Brokarage Amount</th>
+                            <th>Invoice No</th>
+                            <th>Invoice Date</th>
+                            <th>Payment Made</th>
+                            <th>Amount Credit</th>
+                            <th>Amount Debit</th>
+                            <th>Cheque No / RTGS / Transaction Id</th>
+                            <th>Date Of Cheque</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let financial of paystatus| paginate: { itemsPerPage: 15, currentPage: p1};trackBy: trackByFn">
+                            <td>{{financial.OrderId}}</td>
+                            <td>{{financial.BrokerageAmount}}</td>
+                            <td>{{financial.InVoiceNo ? financial.InVoiceNo :'NA'}}</td>
+                            <td>{{financial.InvoiceDate|date:"d MMM y"}}</td>
+                            <td>{{financial.PaymentMade}}</td>
+                            <td>{{financial.AmountCr}}</td>
+                            <td>{{financial.AmountDr}}</td>
+                            <td>{{financial.ChequeNo}}</td>
+                            <td>{{financial.DateOfCheque|date:"d MMM y"}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot  class="pull-right">
+                    <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                </tfoot>
+            </div>
+        </div>
+    </form>
+</div>

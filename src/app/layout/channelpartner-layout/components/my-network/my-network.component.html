@@ -1,0 +1,114 @@
+<!-- <app-page-header [heading]="'My Network'" [icon]="'fa-bar-chart-o'"></app-page-header> -->
+<form #myNetworkForm="ngForm">
+    <button type="button" class="btn btn-success btn-sm" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
+        aria-controls="collapseExample">
+        <i class="fa fa-plus"></i> Refer ChannelPartner
+    </button>
+    <br />
+    <div id="collapseExample" [ngbCollapse]="isCollapsed">
+        <div class="card">
+            <div class="card-body">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <span class="required">*</span>
+                                <strong for="name">Name :</strong>
+                                <input type="text" class="form-control" id="name" required [(ngModel)]="channelPartnerModel.Name" name="name" #name="ngModel"
+                                    placeholder="Enter Name..." [class.error]=" name.invalid && name.touched" [class.has-success]="name.valid">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <strong for="mobileNo">
+                                <span class="required">*</span>Mobile Number :</strong>
+                            <input type="tel" class="form-control" id="mobileNo" name="mobileNo" required [(ngModel)]="channelPartnerModel.MobileNo"
+                                (blur)="getMobileValidation(channelPartnerModel.MobileNo)" placeholder="Enter Mobile Number..."
+                                #mobileNo="ngModel" minlength=10 maxlength=10 pattern="^\d{10}$" [class.error]=" mobileNo.invalid && mobileNo.touched"
+                                [class.has-success]="mobileNo.valid">
+                            <div *ngIf=" mobileNo.errors && (mobileNo.dirty || mobileNo.touched)" class="alert alert-danger">
+                                <div [hidden]="!mobileNo.errors.required">
+                                    Mobile number is required!
+                                </div>
+                                <div [hidden]="!mobileNo.errors.pattern">
+                                    Please select valid mobile number!
+                                </div>
+                            </div>
+                            <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <span class="required">*</span>
+                                <strong for="Email">Email Id/User Id : </strong>
+                                <input type="text" class="form-control" id="Email" required [(ngModel)]="channelPartnerModel.Email" name="Email" #email="ngModel"
+                                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$" placeholder="Enter Email Address..."
+                                    [class.error]="email.invalid && email.touched" [class.has-success]="email.valid" (blur)="getEmailValidation(channelPartnerModel.Email)">
+                                <div *ngIf="email.errors && (email.dirty || email.touched)" class="alert alert-danger">
+                                    <div [hidden]="!email.errors.required">
+                                        Email Id is required!
+                                    </div>
+                                    <div [hidden]="!email.errors.pattern">
+                                        Enter Valid Email!
+                                    </div>
+                                </div>
+                                <span [hidden]="isEmailAvailable" class="text-danger">{{showemail}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="button" id="submit" name="submit" class="btn btn-primary mt-4" (click)="referChannelpartner(channelPartnerModel,myNetworkForm)"
+                                [disabled]="!myNetworkForm.form.valid || !isMobileAvailable || !isEmailAvailable ||disableReferCpBtn || !isLoading">
+                                <i class="fa fa-paper-plane"></i> Submit</button> &nbsp;&nbsp;
+                            <span *ngIf="!isLoading" class="mt-2">
+                                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...</span>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div *ngIf="listreferredChannelPartner">
+        <div class="table-responsive-xl">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <!-- <th>BrokerId</th> -->
+                            <th>Name</th>
+                            <th>MobileNo</th>
+                            <th>Email</th>
+                            <th>CreatedOn</th>                           
+                            <th>Verification Status</th>
+                            <th>Registration Status</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="listreferredChannelPartner.length>0">
+                        <tr *ngFor="let referredCp of listreferredChannelPartner| paginate: { itemsPerPage: 12, currentPage: p1};trackBy: trackByFn">
+                            <!-- <td>{{referredCp.BrokerId?referredCp.BrokerId:'NA'}}</td> -->
+                            <td>{{referredCp.Name}}</td>
+                            <td>{{referredCp.MobileNo}}</td>
+                            <td>{{referredCp.Email}}</td>
+                            <td>{{referredCp.CreatedOn |date:"d MMM y"}}</td>                           
+                            <td>
+                                <span [ngClass]="{'badge-danger': referredCp.VerificationStatus==='Rejected', 'badge-success':referredCp.VerificationStatus==='Approved','badge-warning': referredCp.VerificationStatus==='Verification pending'}">{{referredCp.VerificationStatus?referredCp.VerificationStatus:'NA'}}</span>
+                            </td>
+                            <td>
+                                <span [ngClass]="{'badge-danger': referredCp.Status==='Registration Pending', 'badge-success':referredCp.Status==='Registered'}">{{referredCp.Status?referredCp.Status:'NA'}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot class="pull-right" *ngIf="listreferredChannelPartner.length>12">
+                    <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                </tfoot>
+                <div class="col-sm-12 text-center" *ngIf="!notFound">
+                    <strong class="required">No Data Found</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <img id="banner" src="assets/images/CpNework.JPG" alt="Banner" /> -->
+
+    <!-- <tru-org-chart></tru-org-chart> -->
+</form>

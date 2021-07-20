@@ -1,0 +1,364 @@
+<form id="showDropDown" #ProjectDetailForm="ngForm">
+    <br />
+    <div class="row">
+        <div class="col-sm-2" *ngIf="!disableFieldsByLogin">
+            <br>
+            <button type="button" class="btn btn-outline-success" (click)="openCreateModal()">
+                <i class="fa fa-plus"></i> Create New</button>
+        </div>
+        <div class="col-sm-3">
+            <strong for="ProjName">
+                <span class="required">*</span>Select Project</strong>
+
+            <select class="form-control" name="projectname" id="projectname" required [(ngModel)]="selectedProject" #projectname="ngModel"
+                [class.error]="projectname.invalid && (projectname.dirty || projectname.touched)" (change)="onProjectChange($event.target.value)">
+                <option value="">---Select---</option>
+                <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn" [hidden]="item.ProjectName === 'Common'" [value]="item.ProjectName">{{item.ProjectName}}</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <strong for="buildingtype">
+                <span class="required">*</span>Building Type</strong>
+
+            <select class="form-control" name="buildingtype" id="buildingtype" required #buildingtype="ngModel" [(ngModel)]="selectedBuildingType"
+                [class.error]="buildingtype.invalid && (buildingtype.dirty || buildingtype.touched)" (change)="onBuildingTypeChange($event.target.value)">
+                <option value="All">Select All</option>
+                <option *ngFor="let item of buildingType;trackBy: trackByFn" [value]="item.BuildingType">{{item.BuildingType}}</option>
+            </select>
+        </div>
+    </div>
+    <br />
+    <div *ngIf="showTable">
+        <div class="col-sm-12" align="center" *ngIf="isLoading">
+            <div>
+                <p class="loading">
+                    <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                </p>
+            </div>
+        </div>
+        <div [hidden]="!showflatNotFoundMessage">
+            <div class="table-responsive scrollbar" id="style-2">
+                <table class="table table-bordered table-hover  table-striped table-sm text-nowrap tableFixHead">
+                    <thead class="thead-light">
+                        <tr class="text-center">
+                            <th>Building</th>
+                            <th>UnitNo</th>
+                            <th>Floor</th>
+                            <th>Available</th>
+                            <th>Type </th>
+                            <th>View</th>
+                            <th>BHK</th>
+                            <th>RERA</th>
+                            <th>Rate</th>
+                            <th>Internal</th>
+                            <th>Balcony</th>
+                            <th>Terrace</th>
+                            <th>Plot Area A</th>
+                            <th>Plot Area B</th>
+                            <th>Parking Slot</th>
+                            <th>Parking Charge</th>
+                            <th>PLC</th>
+                            <th>Infra</th>
+                            <th>Floor Rise</th>
+                            <th>Maintenance</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="text" class="name-width" name="flatNo" [(ngModel)]="filterDataModel.FlatNo" (keyup)="filterLeadData()" autocomplete="off">
+                            </td>
+                            <td>
+                                <input type="text" class="name-width" name="floor" [(ngModel)]="filterDataModel.Floor" (keyup)="filterLeadData()" autocomplete="off">
+                            </td>
+                            <td>
+                                <input type="text" class="name-width" name="available" [(ngModel)]="filterDataModel.Available" (keyup)="filterLeadData()"
+                                    autocomplete="off">
+                            </td>
+                            <td>
+                                <input type="text" class="name-width" name="layoutType" [(ngModel)]="filterDataModel.LayoutType" (keyup)="filterLeadData()"
+                                    autocomplete="off">
+                            </td>
+                            <td>
+                                <input type="text" class="name-width" name="flatView" [(ngModel)]="filterDataModel.FlatView" (keyup)="filterLeadData()" autocomplete="off">
+                            </td>
+                            <td>
+                                <input type="text" class="name-width" name="bHK" [(ngModel)]="filterDataModel.BHK" (keyup)="filterLeadData()" autocomplete="off">
+                            </td>
+                            <td colspan="13"></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" *ngFor="let details of showResult  | paginate: { itemsPerPage: 10, currentPage: CurrentPageId };trackBy: trackByFn;">
+                            <td>{{details.BuildingType}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link" (click)="updateprojectDetails(details)">{{details.FlatNo}}</button>
+                            </td>
+                            <td>{{details.Floor}}</td>
+                            <td>{{details.Available | titlecase}}</td>
+                            <td>{{details.LayoutType | titlecase}}</td>
+                            <td>{{details.FlatView | titlecase}}</td>
+                            <td>{{details.BHK}}</td>
+                            <td>{{details.ReraArea}}</td>
+                            <td>{{details.Rate}}</td>
+                            <td>{{details.CarpetArea}}</td>
+                            <td>{{details.EnclosedBalcony}}</td>
+                            <td>{{details.AttachedTerrace}}</td>
+                            <td>{{details.PlotArea_A?(details.PlotArea_A | number : '1.2-2'):''}}</td>
+                            <td>{{details.PlotArea_B?(details.PlotArea_B | number : '1.2-2'):''}}</td>
+                            <td>{{details.ParkingSlot}}</td>
+                            <td>{{details.ParkingCharge}}</td>
+                            <td>{{details.PLC}}</td>
+                            <td>{{details.InfraCharge}}</td>
+                            <td>{{details.FloorRise}}</td>
+                            <td>{{details.MonthlyMaintenance}}</td>
+                            <td>{{details.Remark}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <tfoot class="pull-right" *ngIf="showResult.length>10">
+                    <pagination-controls (pageChange)="CurrentPageId = $event"></pagination-controls>
+                </tfoot>
+            </div>
+        </div>
+    </div>
+    <div [hidden]="showflatNotFoundMessage">
+        <span class="required">Flat is not availabe, please select another option or contact office.</span>
+    </div>
+</form>
+<div bsModal #createProjectDetailsModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel"
+    s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{modalHeader}}</h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onClose(CreateProjectDetailForm)" />
+            </div>
+            <form #CreateProjectDetailForm="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-sm-2" *ngIf="showUpdateParameters">
+                            <strong for="flatno">Flat No:</strong>
+                            <input type="text" pattern="^[^-\s][0-9 ]*" class="form-control" id="flatno" name="flatno" #flatno="ngModel" required [(ngModel)]="projDetailModel.FlatNo"
+                                [class.error]="flatno.invalid && flatno.touched" [class.has-success]="floor.valid" [disabled]="true ||disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2" *ngIf="!showUpdateParameters">
+                            <strong for="ProjectName">
+                                <span class="required">*</span>Select Project</strong>
+                            <select class="form-control" id="ProjectName" #ProjectName="ngModel" required [(ngModel)]="projDetailModel.ProjectName" name="ProjectName"
+                                #projectName="ngModel" [class.error]="projectName.invalid && projectName.touched" (change)="onProjectChangePopup()"
+                                [class.has-success]="projectName.valid" [disabled]="disableFieldsByLogin">
+                                <option value="">--select--</option>
+                                <option *ngFor="let item of selectedProjectNames;trackBy: trackByFn" [hidden]="item.ProjectName === 'Common'">{{item.ProjectName}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-2" *ngIf="!showUpdateParameters">
+                            <strong>
+                                <span class="required">*</span>Building/Plot Type :</strong>
+                            <select class="form-control" id="BuildingType" name="BuildingType" required [(ngModel)]="projDetailModel.buildingType" #building="ngModel"
+                                [class.error]="building.invalid && building.touched" [class.has-success]="building.valid" [disabled]="disableFieldsByLogin">
+                                <option value="">---Select---</option>
+                                <option *ngFor="let item of getBuildingTypeList;trackBy: trackByFn">{{item.BuildingType}}</option>
+                            </select>
+                            <!-- <strong for="BuildingType">
+                                <span class="required">*</span>Building/Plot Type: </strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="BuildingType"
+                                name="BuildingType" required [(ngModel)]="projDetailModel.buildingType"
+                                #building="ngModel" [class.error]="building.invalid && building.touched"
+                                [class.has-success]="building.valid" [disabled]="disableFieldsByLogin"> -->
+                        </div>
+
+                        <div class="form-group col-sm-2">
+                            <strong for="Floor">
+                                <span class="required">*</span>Floor: </strong>
+                            <input type="text" class="form-control" id="Floor" name="Floor" required [(ngModel)]="projDetailModel.Floor"
+                                #floor="ngModel" [class.error]="floor.invalid && floor.touched" [class.has-success]="floor.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="LayoutType">Layout Type: </strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="LayoutType" name="LayoutType" [(ngModel)]="projDetailModel.LayoutType"
+                                #layoutType="ngModel" [class.error]="layoutType.invalid && layoutType.touched" [class.has-success]="layoutType.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="BHK">
+                                <span class="required">*</span>BHK: </strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z0-9. ]*" class="form-control" id="BHK" name="BHK" required [(ngModel)]="projDetailModel.BHK"
+                                #bhk="ngModel" [class.error]="bhk.invalid && bhk.touched" [class.has-success]="bhk.valid" [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2" *ngIf="!showUpdateParameters">
+                            <strong for="FlatNo">
+                                <span class="required">*</span>Unit Number: </strong>
+                            <input type="text" (blur)="flatNo.valid ? checkFlatDuplicate(projDetailModel):clearTextMsg()" pattern="^[^-\s][0-9 ]*" class="form-control"
+                                id="FlatNo" name="FlatNo" required [(ngModel)]="projDetailModel.FlatNo" #flatNo="ngModel" [class.error]="flatNo.invalid && flatNo.touched"
+                                [class.has-success]="flatNo.valid" [disabled]="disableFieldsByLogin">
+                            <span [hidden]="flatDuplicateFlag" class="required">{{showMessageOnDuplicateFlat}}</span>
+                            <span [hidden]="!flatDuplicateFlag" class="green">{{showMessageOnDuplicateFlat}}</span>
+                        </div>
+                        <div class="form-group col-sm-2" *ngIf="showUpdateParameters">
+                            <strong for="available">Available:</strong>
+                            <select class="form-control" id="available" id="available" name="available" #available="ngModel" [(ngModel)]="projDetailModel.Available"
+                                [class.error]="available.invalid && available.touched" [class.has-success]="available.valid"
+                                [disabled]="disableFieldsByLogin || loggedInuserDetails.Level !== 'L2'">
+                                <option value='yes'>YES</option>
+                                <option value='no'>NO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            <strong for="ReraArea" id="rerafont">
+                                <span class="required">*</span>RERA/Calculation Area: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="ReraArea" name="ReraArea" required [(ngModel)]="projDetailModel.ReraArea"
+                                #reraArea="ngModel" [class.error]="reraArea.invalid && reraArea.touched" [class.has-success]="reraArea.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="Rate">Rate: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="Rate" name="Rate" [(ngModel)]="projDetailModel.Rate"
+                                #rate="ngModel" [class.error]="rate.invalid && rate.touched" [class.has-success]="rate.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="CarpetArea">
+                                <span class="required">*</span>Internal Area: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="CarpetArea" name="CarpetArea" [(ngModel)]="projDetailModel.CarpetArea"
+                                required #carpetArea="ngModel" [class.error]="carpetArea.invalid && carpetArea.touched" [class.has-success]="carpetArea.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="EnclosedBalcony">Balcony Area: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="EnclosedBalcony" name="EnclosedBalcony" [(ngModel)]="projDetailModel.EnclosedBalcony"
+                                #enclosedBalcony="ngModel" [class.error]="enclosedBalcony.invalid && enclosedBalcony.touched"
+                                [class.has-success]="enclosedBalcony.valid" [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="AttachedTerrace">Attached Terrace: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="AttachedTerrace" name="AttachedTerrace" [(ngModel)]="projDetailModel.AttachedTerrace"
+                                #attachedTerrace="ngModel" [class.error]="attachedTerrace.invalid && attachedTerrace.touched"
+                                [class.has-success]="attachedTerrace.valid" [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="ParkingSlot">Parking Slot: </strong>
+                            <input type="text" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="ParkingSlot" name="ParkingSlot" [(ngModel)]="projDetailModel.ParkingSlot"
+                                #parkingSlot="ngModel" [class.error]="parkingSlot.invalid && parkingSlot.touched" [class.has-success]="parkingSlot.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            <strong for="ParkingCharge">Parking Charge: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="ParkingCharge" name="ParkingCharge" [(ngModel)]="projDetailModel.ParkingCharge"
+                                #parkingCharge="ngModel" [class.error]="parkingCharge.invalid && parkingCharge.touched" [class.has-success]="parkingCharge.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="PLC">PLC: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="PLC" name="PLC" [(ngModel)]="projDetailModel.PLC" #plc="ngModel"
+                                [class.error]="plc.invalid && plc.touched" [class.has-success]="plc.valid" [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="InfraCharge">Infra Charge : </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="InfraCharge" name="InfraCharge" [(ngModel)]="projDetailModel.InfraCharge"
+                                #infraCharge="ngModel" [class.error]="infraCharge.invalid && infraCharge.touched" [class.has-success]="infraCharge.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="FloorRise">Floor Rise: </strong>
+                            <input type="text" pattern="^[^-\s][0-9 ]*" class="form-control" id="FloorRise" name="FloorRise" [(ngModel)]="projDetailModel.FloorRise"
+                                #floorRise="ngModel" [class.error]="floorRise.invalid && floorRise.touched" [class.has-success]="floorRise.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong id="rerafont" for="MonthlyMaintenance">Monthly Maintenance: </strong>
+                            <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="MonthlyMaintenance" name="MonthlyMaintenance" [(ngModel)]="projDetailModel.MonthlyMaintenance"
+                                #monthlyMaintenance="ngModel" [class.error]="monthlyMaintenance.invalid && monthlyMaintenance.touched"
+                                [class.has-success]="monthlyMaintenance.valid" [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="flatview">Flat View: </strong>
+                            <input type="text" class="form-control" id="flatview" name="flatview" [(ngModel)]="projDetailModel.FlatView" #flatview="ngModel"
+                                [class.error]="flatview.invalid && flatview.touched" [class.has-success]="flatview.valid" [disabled]="disableFieldsByLogin">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            <strong for="flatview">Width/Plot Area A: </strong>
+                            <input type="text" class="form-control" id="plotAreaA" name="plotAreaA" [(ngModel)]="projDetailModel.PlotArea_A"
+                                #plotAreaA="ngModel" [class.error]="plotAreaA.invalid && plotAreaA.touched" [class.has-success]="plotAreaA.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <strong for="flatview">Length/Plot Area B: </strong>
+                            <input type="text" class="form-control" id="plotAreaB" name="plotAreaB" [(ngModel)]="projDetailModel.PlotArea_B"
+                                #plotAreaB="ngModel" [class.error]="plotAreaB.invalid && plotAreaB.touched" [class.has-success]="plotAreaB.valid"
+                                [disabled]="disableFieldsByLogin">
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <strong for="remarks">Remarks: </strong>
+                            <textarea type="text" class="form-control formheight" id="remarks" name="remarks" [(ngModel)]="projDetailModel.Remark" #remarks="ngModel"
+                                [class.error]="remarks.invalid && remarks.touched" [class.has-success]="remarks.valid" [disabled]="disableFieldsByLogin"></textarea>
+                        </div>
+                    </div>
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Bunglow Details: </legend>
+                        <div class="row">
+                            <div class="form-group col-sm-2">
+                                <strong id="fontside" for="Groundfloorarea">Ground Floor Carpet Area:</strong>
+                                <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="groundfloorarea" name="groundfloorarea" [(ngModel)]="projDetailModel.BGroundFloorCarpetArea"
+                                    #groundfloorarea="ngModel" [class.error]="groundfloorarea.invalid && groundfloorarea.touched"
+                                    [class.has-success]="groundfloorarea.valid" [disabled]="disableFieldsByLogin">
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <strong id="rerafont" for="secondfloorarea">1st Floor Carpet Area: </strong>
+                                <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="firstfloorarea" name="firstfloorarea" [(ngModel)]="projDetailModel.BFirstFloorCarpetArea"
+                                    #firstfloorarea="ngModel" [class.error]="firstfloorarea.invalid && firstfloorarea.touched"
+                                    [class.has-success]="firstfloorarea.valid" [disabled]="disableFieldsByLogin">
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <strong id="fontside" for="secondfloorarea">2nd Floor C.A./Terrace: </strong>
+                                <input type="text" pattern="^[^-\s][0-9. ]*" class="form-control" id="secondfloorarea" name="secondfloorarea" [(ngModel)]="projDetailModel.BSecondFloorCarpetArea"
+                                    #secondfloorarea="ngModel" [class.error]="secondfloorarea.invalid && secondfloorarea.touched"
+                                    [class.has-success]="secondfloorarea.valid" [disabled]="disableFieldsByLogin">
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <strong id="rerafont" for="balconyarea">Balcony Carpet Area: </strong>
+                                <input type="text" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="balconyarea" name="balconyarea" [(ngModel)]=" projDetailModel.BBalconyCarpetArea"
+                                    #balconyarea="ngModel" [class.error]="balconyarea.invalid && balconyarea.touched" [class.has-success]="balconyarea.valid"
+                                    [disabled]="disableFieldsByLogin">
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <strong id="rerafont" for="saleablearea">Rera Carpet Area: </strong>
+                                <input type="text" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="saleablearea" name="saleablearea" [(ngModel)]="projDetailModel.BSaleableCarpetArea"
+                                    #saleablearea="ngModel" [class.error]="saleablearea.invalid && saleablearea.touched" [class.has-success]="saleablearea.valid"
+                                    [disabled]="disableFieldsByLogin">
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <strong id="rerafont" for="totalcarpetarea">Total Carpet Area: </strong>
+                                <input type="text" pattern="^[^-\s][a-zA-Z0-9 ]*" class="form-control" id="totalcarpetarea" name="totalcarpetarea" [(ngModel)]="projDetailModel.BTotalCarpetArea"
+                                    #totalcarpetarea="ngModel" [class.error]="totalcarpetarea.invalid && totalcarpetarea.touched"
+                                    [class.has-success]="totalcarpetarea.valid" [disabled]="disableFieldsByLogin">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br />
+                    <div class="row justify-content-md-center" *ngIf="!showUpdateParameters">
+                        <button type="button" class="btn btn-primary center-block" [disabled]="!CreateProjectDetailForm.form.valid || !flatDuplicateFlag"
+                            (click)="OnSubmitBtnClick(CreateProjectDetailForm)">
+                            <i class="fa fa-paper-plane"></i> Submit Project Details </button>
+                    </div>
+                    <div *ngIf="showUpdateParameters">
+                        <div class="row justify-content-md-center" *ngIf="!disableFieldsByLogin">
+                            <button type="button" class="btn btn-primary center-block" [disabled]="!CreateProjectDetailForm.form.valid" (click)="OnUpdateButton(CreateProjectDetailForm)">
+                                <i class="fa fa-edit"></i> Update Details</button>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

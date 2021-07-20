@@ -1,0 +1,46 @@
+.apply-title {
+    margin-bottom: 0;
+    font-weight: 600;
+    width: 175px;
+    font-size: 12px;
+    text-align: right;
+}
+
+.file-upload-box {
+    width: 216px;
+    display: inline-block;
+    vertical-align: left;
+    max-height: 150px;
+    overflow: auto;
+}
+
+::ng-deep .ui-widget-header .ui-button,
+.ui-widget-content .ui-button,
+.ui-widget.ui-button,
+.ui-button {
+    transition: background-color 0.2s;
+    border-radius: 17px;
+    border: 1px solid #f2f2f2 !important;
+    color: #ffffff !important;
+    background: #252626 !important;
+}
+
+::ng-deep .ui-fileupload-row > div:nth-child(3) {
+    display: none;
+}
+
+::ng-deep {
+    body .ui-fileupload .ui-fileupload-buttonbar {
+        background-color: #ffffff00 !important;
+        padding: 0.2em !important;
+        border: 1px solid #c8c8c800 !important;
+        color: #333;
+        border-bottom: 0;
+    }
+    body .ui-fileupload .ui-fileupload-content {
+        background-color: #fff0 !important;
+        padding: 0.571em 1em;
+        border: 1px solid #c8c8c800 !important;
+        color: #333;
+    }
+}

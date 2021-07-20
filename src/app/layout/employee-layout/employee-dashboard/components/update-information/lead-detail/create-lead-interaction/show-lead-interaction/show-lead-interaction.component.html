@@ -1,0 +1,132 @@
+<div class="row">
+    <div class="container">
+        <ngb-tabset type="pills">
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <b>
+                        <i class="fas fa-user-friends"></i> Interaction Details</b>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <hr class="style13">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <select class="form-control" name="interactionfilter" #interactionfilter="ngModel"
+                                [(ngModel)]="interactionFilter" (change)="filterOnInteraction(interactionFilter)">
+                                <option value="">---Select All---</option>
+                                <option [value]="interaction.key"
+                                    *ngFor="let interaction of interactionTypes;trackBy: trackByFn">
+                                    {{interaction.value}}</option>
+                            </select>
+                            <br />
+                            <ol>
+                                <li class="text-muted"
+                                    *ngFor="let data of interactionData | paginate: { itemsPerPage: 4, currentPage: p1 };trackBy: trackByFn">
+                                    <i class="fa fa-book"></i> {{data.Details}}
+                                    <br />
+                                    <span class="text-muted">
+                                        <strong> CreatedBy:-</strong> {{data.CreatedBy}} ||
+                                        <strong> CreatedOn:-</strong> {{data.CreatedOn |date:'medium'}} ||
+                                        <strong> Interaction Type:-</strong> {{data.InteractionType}}
+                                    </span>
+                                    <hr>
+                                </li>
+                            </ol>
+                            <tfoot class="pull-right" *ngIf="interactionData.length > 4">
+                                <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                            </tfoot>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <b>
+                        <i class="fa fa-phone"></i> Call Details</b>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <hr class="style13">
+                    <!-- <div *ngIf="callDetails.length > 0">
+                        <h6 class="callDetailsAlert">Audio clips Which can not be played. Please Use Download option.
+                        </h6>
+                    </div> -->
+                    <div class="interactionstyle main" style="height: 28.5em; overflow: auto;zoom: 95%; padding: 3em;"
+                        id="style-7">
+                        <p *ngFor="let data of callDetails;trackBy: trackByFn" style="width: 98%;">
+                            <!-- <audio controls>
+                                <source src={{data.CallUrl}} type="audio/mpeg">
+                            </audio> -->
+                            <a href="{{data.CallUrl}}" download target="_blank" class="downloadIcon">
+                                <i class="fas fa-download"></i> Click To Download</a>
+                            <br />
+                            <span class="text-muted"><strong>Call To:-</strong> {{data.To}} || <strong> On</strong>
+                                {{data.StartTime}} || <strong> Call Status:-</strong> {{data.Status}} ||
+                                <strong>Direction:-</strong>
+                                {{data.Direction}}</span>
+                        </p>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <b>
+                        <i class="fas fa-sms"></i> SMS Details</b>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <hr class="style13">
+                    <div>
+                        <li *ngFor="let data of smsDetails;trackBy: trackByFn">
+                            <i class="fa fa-envelope-open"></i> {{data.Body}}
+                            <br />
+                            <span class="text-muted"><strong>SentBy:-</strong> {{data.SentBy}} ||
+                                <strong>SentOn:-</strong>
+                                {{data.DateSent |date:"d MMM y"}} || <strong>Status:-</strong> {{ data.Status }} </span>
+                            <hr>
+                        </li>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <b>
+                        <i class="fa fa-envelope"></i> Email Details</b>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <hr class="style13">
+                    <div>
+                        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>SRNO</th>
+                                    <th>Subject</th>
+                                    <th>SentBy</th>
+                                    <th>Open</th>
+                                    <th>Click</th>                           
+                                    <th>Deliverd</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="EmailData.length>0">
+                                <tr *ngFor="let EData of EmailData| paginate: { itemsPerPage: 4, currentPage: p1} ;trackBy: trackByFn;let i = index;">
+                                    <td>{{i+1}}</td>
+                                    <td style="cursor: pointer;"><span class="linking-text text-primary" ngbTooltip="{{(EData.Subject| slice:0:30)+'...'}}"  (click)="OpenEmail(EData)">{{EData.Subject}}</span></td>
+                                    <td>{{EData.SendBy}}</td>
+                                    <td>{{EData.OpensCount}}</td>
+                                    <td>{{EData.ClicksCount}}</td>
+                                    <td>{{EData.Deliverd}}</td>
+                                    <td>{{EData.CreatedOn|date:"d MMM y"}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <tfoot class="pull-right" *ngIf="EmailData.length>4">
+                            <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+                        </tfoot>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

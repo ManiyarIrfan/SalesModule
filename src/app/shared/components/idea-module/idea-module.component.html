@@ -1,0 +1,677 @@
+<div class="container-fluid mt-2">
+    <mat-card>
+        <mat-card-title>
+            <div class="row" style="margin-bottom: -9px;">
+                <div class="col-sm-11 text-center titlepage">
+                    <span>IDEABOX</span>
+                </div>
+                <div class="col-sm-1"> <button class="buttonfont" [disabled]="!showchart"><i class="fa fa-plus-circle"
+                            style="font-size: 31px; color: #176469;  float: right;  bottom: 10px" (click)="AddIdea()"
+                            aria-hidden="true" ngbTooltip="Add a new idea"></i></button></div>
+            </div>
+            <mat-divider></mat-divider>
+        </mat-card-title>
+        <div class="row">
+            <div class="col-sm-12">
+                <mat-tab-group class="idea" #tabgroup [selectedIndex]="currentStep"
+                    (selectedTabChange)="CheckTabIndex($event)">
+                    <mat-tab label="Dashboard">
+                        <mat-card style="margin-top: 0px;">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <mat-card class="list">
+                                        <a (click)="showDetails('My Ideas')">My Ideas <span
+                                                class="dot">{{myCount}}</span></a>
+                                        <hr>
+                                        <div *ngFor="let head of GraphData ;trackBy: trackByFn">
+                                            <a (click)="showDetails(head.Status)">{{ head.Status }} <span
+                                                    class="dot">{{head.Ideacount}}</span></a>
+                                            <hr>
+                                        </div>
+                                        <a (click)="showDetails('All Ideas')">All Ideas <span
+                                                class="dot">{{allcount}}</span></a>
+                                    </mat-card>
+                                </div>
+                                <div class="col-sm-9">
+                                    <mat-card *ngIf="showCreateIdeaForm">
+                                        <mat-card-title>
+                                            <div class="row rowMargin">
+                                                <div class="col-sm-12 text-center">
+                                                    <span>New</span>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close" (click)="closeForm()">
+                                                        <span aria-hidden="true" class="black-text">&times;</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <mat-divider></mat-divider>
+                                        </mat-card-title>
+                                        <form #IdeaForm="ngForm">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <span style=" font-size: 14px; font-weight: 400;">Idea
+                                                        Name</span><span style="color: red;font-weight: 300;">*</span>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <span style=" font-size: 14px; font-weight: 400;">Process
+                                                        Area</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="ideaname" placeholder="Idea name..."
+                                                        maxlength="40" style="float: right; display: block;"
+                                                        class="form-control tSize" [(ngModel)]="allideaModel.Subject"
+                                                        [disabled]="LockIdeaName" required>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <select class="form-control" name="Process Area"
+                                                        #ProcessArea="ngModel" [(ngModel)]="allideaModel.ProcessArea">
+                                                        <option value="">--Select--</option>
+                                                        <option class='option'
+                                                            *ngFor="let name of moduleDetails;trackBy: trackByFn"
+                                                            [value]="name.value">
+                                                            {{name.value}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 fileStyle">
+                                                    <div class="row">
+                                                        <tru-file-upload class="ui-fileupload"
+                                                            [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png,.pdf,.PDF'"
+                                                            [(inputFiles)]="uploadIdeafile" multiple="false"
+                                                            style="border: 0px solid #c8c8c8;">
+                                                        </tru-file-upload>
+                                                        <div *ngIf="showImageForUpdate">
+                                                            <div class="row fileUrl"
+                                                                *ngIf="allideaModel.ImageUrl && allideaModel.ImageUrl !== ''">
+                                                                <div
+                                                                    *ngFor="let file of IdeaImageUrls;trackBy: trackByFn;">
+                                                                    <a href={{file}} target="_blank">
+                                                                        <img id="imageLogo"
+                                                                            *ngIf="file.substr(file.lastIndexOf('.') + 1) === 'png' || file.substr(file.lastIndexOf('.') + 1) === 'PNG' || file.substr(file.lastIndexOf('.') + 1) === 'jpeg' || file.substr(file.lastIndexOf('.') + 1) === 'jpg' || file.substr(file.lastIndexOf('.') + 1) === 'JPG' || file.substr(file.lastIndexOf('.') + 1) === 'JPEG'"
+                                                                            class="responsive updateimage"
+                                                                            src="assets\images\image_logo.png"
+                                                                            alt="Logo image"
+                                                                            ngbTooltip="click to open Image" />
+                                                                    </a>
+                                                                    <a href={{file}} target="_blank">
+                                                                        <img id="imageLogo"
+                                                                            *ngIf="file.substr(file.lastIndexOf('.') + 1) === 'pdf' || file.substr(file.lastIndexOf('.') + 1) === 'PDF'"
+                                                                            class="responsive updateimage"
+                                                                            src="assets\images\pdf.png"
+                                                                            alt="PDF file image"
+                                                                            ngbTooltip="click to open PDF" />
+                                                                    </a>
+                                                                    &nbsp;
+                                                                    <span (click)="deleteideaFile(file)">
+                                                                        <i class="fa fa-remove"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <span style="font-size: 14px;font-weight: 400;">Description</span>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <span style="font-size: 14px;font-weight: 400;">Business
+                                                        Benefits</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <textarea placeholder="Describe your idea Here..."
+                                                        style="float: right;" class="form-control tSize"
+                                                        [(ngModel)]="allideaModel.Details" autocomplete="off"
+                                                        tabindex="5" [ngModelOptions]="{standalone: true}"
+                                                        required></textarea>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <textarea placeholder="Benefits your idea..." style="float: right;"
+                                                        class="form-control tSize"
+                                                        [(ngModel)]="allideaModel.BusinessBenefits" autocomplete="off"
+                                                        tabindex="5" [ngModelOptions]="{standalone: true}"
+                                                        required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-md-center" *ngIf="!showUpdateBtn">
+                                                <button type="button" class="btn btn-primary btn-sm"
+                                                    [disabled]="!IdeaForm.form.valid" style="height: fit-content;"
+                                                    (click)="showPopupForAction('submit')">Submit</button>
+                                            </div>
+                                            <div class="row justify-content-md-center" *ngIf="showUpdateBtn">
+                                                <button type="button" class="btn btn-primary btn-sm mt-2"
+                                                    [disabled]="!IdeaForm.form.valid"
+                                                    (click)="showPopupForAction('Update')">Update</button>
+                                            </div>
+                                        </form>
+                                    </mat-card>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <mat-card *ngIf="!showCreateIdeaForm" style=" background: ghostwhite;">
+                                                <span *ngIf="GraphData.length===0">No Data Found</span>
+                                                <div id="chartd"></div>
+                                            </mat-card>
+                                            <mat-card style=" background: ghostwhite;" *ngIf="!showTableForlink">
+                                                <span class="textsize">Top Contributors</span>
+                                                <span *ngIf="UsergraphDate.length===0">No Data Found</span>
+                                                <div id="chartdiv"></div>
+                                            </mat-card>
+                                        </div>
+                                        <div class="col-sm-4" *ngIf="!showCreateIdeaForm">
+                                            <!-- <mat-card style=" background: khaki;">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <i class="fa fa-trophy" aria-hidden="true"
+                                                            style="font-size: 60px;"></i>
+                                                    </div>
+                                                    <div class="col-sm-8" *ngFor="let data of WinnerData ;trackBy: trackByFn">
+                                                        <div class="textsize">Congratulations {{data.WinnerName}}</div>
+                                                        <div class="textsizee">Best Idea Of {{data.lastyear}}</div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                            </mat-card> -->
+                                            <mat-card style="background: khaki;" *ngIf="!showTableForlink">
+                                                <span style="padding-left: 77px;" class="textsize">Popular Ideas</span>
+                                                <span *ngIf="PopularIdeas.length ===0">No Data Found</span>
+                                                <hr>
+                                                <div *ngFor="let details of PopularIdeas ;trackBy: trackByFn">
+                                                    <div class="row">
+                                                        <div class="col-sm-3 fontweight">{{details.IdeaRating}}</div>
+                                                        <div class="col-sm-3">
+                                                            <div class="row">
+                                                                <div class="Stars2" [style]=getrating(details)></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 fontweight"> <a
+                                                                (click)="gotoreview(details)"> {{details.Subject}}</a>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                            </mat-card>
+                                        </div>
+                                    </div>
+                                    <div class="row container-fluid" *ngIf="showTableForlink">
+                                        <mat-card class="mt-2">
+                                            <mat-card-title>
+                                                <div class="row rowMargin">
+                                                    <div class="col-sm-12 text-center">
+                                                        <span style="font-size: 17px;">{{TableName}}</span>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close" (click)="closetable()">
+                                                            <span aria-hidden="true" class="black-text">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <mat-divider></mat-divider>
+                                            </mat-card-title>
+                                            <span class="text-danger" *ngIf="filterallIdeaDetails.length === 0">No Data
+                                                Found</span>
+                                            <div class="table-responsive" *ngIf="filterallIdeaDetails.length > 0">
+                                                <table class="table table-bordered table-striped table-sm"
+                                                    cellsspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                *ngFor="let head of tableHeader;trackBy: trackByFn;let i = index">
+                                                                {{head['ColName']}}</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr
+                                                            *ngFor="let info of filterallIdeaDetails   | paginate: {id:'ideaR', itemsPerPage: 10, currentPage: p };trackBy: trackByFn;let a= index">
+                                                            <td>{{info.IdeaId}}</td>
+                                                            <td>{{info.Subject |titlecase}}</td>
+                                                            <td>{{info.ProcessArea | titlecase}}</td>
+                                                            <td>{{info.IdeaRating }}</td>
+                                                            <td>{{info.Status | titlecase}}</td>
+                                                            <td>{{info.CreatedOn |date:"d MMM y"}}</td>
+                                                            <td>{{info.Name | titlecase}}</td>
+                                                            <td> <i class="fa fa-eye linking-text"
+                                                                    (click)="gotoreview(info)"
+                                                                    ngbTooltip="Veiw Idea"></i> &nbsp;&nbsp;
+                                                                <i class="fa fa-pencil-square-o link"
+                                                                    *ngIf="info.EmployeeId === loggedInuserDetails.EntityId"
+                                                                    (click)="emitRequest(info)"
+                                                                    ngbTooltip="Edit Idea"></i>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <tfoot *ngIf="filterallIdeaDetails.length > 10">
+                                                    <pagination-controls id="ideaR" (pageChange)="p = $event">
+                                                    </pagination-controls>
+                                                </tfoot>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-card>
+                    </mat-tab>
+                    <mat-tab label="Review">
+                        <mat-card style="margin-top: 0px;">
+                            <div class="row" style="margin-top: -13px;">
+                                <form action="" class="search" style="margin-left: 66pc;">
+                                    <div class="field">
+                                        <input type="text" class="input-search" [(ngModel)]="term" id="input-search"
+                                            name="input-search" required>
+                                        <label for="input-search">Search</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <span *ngIf="IdeaDeatils.length===0">No Data Found</span>
+                            <div class="cursor" style="margin-top: -8px;"
+                                *ngFor="let details of IdeaDeatils | filter:term; trackBy: trackByFn;let i = index">
+                                <mat-card>
+                                    <div class="row">
+                                        <div class="col-sm-2"></div>
+                                        <div class="col-sm-10">
+                                            <div class="textsize fontsubject"> {{details.Subject |uppercase }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="font-weight: 400;">
+                                        <div class="col-sm-2" style="padding-left: 50px;">
+                                            <div class="box" (click)="RateThisIdea(details)" ngbTooltip="Rate it">
+                                                <div> {{details.IdeaRating}}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="Stars" [style]=getrating(details)></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="fonts"> {{details.ProcessArea |titlecase}}</div>
+                                            <span class="btn-5">{{details.Status}}</span>
+                                            <div *ngIf="details.ImageUrl && details.ImageUrl !== ''">
+                                                <span
+                                                    *ngFor="let file of details.ImageUrl.split('*#*');trackBy: trackByFn;">
+                                                    <a href={{file}} target="_blank">
+                                                        <img id="imageLogo" style="height: 36px;"
+                                                            *ngIf="file.substr(file.lastIndexOf('.') + 1) === 'png' || file.substr(file.lastIndexOf('.') + 1) === 'PNG' || file.substr(file.lastIndexOf('.') + 1) === 'jpeg' || file.substr(file.lastIndexOf('.') + 1) === 'jpg' || file.substr(file.lastIndexOf('.') + 1) === 'JPG' || file.substr(file.lastIndexOf('.') + 1) === 'JPEG'"
+                                                            class="responsive" src="assets\images\image_logo.png"
+                                                            alt="Logo image" ngbTooltip="click to open Image" /></a>
+                                                    <a href={{file}} target="_blank">
+                                                        <img id="imageLogo" style="height: 36px;"
+                                                            *ngIf="file.substr(file.lastIndexOf('.') + 1) === 'pdf' || file.substr(file.lastIndexOf('.') + 1) === 'PDF'"
+                                                            class="responsive" src="assets\images\pdf.png"
+                                                            alt="PDF file image" ngbTooltip="click to open PDF" /> </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div> Description: </div>
+                                            <div class="fonts"> {{details.Details | titlecase}}</div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div> Business Benefits: </div>
+                                            <div class="fonts"> {{details.BusinessBenefits | titlecase}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-2"></div>
+                                        <div class="col-sm-7 usertext">
+                                            <span> <i class="fa fa-user-circle-o" aria-hidden="true"></i> Created On
+                                                {{details.CreatedOn |date:"d MMM y"}} By {{details.Name}}</span>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="row" style="float: right;">
+                                                <span class="lastcomment"> Last Commented On
+                                                    {{details.lastCommentDate |date:"d MMM y"}}</span>
+                                                <span class="comText"><i class="fa fa-comments-o"
+                                                        style="cursor: pointer;" aria-hidden="true"
+                                                        (click)="getComments(i ,details)"></i></span>
+                                                <span class="badge">{{details.CommentCount}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="checkedindex ===i">
+                                        <div class="col-sm-2"></div>
+                                        <div class="col-sm-10">
+                                            <mat-card style=" background: ghostwhite;">
+                                                <span style="font-size: 16px; font-weight: 400;">Comments</span>
+                                                <hr>
+                                                <mat-card-content class="scrollcomment">
+                                                    <div
+                                                        *ngFor="let Com of filterIdeaComments; trackBy: trackByFn;let i = index">
+                                                        <div class="col-sm-12">
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <div><i class="fa fa-user-circle-o"
+                                                                            aria-hidden="true"
+                                                                            style="margin-right: 7px"></i>
+                                                                        {{Com.Name | titlecase}}</div>
+                                                                </div>
+                                                                <div class="col-sm-10 fontweight">
+                                                                    <div> {{Com.Comment | titlecase}} </div>
+                                                                    <div class="row comcreated">Created On
+                                                                        {{Com.CreatedOn |date:"d MMM y"}} </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                    </div>
+                                                </mat-card-content>
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <textarea placeholder="Comment..." class="comArea"
+                                                            [(ngModel)]="allideaModel.Comment" autocomplete="off"
+                                                            tabindex="5" [ngModelOptions]="{standalone: true}"
+                                                            required></textarea>
+                                                        <button type="button" class="btn postbtn"
+                                                            (click)="insert_IdeaComments(details.IdeaId)"
+                                                            ngbTooltip="post">post</button>
+                                                    </div>
+                                                </div>
+                                            </mat-card>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </mat-card>
+                    </mat-tab>
+                    <mat-tab label="Evaluation"
+                        *ngIf="loggedInuserDetails.TenantId===0 && loggedInuserDetails.Level!=='L3'">
+                        <mat-card style="margin-top: 0px;">
+                            <div class="row" style="margin-top: -13px;">
+                                <form action="" class="search" style="margin-left: 66pc;">
+                                    <div class="field">
+                                        <input type="text" class="input-search" [(ngModel)]="term" id="input-search"
+                                            name="input-search" required>
+                                        <label for="input-search">Search</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <span *ngIf="IdeaDeatils.length===0">No Data Found</span>
+                            <div class="cursor" style="margin-top: -8px;"
+                                *ngFor="let details of IdeaDeatils | filter:term; trackBy: trackByFn;let i = index">
+                                <mat-card>
+                                    <div class="row" style="padding-left: 17px;">
+                                        <div class="col-sm-10">
+                                            <div class="row">
+                                                <div class="textsize fontsubject" style="cursor:pointer"
+                                                    (click)="gotoreview(details)">
+                                                    {{details.Subject |uppercase }}</div>
+                                                <div class="row" style="padding-left: 17px;">
+                                                    <div class="Stars1" [style]=getrating(details)></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2" style="padding-right: 30px;">
+                                            <div class="row" style="float: right;">
+                                                <button type="button" style="margin-top: -4px;" class="btn postbtn"
+                                                    (click)="voteIdea(details)" ngbTooltip="Review & Feedback">Review &
+                                                    Feedback</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div style="font-weight: 400; padding-left: 17px;">
+                                                <div class="row">
+                                                    <div class="btn-5" (click)="ChangeStatus(details ,i)">
+                                                        {{details.Status}}</div>
+                                                </div>
+                                                <mat-card *ngIf="clickedStatusIndex===i"
+                                                    style="background: ghostwhite;">
+                                                    <form #statusForm="ngForm">
+                                                        <div class="row" style="padding-left: 17px;">
+                                                            <mat-select name="Status" #Status="ngModel"
+                                                                [(ngModel)]="details.IdeaStatus" class="form-control"
+                                                                style="width: 64%;font-size: 12px;" required>
+                                                                <mat-option
+                                                                    *ngFor="let head of getHeader;trackBy: trackByFn"
+                                                                    [value]="head"> {{head}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                            <button type="button" [disabled]="!statusForm.form.valid"
+                                                                class="btn postbtn"
+                                                                style="margin-top: 1px; margin-left: 17px;"
+                                                                (click)="showPopupForAction('Update')"
+                                                                ngbTooltip="Save">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </mat-card>
+                                                <div class="row usertext">
+                                                    <span> <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                                        Created On
+                                                        {{details.CreatedOn |date:"d MMM y"}} By {{details.Name}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped table-sm"
+                                                    cellsspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Average Viability</th>
+                                                            <th>Average Desirablity</th>
+                                                            <th>Average Feasibility</th>
+                                                            <th>Average Originality</th>
+                                                            <th>Average Totalscore</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>{{details.AvgViability}}</td>
+                                                            <td>{{details.AvgDesirablity }}</td>
+                                                            <td>{{details.AvgFeasibility }}</td>
+                                                            <td>{{details.AvgOriginalityOfConcept }}</td>
+                                                            <td>{{details.AvgTotalscore}}</td>
+                                                            <td>
+                                                                <i class="fa fa-eye" style=" cursor: pointer;"
+                                                                    ngbTooltip="View Others Vote"
+                                                                    (click)="FilterRemarkVoteForIdea(i,details)"
+                                                                    aria-hidden="true"></i>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding-top: 17px;" *ngIf="clickedIndex ===i">
+                                        <span class="text-danger" *ngIf="filteRemak.length === 0">No Data
+                                            Found</span>
+                                        <div class="table-responsive" *ngIf="filteRemak.length > 0">
+                                            <table class="table table-bordered table-striped table-sm" cellsspacing="0"
+                                                width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th
+                                                            *ngFor="let head of EvaluationtableHeader;trackBy: trackByFn;let i = index">
+                                                            {{head['ColName']}}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr
+                                                        *ngFor="let info of filteRemak   | paginate: {id:'ideaRemark', itemsPerPage: 10, currentPage: p };trackBy: trackByFn;let a= index">
+                                                        <td>{{info.Name |titlecase}}</td>
+                                                        <td>{{info.Viability }}</td>
+                                                        <td>{{info.Desirablity }}</td>
+                                                        <td>{{info.Feasibility }}</td>
+                                                        <td>{{info.OriginalityOfConcept }}</td>
+                                                        <td>{{info.Remark |titlecase}}</td>
+                                                        <td>{{info.Totalscore }}</td>
+                                                        <td>{{info.UpdatedOn |date:"d MMM y"}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <tfoot *ngIf="filteRemak.length > 10">
+                                                <pagination-controls id="ideaRemark" (pageChange)="p = $event">
+                                                </pagination-controls>
+                                            </tfoot>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </mat-card>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </mat-card>
+</div>
+
+<!-- POPUP for vote form -->
+<div mdbModal #VoteFormModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}" cdkDrag>
+    <div class="modal-dialog modal-notify modal-info modal-lg pdfModal" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">
+                    Review & Feedback
+                </h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="VoteFormModal.hide()" />
+            </div>
+            <div class="modal-body text-center" *ngIf="rateMsg!=='Rate This Idea First!!'">
+                <form #reviewForm="ngForm">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <!-- <span style="font-size: 14px;font-weight: 400;">Originality of concept
+                        </span>
+                        <mat-select name="Originality" #Originality="ngModel" [(ngModel)]="allideaModel.Originality"
+                            class="form-control" style="font-size: 12px;">
+                            <mat-option *ngFor="let num of NumberforVote;trackBy: trackByFn" [value]="num"> {{num}}
+                            </mat-option>
+                        </mat-select> -->
+                            <strong for="stageChanges"><span class="required">*</span>Originality of concept</strong>
+                            <select class="form-control" id="stageChanges1" required name="Originality"
+                                #Originality="ngModel" [(ngModel)]="allideaModel.Originality">
+                                <option class='option' *ngFor="let num of NumberforVote;trackBy: trackByFn;let i=index;"
+                                    [value]="num">
+                                    {{num}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="Feasibility"><span class="required">*</span>Feasibility</strong>
+                            <select class="form-control" id="stageChanges3" required name="Feasibility"
+                                #Feasibility="ngModel" [(ngModel)]="allideaModel.Feasibility">
+                                <option class='option' *ngFor="let num of NumberforVote;trackBy: trackByFn;"
+                                    [value]="num">
+                                    {{num}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="Viability"><span class="required">*</span>Viability</strong>
+                            <select class="form-control" name="Viability" required #Viability="ngModel"
+                                [(ngModel)]="allideaModel.Viability">
+                                <option class='option' *ngFor="let num of NumberforVote;trackBy: trackByFn"
+                                    [value]="num">
+                                    {{num}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <strong for="Desirability"><span class="required">*</span>Desirability</strong>
+                            <select class="form-control" name="Desirability" required #Desirability="ngModel"
+                                [(ngModel)]="allideaModel.Desirability">
+                                <option class='option' *ngFor="let num of NumberforVote;trackBy: trackByFn"
+                                    [value]="num">
+                                    {{num}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <!-- <div class="col-sm-8">
+                            <textarea placeholder="Remark..." class="remarkArea" [(ngModel)]="allideaModel.Remark"
+                                #remark[{{i}}]="ngModel" autocomplete="off" tabindex="5"
+                                name="remark[{{i}}]"></textarea>
+                        </div> -->
+                        <button type="button" class="btn btn-primary btn-sm" [disabled]="!reviewForm.form.valid"
+                            (click)="
+                                InsertUpdateIdea_votes('Update')" ngbTooltip="Save">Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-body text-center" *ngIf="rateMsg==='Rate This Idea First!!'" style=" color: red;">
+                {{rateMsg}}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pop Up for the Rating  -->
+<div mdbModal #ActionRatingForm="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}" cdkDrag>
+    <div class="modal-dialog modal-notify" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">
+                    Rating
+                </h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="closeratingform()" />
+            </div>
+            <div class="modal-body">
+                <form #Rating="ngForm">
+                    <div class="row" style=" padding-left: 66px;">
+                        <div style=" margin-top: 9px; margin-right: 27px;">
+                            Rate Here :
+                        </div>
+                        <div>
+                            <div class="row">
+                                <ul class="list-inline rating-list" *ngFor="let star of stars ;trackBy: trackByFn"
+                                    style="display: inline-block">
+                                    <li (click)="UpdateIdea_Review(star,'Update')"
+                                        [ngClass]="{'selected': (star <= selectedValue)}">
+                                        <i class="fa fa-star"></i>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row"> -->
+                    <div class="row ratingscroll">
+                        <div *ngFor="let details of userrating ;trackBy: trackByFn" style="width: 120%;">
+                            <div col-sm-12>
+                                <div class="row" style=" padding-left: 10%;">
+                                    <div class="col-sm-6">
+                                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                        {{details.Name}}
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="row">
+                                            <div class="Stars" [style]=getrating(details)></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- POPUP for action -->
+<div mdbModal #actionWarningModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}" cdkDrag>
+    <div class="modal-dialog modal-notify modal-info modal-lg pdfModal" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">
+                    {{(allideaModel && allideaModel['PopupWarningMsg']) ? allideaModel['PopupWarningMsg'] : 'NA'}}
+                </h4>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="closepopUpforaction()" />
+            </div>
+            <div class="modal-body text-center">
+                <i class="fa fa-check-square fa-4x mb-3 animated rotateIn"></i>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button class="btn btn-primary btn-sm" [disabled]="disabledBtn"
+                    (click)="insertUpdate_IdeaDetails()">Yes</button>
+                <a type="button" class="btn btn-primary btn-sm btn-outline-primary waves-effect" data-dismiss="modal"
+                    (click)="closepopUpforaction()">No,thanks</a>
+            </div>
+        </div>
+    </div>
+</div>

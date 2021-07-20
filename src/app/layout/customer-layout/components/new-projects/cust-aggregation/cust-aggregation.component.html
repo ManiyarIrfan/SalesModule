@@ -1,0 +1,85 @@
+<div *ngIf="isSpinnerActive">
+    <div class="spinner-inner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+    </div>
+</div>
+<mat-card>
+    <div class="movie_card  " id="bright">
+        <div class="info_section">
+            <h1>{{siteDetail.SiteName}}</h1>
+            <h4>Devloper <strong> : {{siteDetail.Developer}}</strong></h4>
+            <p></p>
+        </div>
+        <div class="blur_back bright_back"></div>
+    </div>
+    <form #specificationForm="ngForm" class="formstyle">
+        <h4> <b>Select BHK's : </b></h4>
+        <hr class="style-one">
+        <div class="row">
+            <mat-card class="cardforLayout" *ngFor="let bhk of bhkDetails; trackBy: trackByFn;">
+                <mat-radio-group [(ngModel)]="specificationModel.BHK" name="bhkGroup">
+                    <mat-radio-button [value]="bhk.BHKId"> <strong class="fontweight">{{bhk.BHK}}</strong>
+                    </mat-radio-button>&nbsp;
+                </mat-radio-group>
+            </mat-card>
+        </div>
+        <strong> <b>Area : </b></strong>
+        <div class="row">
+            <mat-card class="cardforLayout" *ngFor="let area of areaDetails; trackBy: trackByFn;">
+                <mat-radio-group [(ngModel)]="specificationModel.Area" name="areaGroup">
+                    <mat-radio-button [value]="area.AreaId"> <strong class="fontweight">{{area.Area}} Sq.Ft</strong>
+                    </mat-radio-button>&nbsp;
+                </mat-radio-group>
+            </mat-card>
+        </div>
+        <strong> <b> Budget : </b></strong>
+        <div class="row">
+            <mat-card class="cardforLayout" *ngFor="let budget of budgetDetails; trackBy: trackByFn;">
+                <mat-radio-group [(ngModel)]="specificationModel.Budget" name="budgetGroup">
+                    <mat-radio-button [value]="budget.PriceId"> <strong class="fontweight">{{budget.Price}} </strong>
+                    </mat-radio-button>
+                </mat-radio-group>
+                <strong class="fontweight"> </strong>
+            </mat-card>
+        </div>
+        <strong> <b> No.Of Parking : </b></strong>
+        <div class="row">
+            <mat-card class="cardforLayout" *ngFor="let park of parkingDetails; trackBy: trackByFn;">
+                <mat-radio-group [(ngModel)]="specificationModel.CarParking" name="parkGroup">
+                    <mat-radio-button [value]="park.key"> <strong class="fontweight">{{park.value}} </strong>
+                    </mat-radio-button>
+                </mat-radio-group>
+            </mat-card>
+        </div>
+        <strong> <b>Amenities : </b></strong>
+        <div class="row">
+            <mat-card class="cardforLayout"
+                *ngFor="let amenity of amenityDetails; trackBy: trackByFn; let i = index;">
+                <mat-checkbox #chkEnable [ngModelOptions]="{standalone: true}" [(ngModel)]="amenity.checked"
+                    (ngModelChange)="onChange(amenity,$event,selectedamenityList)" name="amenityGroup[{{i}}]">
+                </mat-checkbox>&nbsp;
+                <!-- <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                    [(ngModel)]="amenityModel" name="amenityGroup">
+                    <mat-radio-button [value]="amenity" >
+                    </mat-radio-button>&nbsp;
+                </mat-radio-group> -->
+                <strong class="fontweight"> {{amenity.Amenity}}</strong>
+            </mat-card>
+        </div>
+        <strong> <b>Remark : </b></strong>
+        <div class="row">
+            <div class="col-sm-6">
+                <textarea class="form-control" name="custremark" id="custremark" rows="3"
+                    [(ngModel)]="specificationModel.Description" #custremark="ngModel"></textarea>
+            </div>
+        </div>
+        <br />
+        <div class="row justify-content-center">
+            <button type="button" (click)="submitSpecification(specificationModel)" class="btn btn-primary">
+                <i class="fa fa-paper-plane"></i> Submit</button>
+        </div>
+    </form>
+</mat-card>

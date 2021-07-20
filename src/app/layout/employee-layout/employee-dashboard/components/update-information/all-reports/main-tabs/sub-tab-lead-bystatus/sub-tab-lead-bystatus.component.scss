@@ -1,0 +1,28 @@
+table thead th {
+    width: 5% !important;
+}
+
+.modal-header {
+    background-color: #33B5E5;
+}
+
+.modal-title {
+    color: white;
+    line-height: 0.5;
+}
+
+.text-center {
+    text-align: center;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width : 1500px;
+        max-height: 1500px;
+    }
+}
+
+.note-width {
+    white-space: pre-wrap;
+    min-width  : 300px;
+}

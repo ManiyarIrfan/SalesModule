@@ -1,0 +1,238 @@
+{
+  "menu": [
+    {
+      "name": "CUSTOMER",
+      "link": "0",
+      "sub": [
+        {
+          "name": "M.O.M",
+          "redirectUrl": "/customer/customerfeedback",
+          "toolTip": "My opinion Matter. We would love to hear your Rating & Feedback on Kekarav Project",
+          "link": "0-1",
+          "sub": null
+        },
+        {
+          "name": "Profile",
+          "redirectUrl": "/customer/view-profile",
+          "toolTip": "Your own details, Properties details, NOC, Agreement Document etc",
+          "link": "0-1",
+          "sub": null
+        },
+        {
+          "name": "My Properties",
+          "redirectUrl": "/customer/my-property",
+          "toolTip": "Details of your Property, Current status, Latest Pics etc",
+          "link": "0-10",
+          "sub": null
+        },
+        {
+          "name": "Current Projects",
+          "redirectUrl": "/customer/new-Projects",
+          "toolTip": "Info about other projects by TRU Realty",
+          "link": "0-9",
+          "sub": null
+        },
+        {
+          "name": "Referral +",
+          "redirectUrl": "/customer/referral-generation",
+          "toolTip": "Oportunity to refer your Friends/Relatives & earn",
+          "link": "0-4",
+          "sub": null
+        },
+        {
+          "name": "My Referrals",
+          "redirectUrl": "/customer/referral-status",
+          "toolTip": "Track real time status of your Referal",
+          "link": "0-5",
+          "sub": null
+        },
+        {
+          "name": "Payment / Finance Details",
+          "redirectUrl": "/customer/payment-schedule",
+          "toolTip": "EMI due, Payment details, Receipt & overall Financial Status",
+          "link": "0-2",
+          "sub": null
+        },
+        {
+          "name": "Project Status",
+          "redirectUrl": "/customer/project-status",
+          "link": "0-6",
+          "toolTip": "Update realtime status photos from project site",
+          "sub": null
+        },
+        {
+          "name": "Support",
+          "redirectUrl": "/customer/report-issues",
+          "toolTip": "Create Ticket for anything related to TRU Service/Sales/Product",
+          "link": "0-8",
+          "sub": null
+        },
+        {
+          "name": "Community",
+          "redirectUrl": "/community",
+          "toolTip": "Go to Tru Community",
+          "link": "0-8",
+          "sub": null
+        }
+      ]
+    },
+    {
+      "name": "CHANNEL PARTNER",
+      "link": "1",
+      "sub": [
+        {
+          "name": "M.O.M",
+          "redirectUrl": "/customer/customerfeedback",
+          "link": "0-1",
+          "sub": null
+        },
+        {
+          "name": "Profile",
+          "redirectUrl": "/channelpartner/view-profile-cp",
+          "link": "1-1",
+          "sub": null
+        },
+        {
+          "name": "My Leads",
+          "redirectUrl": "/channelpartner/referral-status-cp",
+          "link": "1-5",
+          "sub": null
+        },
+        {
+          "name": "Lead +",
+          "redirectUrl": "/channelpartner/referral-generation-cp",
+          "link": "1-4",
+          "sub": null
+        },
+        {
+          "name": "Inventory",
+          "redirectUrl": "/channelpartner/project-status-cp",
+          "link": "1-6",
+          "sub": null
+        },
+        {
+          "name": "Current Projects",
+          "redirectUrl": "/customer/new-Projects",
+          "link": "1-12",
+          "sub": null
+        },
+        {
+          "name": "Customer Status",
+          "redirectUrl": "/channelpartner/payment-statement-cp",
+          "link": "1-2",
+          "sub": null
+        },
+        {
+          "name": "Payments",
+          "redirectUrl": "/channelpartner/payment-status-cp",
+          "link": "1-3",
+          "sub": null
+        },
+        {
+          "name": "Support",
+          "redirectUrl": "/channelpartner/report-issues-cp",
+          "link": "1-8",
+          "sub": null
+        },
+        {
+          "name": "My Network",
+          "redirectUrl": "/channelpartner/my-network",
+          "link": "1-10",
+          "sub": null
+        },
+        {
+          "name": "Reports",
+          "redirectUrl": "/channelpartner/app-reports",
+          "link": "1-9",
+          "sub": null
+        },
+        {
+          "name": "Training",
+          "redirectUrl": "/channelpartner/cro-training",
+          "link": "1-11",
+          "sub": null
+        },
+        {
+          "name": "Community",
+          "redirectUrl": "/community",
+          "toolTip": "Go to Tru Community",
+          "link": "0-8",
+          "sub": null
+        }
+      ]
+    },
+    {
+      "name": "CRO",
+      "link": "2",
+      "sub": [
+        {
+          "name": "M.O.M",
+          "redirectUrl": "/customer/customerfeedback",
+          "link": "0-1",
+          "sub": null
+        },
+        {
+          "name": "Profile",
+          "redirectUrl": "/cro/view-profile-cro",
+          "link": "2-1",
+          "sub": null
+        },
+        {
+          "name": "My Leads",
+          "redirectUrl": "/cro/referral-status-cro",
+          "link": "2-2",
+          "sub": null
+        },
+        {
+          "name": "Lead +",
+          "redirectUrl": "/cro/referral-generation-cro",
+          "link": "2-3",
+          "sub": null
+        },
+        {
+          "name": "Projects",
+          "redirectUrl": "/cro/project-status-cro",
+          "link": "2-8",
+          "sub": null
+        },
+        {
+          "name": "Customer Status",
+          "redirectUrl": "/cro/payment-statement-cro",
+          "link": "2-4",
+          "sub": null
+        },
+        {
+          "name": "Payments",
+          "redirectUrl": "/cro/payment-status-cro",
+          "link": "2-6",
+          "sub": null
+        },
+        {
+          "name": "Support",
+          "redirectUrl": "/cro/report-issues-cro",
+          "link": "2-7",
+          "sub": null
+        },
+        {
+          "name": "Reports",
+          "redirectUrl": "/cro/app-reports",
+          "link": "2-9",
+          "sub": null
+        },
+        {
+          "name": "Training",
+          "redirectUrl": "/channelpartner/cro-training",
+          "link": "2-11",
+          "sub": null
+        },
+        {
+          "name": "Community",
+          "redirectUrl": "/community",
+          "toolTip": "Go to Tru Community",
+          "link": "0-8",
+          "sub": null
+        }
+      ]
+    }
+  ]
+}

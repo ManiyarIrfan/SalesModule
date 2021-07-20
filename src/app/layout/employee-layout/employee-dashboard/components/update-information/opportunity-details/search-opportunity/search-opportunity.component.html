@@ -1,0 +1,30 @@
+<div class="col-sm-12">
+  <div class="row">
+    <div class="col-sm-9" id="style-2">
+      <div class="icon-addon addon-md">
+        <input class="form-control" name="test" [(ngModel)]="searchText" type="text" id="keyword"
+          placeholder="Search By Name Or Email Or Mobile Number..." autocomplete="off" autofocus> <i
+          class="fa fa-search"></i>
+      </div>
+      <div class="search-result" [hidden]="!flag">
+        <ul class="searchscroll" id="style-2">
+          <li *ngFor="let opportunity of opportunities">
+            <a (click)="onselectEnquiry(opportunity)">{{opportunity.Name}} - {{opportunity.MobileNo}} -
+              {{opportunity.TReferralId}}</a>
+          </li>
+          <span *ngIf='noDataFound' class="required">No data Found</span>
+        </ul>
+        <div class="col-sm-3" [hidden]="!spinner">
+          <p class="loading">
+            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-primary" (click)="searchOpportunity(searchText)"> <i class="fa fa-search"></i>
+        Search</button>
+    </div>
+  </div>
+</div>
+<br />

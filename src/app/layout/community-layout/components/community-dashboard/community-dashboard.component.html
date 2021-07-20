@@ -1,0 +1,399 @@
+<div class="responsive-image header-height" *ngIf="this.Input === 'Dashboard' || !viewDetails">
+    <header class="text-center">
+        <h1 class="header-text text-white">Welcome to the <span>Tru Community!</span></h1>
+    </header>
+</div>
+<div class="main-container" *ngIf="this.Input === 'Dashboard' || !viewDetails">
+    <div class="row mt-3">
+        <!-- breadcrumbs -->
+        <!-- <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="breadcrumbs">
+                        <div class="breadcrumbsitem-text">
+                            <a>Community </a> <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+                            <a>Home</a> 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="centered2 search-container pull-right">
+                        <input type="text" id="search-bar" placeholder="What can I help you with today?">
+                        <a href="#"><img class="search-icon"
+                                src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></a>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- dashboard-content -->
+        <div class="col-sm-12 mb-3 mt-2">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="breadcrumbs">
+                                <div class="breadcrumbsitem-text">
+                                    <a>Community </a> <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+                                    <a>Home</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="centered2 search-container pull-right">
+                                <input type="text" id="search-bar" placeholder="What can I help you with today?">
+                                <a href="#"><img class="search-icon"
+                                        src="../../../../../assets/community/search-icon.png"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 mb-3 mt-2 text-center">
+                    <h2>
+                        <span class="hometitle pointer" (click)="goToTab('Discussions','New',null)">Ask a
+                            Question</span>
+                        <span class="mobileTab">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+                        <span class="brcss hometitle pointer"
+                            (click)="goToTab('Discussions','allDiscussions',null)">Answer a
+                            Question</span>
+                    </h2>
+                </div>
+                <div class="col-sm-6 mt-2 m-bottom-25 column--pad">
+                    <div class="cardpanel cardpanel_height1 pointer"
+                        (click)="goToTab('Discussions','allDiscussions',null)">
+                        <div class="iconstyle">
+                            <img class="card-icon" src="../../../assets/community/question.png" alt="">
+                        </div>
+                        <div class="contentstyle">
+                            <h4 class="content_Title">Community Q/A</h4>
+                            <p class="text-muted">Ask your question,search for the answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 m-bottom-25 mt-2 column--pad">
+                    <div class="cardpanel cardpanel_height1 pointer" (click)="goToTab('Groups','allGroups',null)">
+                        <div class="iconstyle">
+                            <img class="card-icon" src="../../../assets/community/forum.png" alt="">
+                        </div>
+                        <div class="contentstyle">
+                            <h4 class="content_Title">Groups</h4>
+                            <p class="text-muted">Communicate with people and discuss directly via groups</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 mb-2"> <br>
+                    <h2 class="hometitle mt-2 text-center h2 pt-2"> Latest Topics
+                    </h2>
+                </div>
+                <div class="col-sm-12">                   
+                    <section>
+                        <div class="flex-col" *ngFor="let item of allDiscussions;let i=index; trackBy: trackByFn;">
+                            <div (click)="getPostData(item.Id)" class="pointer cards border{{i+1}}">
+                                <h3 class="marb">{{item.Subject}}</h3>
+                                <span class="pull-left text-muted">{{item.Comments}} Discussions</span>
+                            </div>
+                            <span class="pull-right userInfo">
+                                <img class="center"
+                                    src="{{item.ProfilePic ? item.ProfilePic : '../../../../../../../assets/images/user.png'}}"
+                                    width="20px" alt="">&nbsp;
+                                {{item.UserName ? (item.UserName | titlecase) : 'anonymous'}}
+                            </span>
+                        </div>                       
+                    </section>
+                </div>
+                <br>
+                <div class="col-sm-12 mb-2"> <br>
+                    <h2 class="hometitle mt-2 text-center h2 pt-2 "> Latest Projects
+                    </h2>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="card-section pointer">
+                                <img src="https://images.unsplash.com/photo-1471039497385-b6d6ba609f9c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
+                                    class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h4 class="card-title">Kekarav</h4>
+                                    <div class="border-line"></div>
+                                    <p class="card-text">
+                                        Project Details Info
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 ">
+                            <div class="card-section pointer">
+                                <img src="https://images.unsplash.com/photo-1481253127861-534498168948?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
+                                    class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h4 class="card-title">Varivaana</h4>
+                                    <div class="border-line"></div>
+                                    <p class="card-text">
+                                        Project Details Info
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="card-section pointer">
+                                <img src="https://images.unsplash.com/photo-1542361345-89e58247f2d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
+                                    class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h4 class="card-title">Puneville</h4>
+                                    <div class="border-line"></div>
+                                    <p class="card-text">
+                                        Project Details Info
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="col-sm-12 mb-2"> <br>
+                    <h2 class="hometitle mt-2 text-center h2 pt-2"> Trending
+                    </h2>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-4 m-bottom-25 mt-2 column--pad">
+                            <div class="cardpanel card_project cardcolor_blue">
+                                <h4 class="head_title text-white">Projects</h4>
+                                <div class="card-body card_pad cardcolor_white">
+                                    <div class="p-3"
+                                        *ngFor="let item of TopProjectWiseDiscussions; trackBy: trackByFn;let i=index;">
+                                        <h6><strong class="text-muted pointer"> {{item.Subject}}</strong>
+                                        </h6>
+                                        <hr>
+                                    </div>
+                                    <span (click)="goToTab('Discussions','allDiscussions',null)"
+                                        class="pull-right btn_blue card_viewmore pointer">View More</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 m-bottom-25 mt-2 column--pad">
+                            <div class="cardpanel card_project cardcolor_purple">
+                                <h4 class="head_title text-white">Posts</h4>
+                                <div class="card-body card_pad cardcolor_white">
+                                    <div class="p-3"
+                                        *ngFor="let item of allDiscussions; trackBy: trackByFn;let i=index;">
+                                        <h6><strong class="text-muted pointer"> {{item.Subject}}</strong>
+                                        </h6>
+                                        <hr>
+                                    </div>
+                                    <span (click)="goToTab('Discussions','allDiscussions',null)"
+                                        class="pull-right btn_pur card_viewmore pointer">View More</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 m-bottom-25 mt-2 column--pad">
+                            <div class="cardpanel   card_project cardcolor_yello">
+                                <h4 class="head_title text-white">Groups</h4>
+                                <div class="card-body card_pad cardcolor_white">
+                                    <div class="p-3"
+                                        *ngFor="let item of TopGroupsWiseDiscussions; trackBy: trackByFn;let i=index;">
+                                        <h6><strong class="text-muted pointer"> {{item.GroupName}}</strong>
+                                        </h6>
+                                        <hr>
+                                    </div>
+                                    <span (click)="goToTab('Groups','allGroups',null)"
+                                        class="pull-right btn_org card_viewmore pointer">View More</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-sm-12">
+                    <br><br><br>
+                    <div class="container">
+                        <div class="area-video__left">
+                            <h2 class="intro_txt">Get started with <br> <strong>Tru Community !!</strong></h2>
+                        </div>
+                        <div class="area-video__right">
+                            <video controls>
+                                <source
+                                    src="https://trushare.blob.core.windows.net/production/TRU%20Customer%20Portal%20Intro.mp4"
+                                    type="video/mp4" class="vidsize" />
+
+                            </video>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+<form #viewDetailsform="ngForm" *ngIf="viewDetails">
+    <div class="responsive-image header-height_sub">
+        <div class="main-container">
+            <header class="text-left subheader_pad">
+                <h2 class="text-white">{{headerTitle | titlecase}}</h2>
+            </header>
+        </div>
+
+    </div>
+    <div class="main-container">
+        <div class="row" [ngSwitch]="Type">
+            <div class="col-sm-12" *ngSwitchCase="'Discussions'">
+                <div class="row" *ngIf="Input==='allDiscussions'">
+                    <div class="col-sm-12 p-2 m-1 mb-2">
+                        <span class="pointer" [routerLink]="['/community']" (click)="backtoHome()">Tru Community</span>
+                        <span class="pl-2 pr-2">/</span>
+                        <span>Discussion</span>
+                    </div>
+                    <div class="col-sm-12">
+                        <app-all-discussion (transterData)="getPostData($event.data)">
+                        </app-all-discussion>
+                    </div>
+                </div>
+                <div class="row" *ngIf="Input!=='allDiscussions'">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div class="row">
+                                    <div class="col-sm-12" *ngIf="Input==='single'">
+                                        <div class="row">
+                                            <div class="col-sm-12 p-2 m-1 mb-2 text-muted">
+                                                <span class="pointer" [routerLink]="['/community']"
+                                                    (click)="backtoHome()">Tru Community</span> <span
+                                                    class="pl-2 pr-2">/</span>
+                                                <!-- <span class="pointer" (click)="backtoHome()">Dashboard</span> -->
+                                                <!-- <span class="pl-2 pr-2">/</span> -->
+                                                <span class="pointer"
+                                                    (click)="goToTab('Discussions','allDiscussions',null)">Latest
+                                                    Topic</span><span class="pl-2 pr-2">/</span>
+                                                <span>{{headerTitle}}</span>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <app-single-discussion (ifNoData)="backtoHome()"
+                                                    (PostSubject)="EmittedData($event)" [selectedData]="selectedData">
+                                                </app-single-discussion>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" *ngIf="Input==='New'">
+                                        <div class="row">
+                                            <div class="col-sm-12 p-2 m-1 mb-2">
+                                                <span class="pointer" (click)="backtoHome()"
+                                                    [routerLink]="['/community']">Tru Community</span>
+                                                <span class="pl-2 pr-2">/</span>
+                                                <span>New Discussion</span>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <app-new-discussion></app-new-discussion>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 margin4">
+                                <div class="row cardstyle" *ngIf="this.headerTitle !== 'New Discussion'">
+                                    <div class="col-sm-12">
+                                        <p (click)="goToTab('Discussions','New',null)"
+                                            class="font14 pointer newDiscussioncardP">
+                                            <strong>Start
+                                                A New
+                                                Discusion</strong></p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 cardstyle">
+                                    <div class="col-sm-12">
+                                        <h5 class="pointer" (click)="goToTab('Discussions','allDiscussions',null)">
+                                            <strong>All
+                                                Discussions <i class="font14 fa fa-bullhorn pull-right"
+                                                    aria-hidden="true"></i></strong></h5>
+                                        <hr>
+                                    </div>
+                                    <div class="col-sm-12 mt-1" *ngFor="let item of TopDiscussions;trackBy:trackByFn;">
+                                        <p (click)="getPostData(item.Id)" class="font14 pointer"><i
+                                                class="fa font8 fa-circle" aria-hidden="true"></i>
+                                            &nbsp;{{item.Subject}}</p>
+                                    </div>
+                                    <div class="col-sm-12 mt-1">
+                                        <p class="font14" *ngIf="TopDiscussions.length===0">No Discussion Found</p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 cardstyle">
+                                    <div class="col-sm-12">
+                                        <h5><strong>Latest Projects <i class="font14 fa fa-bandcamp pull-right"
+                                                    aria-hidden="true"></i>
+                                            </strong>
+                                        </h5>
+                                        <hr>
+                                    </div>
+                                    <div class="col-sm-12 mt-1">
+                                        <p><i class="fa font8 fa-circle" aria-hidden="true"></i> &nbsp;Kekarav</p>
+                                        <p><i class="fa font8 fa-circle" aria-hidden="true"></i> &nbsp;Varivaana</p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 cardstyle">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-12 mb-1">
+                                                <h5><strong>Trending</strong>
+                                                    <i class="font14 fa fa-tags pull-right" aria-hidden="true"></i>
+                                                </h5>
+                                                <hr>
+                                            </div>
+                                            <span class="pointer hastag">#Test</span>
+                                            <span class="pointer hastag">#Kekarav</span>
+                                            <span class="pointer hastag">#Varivana</span>
+                                            <span class="pointer hastag">#TopSites</span>
+                                            <span class="pointer hastag">#Discussion</span>
+                                            <span class="pointer hastag">#Pune</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12" *ngSwitchCase="'Groups'">
+                <div class="row" *ngIf="Input==='allGroups'">
+                    <div class="col-sm-12 p-2 m-1 mb-2">
+                        <span class="pointer" [routerLink]="['/community']" (click)="backtoHome()">Tru Community</span>
+                        <span class="pl-2 pr-2">/</span>
+                        <span>Groups</span>
+                    </div>
+                    <div class="col-sm-12">
+                        <app-all-groups (transterData)="goToTab('Groups',$event.Action,$event.data)"></app-all-groups>
+                    </div>
+                </div>
+                <div class="row" *ngIf="Input==='New'">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-12 p-2 m-1 mb-2">
+                                <span class="pointer" [routerLink]="['/community']" (click)="backtoHome()">Tru
+                                    Community</span> <span class="pl-2 pr-2">/</span>
+                                <span>New Groups</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <app-new-group></app-new-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="Input==='single'">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-12 p-2 m-1 mb-2">
+                                <span class="pointer text-primary" [routerLink]="['/community']"
+                                    (click)="backtoHome()">Tru Community</span>
+                                <span class="pl-2 pr-2">/</span>
+                                <a><span (click)="goToTab('Groups','allGroups',null)">Groups</span></a>
+                                <span class="pl-2 pr-2">/</span>
+                                <span>{{headerTitle}}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <app-single-group (ifNoData)="backtoHome()" (sendGroupData)="selectedOption($event)"
+                                    [selectedData]="selectedData">
+                                </app-single-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>

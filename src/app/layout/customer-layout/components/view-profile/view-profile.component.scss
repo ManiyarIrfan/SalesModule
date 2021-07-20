@@ -1,0 +1,79 @@
+.addr {
+  width: 100%;
+  resize: none;
+}
+.bread {
+  background-color: #1d242da8;
+  border-radius: 1.5rem;
+}
+// fieldset.scheduler-border {
+//   border: 1px solid #ddd !important;
+//   padding: 0 0.4em 0.4em 0.4em !important;
+//   margin: -17px 0 1.5em 0 !important;
+//   box-shadow: 0px 0px 0px 0px #000;
+//   border-radius: 7px;
+//   font-weight: 500 !important;
+//   padding: 20px !important;
+// }
+
+.one{
+  padding-top: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+}
+.border-card {
+  padding: 5px;
+  border: 3px solid dimgrey;
+  border-radius: 11px;
+  background: #7faebf54;
+  box-shadow: 0px 1px 12px 6px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+fieldset.scheduler-border {
+  border: 1px solid #ddd !important;
+  padding: 0 0.4em 0.4em 0.4em !important;
+  margin: 0 0 1.5em 0 !important;
+  box-shadow: 0px 0px 0px 0px #000;
+  border-radius: 7px;
+}
+.headercard {
+  margin-left: 195px;
+}
+.cardstyle {
+  background: #32738e;
+  color: white;
+  border-radius: 10px;
+  padding-top: 6px;
+}
+::ng-deep .file-upload-box{
+  width: 340px !important;
+  display: inline-block;
+  vertical-align: left;
+  max-height: 150px;
+  overflow: auto;
+}
+ 
+strong{
+  font-weight: 400 !important;
+}
+.box {
+  border-radius: 10px;
+  height: 120px;
+  border: 1px solid #cdc8c8;
+  cursor: pointer;
+}
+.box:hover {
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+#boxpos {
+  margin-right: 1em;
+  margin-bottom: 2em;
+}
+.img-size{
+  width: 60px;
+  height: 60px;
+}
+.btn-custom{
+  background-color: #459fff;
+  color: white;
+}

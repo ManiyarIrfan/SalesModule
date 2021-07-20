@@ -1,0 +1,53 @@
+
+#celender{
+    min-height: 250px;
+   }
+
+@media (min-width: 992px) {
+    .modal-xl {
+        max-width: 1368px;
+        max-height: 1000px;
+    }
+}
+
+.modal-header {
+    background-color: #33B5E5;
+    padding: 0.5em 1rem;
+}
+
+// .title {
+//     margin-left: 593px;
+//     color: white;
+// }
+.titleStatus {
+    color: white;
+}
+.modalLarge {
+    color: white;
+}
+
+.bdyalign {
+    line-height: 2.5;
+}
+
+.calender{
+    width: 38em;
+}
+
+.tablemargin{
+    margin-bottom: -2em;
+}
+
+#cardheight{
+    height: 110%;
+}
+.fa-question-circle{
+    font-size: 1.8rem;
+    color: red;
+    display: inline-block;
+    float: left;
+}
+.text-head{
+    font-size: 1.2rem;
+    margin-left: 5px;
+}

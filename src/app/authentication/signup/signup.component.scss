@@ -1,0 +1,394 @@
+.position {
+    left: 50%;
+    margin-left: -100px;
+}
+
+legend.scheduler-border {
+    font-size: 0.98em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    width: auto;
+    border-bottom: none;
+}
+
+select.form-control:not([size]):not([multiple]) {
+    height: calc(2.5rem + -4px);
+}
+
+.imgpath {
+    background-image: url("../../../assets/images/Background\ \(1\).png");
+    background-position: initial;
+    background-repeat: no-repeat;
+    background-size: cover;
+    // height: auto;
+    // width: auto;
+    height: 100%;
+    widows: 100%;
+    //background: #ffffff1f;
+    // overflow: hidden;
+    padding: 8.1em;
+    // filter: drop-shadow(2px 4px 6px black);
+}
+
+img {
+    height: auto;
+    width: 38%;
+    margin-left: 13em;
+}
+.img-responsive{
+    width: 55px !important;
+}
+.addressbar {
+    height: 2.3em;
+    overflow: hidden;
+}
+
+.form-control {
+    border-radius: 12px !important;
+}
+
+.btn {
+    border-radius: 26px !important;
+    background-color: #363435;
+    color: #ffffff;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #252626;
+    border-color: #8b8b8b;
+}
+
+.captchaValid {
+    background-color: #f8f9fa;
+    width: 50px;
+    height: 20px;
+    text-align: center;
+}
+
+.newimg {
+    height: 10em;
+    width: 11%;
+}
+
+.card {
+    background-color: #ffffff00;
+    width: 105%;
+    margin-left: -2.3em;
+}
+
+.input-underline {
+    background-color: white !important;
+    box-shadow: none;
+    color: #000 !important;
+    border-radius: 0;
+}
+
+#margintop {
+    margin-top: -1.5em;
+}
+
+#margintopadharcard {
+    margin-top: -3em;
+}
+
+.signupcard {
+    // background-color: #363435d9;
+    //background: linear-gradient(to top, #000507d1, #524e4e85);
+    background: linear-gradient(to top, #43434326, #5f5a5a0f);
+    border-radius: 20px;
+    margin-top: 0.5em;
+    // height: 30em;
+    // overflow: auto;
+    zoom: 90%;
+    //background-image: url("../../../assets/images/Background.jpg");
+}
+
+// .form-control {
+//   height: calc(1.2em + 0.75rem + 1px) !important;
+// }
+.alert-danger {
+    color: #ca1728;
+    background-color: #f1f0f0;
+    border-color: #f1f0f0;
+    font-weight: 500;
+    padding-top: 1px;
+    padding-bottom: 0px;
+    margin-bottom: -14px;
+}
+
+.card {
+    border: 1px solid rgba(0, 0, 0, 0) !important;
+}
+
+.refreshmargin {
+    margin-top: 8px;
+}
+
+fieldset.scheduler-border {
+    border: 1px solid #a3a3a3 !important;
+}
+
+.alert-success {
+    color: #000000;
+    background-color: #69484800;
+    border-color: #e8e8e800;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+}
+
+#capchatitle {
+    padding-top: 3px;
+}
+
+.captchastyle {
+    border: 1px solid #747273;
+    padding: 3px;
+    border-radius: 12px;
+    margin-bottom: -0.8em;
+}
+
+.registerstyle {
+    margin-left: -2em;
+    margin-top: -2em;
+}
+
+.colmargin {
+    margin-left: 10em;
+}
+
+.captchwidth {
+    width: 4em;
+}
+
+.size {
+    font-size: 30px;
+    color: red;
+}
+
+.msgmargin {
+    //margin-top: -7em;
+    margin-top: -1em;
+}
+
+.alert-warning {
+    color: #cc1760;
+    background-color: #fff3cd00;
+    border-color: #ffeeba00;
+    margin-top: 1em;
+}
+
+.signup2 {
+    text-decoration: underline;
+    text-underline-position: under;
+    color: #000000;
+    font-size: 19px;
+}
+
+#passmatch {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 7px;
+    color: rgb(226, 4, 52);
+}
+
+@media only screen and (max-width: 600px) {
+    .mobilenomargin {
+        margin-bottom: -1px;
+    }
+    .signupcard {
+        // background-color: #363435d9;
+        //background: linear-gradient(to top, #000507d1, #524e4e85);
+        background: linear-gradient(to top, #43434326, #5f5a5a0f);
+        border-radius: 20px;
+        margin-top: 0.5em;
+        height: 100%;
+        // overflow: auto;
+        width: 18em;
+        zoom: 90%;
+    }
+    #margintop {
+        margin-top: -25px;
+        margin-bottom: 21px;
+    }
+    .addressmargin {
+        margin-top: -23px;
+    }
+    .colmargin {
+        margin-left: 1px;
+        color: white;
+    }
+     ::ng-deep .ui-fileupload .ui-fileupload-buttonbar .ui-button {
+        margin-right: 2px;
+        width: 94px;
+    }
+}
+
+.foraddressmobile {
+    margin-bottom: -22px;
+}
+
+.error {
+    border-color: red;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px red;
+}
+
+// .has-success{
+//   border-color: #65ea84;
+//   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #65ea84;
+// }
+@media only screen and (max-width: 716px) and (min-width: 580) {
+    // .signupcard {
+    //   background: linear-gradient(to top, #43434326, #5f5a5a0f);
+    //   border-radius: 20px;
+    //   margin-top: 0.5em;
+    //   height: 100%;
+    //   width: 64em;
+    //   margin-left: -9em;
+    //   zoom: 90%;
+    // }
+    .signupcard {
+        background: linear-gradient(to top, #43434326, #5f5a5a0f);
+        border-radius: 20px;
+        margin-top: 0.5em;
+        height: 100%;
+        width: 61em;
+        margin-left: -9em;
+        zoom: 90%;
+    }
+    .colmargin {
+        margin-left: 155px;
+        color: black;
+    }
+}
+
+.foraddress {
+    height: calc(1.2em + 2.75rem + 1px);
+}
+
+//   chatbot OTP
+
+/* The popup chat - hidden by default */
+
+.chat-popup {
+    background-color: #272727cc;
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 35px;
+    border: 2px solid rgba(0, 0, 0, 0.644);
+    border-radius: 10px;
+    z-index: 9;
+    height: 400px;
+    width: 350px;
+}
+
+
+/* Add styles to the form container */
+
+.form-container {
+    max-width: 300px;
+    padding-left: 10px;
+}
+
+#open {
+    height: 60px;
+    width: 64px;
+    position: fixed;
+    bottom: 20px;
+    right: 28px;
+    border-radius: 50%;
+}
+
+#close {
+    position: fixed;
+    bottom: 20px;
+    right: 28px;
+    border-radius: 50%;
+    display: none;
+    height: 60px;
+    width: 64px;
+}
+
+.submit {
+    padding: 16px 20px;
+    border-radius: 20%;
+}
+
+#o {
+    display: none;
+}
+
+.text {
+    color: #e1e1e1;
+    font-size: 20px;
+    display: inline-block;
+    margin-left: 28px;
+}
+
+#soundon {
+    height: 25px;
+    width: 25px;
+    position: fixed;
+    top: 50px;
+    right: 152px;
+    border-radius: 50%;
+    z-index: 100000000;
+    display: none;
+}
+
+#soundoff {
+    height: 25px;
+    width: 25px;
+    position: fixed;
+    top: 50px;
+    right: 152px;
+    border-radius: 50%;
+    z-index: 100000000;
+}
+
+#speaker {
+    display: none;
+}
+
+// end chat bot OTP
+.title {
+    color: white;
+    text-align: center;
+    font-size: 17px;
+    padding-top: 9px;
+}
+
+.noverified {
+    color: #5ef95e;
+    text-align: center;
+    display: none;
+}
+
+.colmargin {
+    margin-left: 3.8em;
+}
+
+.btnmargin {
+    margin-left: 1.8em;
+}
+
+#avatarimg {
+    height: 300px;
+    width: 300px;
+    position: fixed;
+    bottom: 0px;
+    left: 12px;
+    display: none;
+    z-index: 100;
+}
+
+#playavatar {
+    bottom: 100px !important;
+}
+.textBox{  
+    background-image: url(../../../assets//images/checked.png);  
+    background-position:right;   
+    background-repeat:no-repeat;   
+    padding-left:17px;
+    } 

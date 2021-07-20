@@ -1,0 +1,5 @@
+<p-tabView>
+    <p-tabPanel [header]="item.key" *ngFor="let item of Subreport; let i = index" [selected]="i == 0">
+        <tru-sales-perform-call-report *ngIf="dateObj" [dateObj]="dateObj" [key]="item"></tru-sales-perform-call-report>
+    </p-tabPanel>
+</p-tabView>

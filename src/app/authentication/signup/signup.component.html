@@ -1,0 +1,658 @@
+<div class="login-page imgpath" [@routerTransition]>
+    <form #signupForm="ngForm" class="form-group ">
+        <!-- <div class=" row justify-content-md-center msgmargin ">
+            <div class="alert alert-success" role="alert" *ngIf="successfullySignup">
+                <h6><i class="fa fa-check"></i> {{registerModel.userType}} Registration Done. Please click
+                    on
+                    Login Button.</h6>
+            </div>
+            <div class="alert alert-success " role="alert" *ngIf="successfullySignup2">
+                <h6><i class="fa fa-check"></i> {{registerModel.userType}} Registration Done.
+                    <a class="signup2" data-toggle="tooltip" data-placement="top"
+                        title="https://executiondevui.azurewebsites.net/login" href={{Phase2Url}}>Click here to
+                        login</a>
+                </h6>
+            </div>
+            <div class="alert alert-warning" role="alert" *ngIf="unsuccessfullySignup">
+                <h6><i class="fa fa-times-circle"></i> &nbsp;Registration Failed</h6>
+            </div>
+        </div> -->
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6 registerstyle">
+                <div class="row">
+                    <div class="col-sm-12 colmargin">
+                        <div class="form-content">
+                            <strong for="UserType">
+                                <span class="text-danger">*</span>Register As : &nbsp;</strong>
+                            <select (change)="onChange($event.target.value)" required [(ngModel)]="registerModel.userType" class="btn btn-secondary dropdown-toggle"
+                                id="usertype" #usertype="ngModel" name="usertype">
+                                <option value="">Select Option</option>
+                                <option class="DDoption" *ngFor='let user of UserInfo' [value]="user.key">
+                                    {{user.value}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- <div class="col-sm-6">
+                            <div class="form-content" *ngIf="registerModel.userType==='Customer'">
+                                <strong for="OwnedFlat">Own Flat with TRU? &nbsp;</strong>
+                                <select (change)="onChange($event.target.value)" required
+                                    [(ngModel)]="registerModel.isOwnedFlat" name="OwnedFlat"
+                                    class="btn btn-secondary dropdown-toggle" id="OwnedFlat" #OwnedFlat="ngModel">
+                                    <option>Yes</option>
+                                    <option>No</option>
+                                </select>
+                            </div>
+                        </div> -->
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+            <!-- <div class="col-sm-3">
+                            <div class="form-group">
+                                <img class="user-avatar" style="display: inline;" width="150px;margin-right:-20px;!important"
+                                    src="assets/images/logo.png" alt="TRU REALTY" />
+                            </div>
+                        </div> -->
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6 signupcard " *ngIf="!isActive">
+                    <br>
+                    <!-- <div class="form-content"> -->
+                    <div class="row ">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" [class.error]="fname.invalid && fname.touched" [class.has-success]="fname.valid"
+                                    name="fname" required [(ngModel)]="registerModel.fname" placeholder="First Name*" #fname="ngModel"
+                                    pattern="^[^-\s][a-zA-Z ]*" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" [class.error]="mname.invalid && mname.touched" [class.has-success]="mname.valid"
+                                    name="mname" [(ngModel)]="registerModel.mname" placeholder="Middle Name" #mname="ngModel"
+                                    pattern="^[^-\s][a-zA-Z ]*"  autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <input type="text" [class.error]="lname.invalid && lname.touched" required [class.has-success]="lname.valid" class="form-control input-underline"
+                                    id="lname" name="lname" [(ngModel)]="registerModel.lname" placeholder="Last Name*" #lname="ngModel"
+                                    pattern="^[^-\s][a-zA-Z ]*"  autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input type="email" (blur)="getEmailValidation(registerModel.Email)" [class.error]="email.invalid && email.touched" [class.has-success]="email.valid"
+                                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" class="form-control input-underline"
+                                    [ngClass]="isEmailAvailable ?'textBox':''" id="email" name="email" required [(ngModel)]="registerModel.Email"
+                                    placeholder="Email*" #email="ngModel" autocomplete="off">
+                                <div *ngIf="email.errors && (email.dirty || email.touched)" class="alert alert-danger">
+                                    <div [hidden]="!email.errors.required">
+                                        Email Id is required!
+                                    </div>
+                                    <div [hidden]="!email.errors.pattern">
+                                        Enter Valid Email!
+                                    </div>
+                                </div>
+                                <div *ngIf="isEmailAvailable">
+                                    <strong class="text-success">
+                                        Password will be sent to this Email Id
+                                    </strong>
+                                </div>
+                                <span [hidden]="isEmailAvailable" class="text-danger">{{showemail.check}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input (blur)="getMobileValidation(registerModel.MobileNo)" type="tel" class="form-control input-underline" [ngClass]="isMobileAvailable ?'textBox':''"
+                                    id="MobileNo" name="MobileNo" [class.error]="MobileNo.invalid && MobileNo.touched" required
+                                    [(ngModel)]="registerModel.MobileNo" placeholder="Mobile No*" #MobileNo="ngModel" minlength=10
+                                    maxlength=10 pattern="^\d{10}$" autocomplete="off">
+                                <div *ngIf="MobileNo.errors && (MobileNo.dirty || MobileNo.touched)" class="alert alert-danger">
+                                    <div [hidden]="!MobileNo.errors.required">
+                                        Mobile No is required!
+                                    </div>
+                                    <div [hidden]="!MobileNo.errors.pattern">
+                                        Enter Valid Mobile No!
+                                    </div>
+                                </div>
+                                <span [hidden]="isMobileAvailable" class="required">{{showmobile}}</span>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-12 foraddressmobile">
+                            <form #signuppassForm="ngForm"
+                                oninput="result.value=!!confPwd.value&&(Pwd.value==confPwd.value)?'Match!':'Incorrect'">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <input type="password" [class.error]="Pwd.invalid && Pwd.touched"
+                                                [class.has-success]="Pwd.valid" pattern=".{6,20}"
+                                                class="form-control input-underline" id="Pwd" name="Pwd" required
+                                                [(ngModel)]="registerModel.Pwd" placeholder="Password*" #Pwd="ngModel"
+                                                minlength=6 maxlength=20>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group ">
+                                            <input type="password" class="form-control input-underline" name="confPwd"
+                                                placeholder="Confirm Password">
+                                            <output id="passmatch" name="result"></output>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div> -->
+                        <div class="col-sm-6" *ngIf="registerModel.userType!=='Customer'">
+                            <div class="form-group">
+                                <textarea type="text" row="1" class="form-control foraddress input-underline" id="address" name="address" [class.error]="address.invalid && address.touched"
+                                    [class.has-success]="address.valid" required [(ngModel)]="registerModel.AddressLine1" placeholder="Address*"
+                                    #address="ngModel" pattern="[^\s]+[a-zA-Z0-9!@#,.&*()_+\-/;':\n ]*" autocomplete="off"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='Consultant'">
+                            <div class="form-group">
+                                <select type="text" class="form-control input-underline " id="vendortype" name="vendortype" [class.error]="vendortype.invalid && vendortype.touched"
+                                    [class.has-success]="vendortype.valid" required [(ngModel)]="registerModel.VendorType" #vendortype="ngModel">
+                                    <option value="">Select Expertise *</option>
+                                    <option class="DDoption" *ngFor='let type of VendorTypes' [value]="type.VendorType">
+                                        {{type.VendorType}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="rera" name="rera" [class.error]="rera.invalid && rera.touched"
+                                    [class.has-success]="rera.valid" required [(ngModel)]=" registerModel.ReraNo" placeholder="RERA Number*"
+                                    #rera="ngModel" maxlength=12 pattern="^[^-\s][a-zA-Z0-9 ]*" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='CRO'">
+                            <div class="form-group">
+                                <select type="text" class="form-control input-underline " id="crotype" name="crotype" [class.error]="crotype.invalid && crotype.touched"
+                                    [class.has-success]="crotype.valid" required [(ngModel)]="registerModel.Type" #crotype="ngModel">
+                                    <option value="">Select Occupation*</option>
+                                    <option class="DDoption" *ngFor='let type of CroType' [value]="type.key">
+                                        {{type.value}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='Supplier'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="serviceprovider" name="serviceprovider" [class.error]="serviceprovider.invalid && serviceprovider.touched"
+                                    [class.has-success]="serviceprovider.valid" [(ngModel)]="registerModel.Serviceprovider" placeholder="Material Provided"
+                                    pattern="^[^-\s][a-zA-Z ]*" #serviceprovider="ngModel" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='Contractor'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="serviceprovider" name="serviceprovider" [class.error]="serviceprovider.invalid && serviceprovider.touched"
+                                    [class.has-success]="serviceprovider.valid" [(ngModel)]="registerModel.Serviceprovider" placeholder="Service Provided"
+                                    #serviceprovider="ngModel" autocomplete="off">
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-6"
+                            *ngIf="registerModel.userType==='Architect'||registerModel.userType==='MasterArchitect'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="ExpertIn" name="ExpertIn"
+                                    #ExpertIn="ngModel" [class.error]="ExpertIn.invalid && ExpertIn.touched"
+                                    [class.has-success]="ExpertIn.valid" [(ngModel)]="registerModel.expertIn"
+                                    placeholder="Experties Area">
+                            </div>
+                        </div> -->
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='Supplier'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="officeNo" [class.error]="officeNo.invalid && officeNo.touched"
+                                    [class.has-success]="officeNo.valid" name="officeNo" [(ngModel)]="registerModel.OfficeNo"
+                                    placeholder="Office Number" #officeNo="ngModel" minlength=10 maxlength=10 pattern="^\d{10}$" autocomplete="off">
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-6" *ngIf="registerModel.userType==='Supplier'">
+                        <div class="form-group">
+                            <input type="text" class="form-control input-underline" id="officeNo"
+                                [class.error]="officeNo.invalid && officeNo.touched"
+                                [class.has-success]="officeNo.valid" name="officeNo"
+                                [(ngModel)]="registerModel.OfficeNo" placeholder="Office Number" #officeNo="ngModel"
+                                minlength=10 maxlength=10 pattern="^\d{10}$">
+                        </div>
+                    </div> -->
+                        <!-- <div class="col-sm-6" *ngIf="registerModel.userType==='Supplier'">
+                        <div class="form-group">
+                            <input type="text" class="form-control input-underline" id="suppliergstno"
+                                name="suppliergstno" [class.error]="suppliergstno.invalid && suppliergstno.touched"
+                                [class.has-success]="suppliergstno.valid" [(ngModel)]="registerModel.supplierGSTIN"
+                                placeholder="Supplier GST Number" #suppliergstno="ngModel"
+                                pattern="^[^-\s][a-zA-Z0-9 ]*">
+                        </div>
+                    </div> -->
+                        <!-- <div class="col-sm-6"
+                            *ngIf="registerModel.userType==='Architect'||registerModel.userType==='MasterArchitect'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="workreferencess"
+                                    name="workreferencess"
+                                    [class.error]="workreferencess.invalid && workreferencess.touched"
+                                    [class.has-success]="workreferencess.valid" #workreferencess="ngModel"
+                                    [(ngModel)]="registerModel.maxWorkField" placeholder="Work Referencess">
+                            </div>
+                        </div> -->
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='Consultant'  || registerModel.userType==='Supplier' || registerModel.userType==='Contractor'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="organisation" name="organisation" [class.error]="organisation.invalid && organisation.touched"
+                                    placeholder="Firm Name*" [class.has-success]="organisation.valid" [(ngModel)]="registerModel.Organization"
+                                    #organisation="ngModel" autocomplete="off" required>
+                                <datalist id="OrganizationName">
+                                    <option *ngFor="let select of AllOrganisation" [value]="select.OrganizationName">
+                                        {{select.OrganizationName}}</option>
+                                </datalist>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-6" *ngIf="registerModel.userType!=='Customer'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="refcity"
+                                    [class.error]="refcity.invalid && refcity.touched"
+                                    [class.has-success]="refcity.valid" name="refcity" required
+                                    [(ngModel)]="registerModel.PreferredCity" placeholder="Preferred City*"
+                                    #refcity="ngModel" pattern="^[^-\s][a-zA-Z ]*">
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType!=='Customer'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="refloc" name="refloc"
+                                    [class.error]="refloc.invalid && refloc.touched" [class.has-success]="refloc.valid"
+                                    required [(ngModel)]=" registerModel.PreferredLocation"
+                                    placeholder="Preferred Location*" #refloc="ngModel" pattern="^[^-\s][a-zA-Z0-9 ]*">
+                            </div>
+                        </div> -->
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='Customer'">
+                            <div class="form-group">
+                                <select (change)="onChange($event.target.value)" type="text" class="form-control input-underline text-lg" id="budget" name="budget"
+                                    [(ngModel)]="registerModel.Budget" placeholder="Budget" #budget="ngModel" [class.error]="budget.invalid && budget.touched"
+                                    [class.has-success]="budget.valid">
+                                    <option value="">Budget &#8377; in Lakhs</option>
+                                    <option class="DDoption" *ngFor='let budget of BudgetInfo' [value]="budget.value">
+                                        {{budget.value}} &#8377;
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="GSTIN" name="GSTIN" [class.error]="GSTIN.invalid && GSTIN.touched"
+                                    [class.has-success]="GSTIN.valid" [(ngModel)]="registerModel.GSTIN" pattern="^[^-\s][a-zA-Z0-9 ]*"
+                                    placeholder="GSTIN Number" #GSTIN="ngModel" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner'">
+                            <div class="form-group">
+                                <select (change)="onChange($event.target.value)" type="text" class="form-control input-underline " id="type" name="type"
+                                    [class.error]="type.invalid && type.touched" [class.has-success]="type.valid" required [(ngModel)]="registerModel.Type"
+                                    placeholder="Type" #type="ngModel">
+                                    <option value="">Select Type*</option>
+                                    <option class="DDoption" *ngFor='let type of CptypeInfo' [value]="type.value">
+                                        {{type.value}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner'">
+                            <div class="form-group" *ngIf="registerModel.Type!=='Individual'">
+                                <input type="text" class="form-control input-underline" id="organisation" name="organisation" [class.error]="organisation.invalid && organisation.touched"
+                                    [class.has-success]="organisation.valid" required [(ngModel)]="registerModel.Organization"
+                                    placeholder="Organisation*" #organisation="ngModel" pattern="^[^-\s][a-zA-Z ]*" list="OrganizationName"
+                                    autocomplete="off">
+                                <datalist id="OrganizationName">
+                                    <option *ngFor="let select of AllOrganisation" [value]="select.OrganizationName">
+                                        {{select.OrganizationName}}</option>
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner'">
+                            <div class="form-group">
+                                <select type="text" class="form-control input-underline text-lg" id="PancardType" name="PancardType" [(ngModel)]="registerModel.PancardType"
+                                    required placeholder="Pancard Type" #PancardType="ngModel" [class.error]="PancardType.invalid && PancardType.touched"
+                                    [class.has-success]="PancardType.valid">
+                                    <option value="">Select Pancard Type*</option>
+                                    <option class="DDoption" *ngFor='let data of PancardTypeList' [value]="data.value">
+                                        {{data.key}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='CRO'||registerModel.userType==='Supplier'||registerModel.userType==='Contractor'||registerModel.userType==='Consultant'||registerModel.userType==='Customer'">
+                            <div class="form-group">
+                                <select type="text" class="form-control input-underline text-lg" id="PancardType" name="PancardType" [(ngModel)]="registerModel.PancardType"
+                                    placeholder="Pancard Type" #PancardType="ngModel" [class.error]="PancardType.invalid && PancardType.touched"
+                                    [class.has-success]="PancardType.valid">
+                                    <option value="">Select Pancard Type</option>
+                                    <option class="DDoption" *ngFor='let data of PancardTypeList' [value]="data.value">
+                                        {{data.key}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner' ">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="pan" name="pan" [class.error]="pan.invalid && pan.touched" [class.has-success]="pan.valid"
+                                    required [(ngModel)]="registerModel.PanNo" placeholder="Pan-Card Number*" #pan="ngModel"
+                                    pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}$" (ngModelChange)="getPanValidation(registerModel.PanNo)"
+                                    maxlength=10 autocomplete="off">
+                                <div *ngIf="pan.errors && (pan.dirty || pan.touched)" class="alert alert-danger">
+                                    <div [hidden]="!pan.errors.pattern">
+                                        5-Letters - 4-Digits - 1-Letter
+                                    </div>
+                                </div>
+                                <span [hidden]="isPanAvailable" class="text-danger">{{showPan}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='CRO'||registerModel.userType==='Supplier'||registerModel.userType==='Contractor'||registerModel.userType==='Consultant'||registerModel.userType==='Customer'&&registerModel.userType!=='ChannelPartner'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="pan" name="pan" [class.error]="pan.invalid && pan.touched" [class.has-success]="pan.valid"
+                                    [(ngModel)]="registerModel.PanNo" placeholder="Pan-Card Number" #pan="ngModel" pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}$"
+                                    (ngModelChange)="getPanValidation(registerModel.PanNo)" maxlength=10>
+                                <div *ngIf="pan.errors && (pan.dirty || pan.touched)" class="alert alert-danger">
+                                    <div [hidden]="!pan.errors.pattern" autocomplete="off">
+                                        5-Letters - 4-Digits - 1-Letter
+                                    </div>
+                                </div>
+                                <span [hidden]="isPanAvailable" class="text-danger">{{showPan}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='CRO' || registerModel.userType==='ChannelPartner'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="aadhar" name="aadhar" [class.error]="aadhar.invalid && aadhar.touched"
+                                    [class.has-success]="aadhar.valid" [(ngModel)]="registerModel.AadharNo" pattern="^[^-\s][0-9 ]*"
+                                    placeholder="Aadhar Number" #aadhar="ngModel" maxlength=12 autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner'">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <strong>Upload Pancard</strong>
+                                </div>
+                                <br>
+                                <div class="col-sm-9">
+                                    <tru-file-upload [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png,.pdf,.doc,.docx,.xlsx,.xls,.xltx,.xlt,.xltm'" [(inputFiles)]="uploadFilePanCard">
+                                    </tru-file-upload>
+                                    <span *ngIf="!isPanImage" class="required">{{panImageNotSelect}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='ChannelPartner'">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <strong>Upload Aadharcard</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    <tru-file-upload [accept]="'.PNG,.jpeg,.jpg,.JPG,.JPEG,.png,.pdf,.doc,.docx,.xlsx,.xls,.xltx,.xlt,.xltm'" [(inputFiles)]="uploadFileListAdharCard">
+                                    </tru-file-upload>
+                                    <span *ngIf="!isPanImage" class="required">{{panImageNotSelect}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="registerModel.userType==='Contractor'">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-underline" id="turnover" name="no" [class.error]="turnover.invalid && turnover.touched"
+                                    [class.has-success]="turnover.valid" required [(ngModel)]="registerModel.Turnover" placeholder="FY Turnover*"
+                                    #turnover="ngModel" pattern="^[0-9]*\.?[0-9]+$" minlength="0" autocomplete="off">
+                                <div *ngIf="turnover.errors && (turnover.dirty || turnover.touched)" class="alert alert-danger">
+                                    <div [hidden]="!turnover.errors.required">
+                                        Turnover(Enter in Digit only)
+                                    </div>
+                                    <div [hidden]="!turnover.errors.pattern">
+                                        Turnover(Enter in Digit only)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- country -->
+                            <div class="col-sm-6" *ngIf="registerModel.userType==='Consultant' || registerModel.userType==='Supplier' || registerModel.userType==='Contractor'">
+                                <div class="form-group">
+                                    <select type="text"  class="form-control input-underline" id="country" name="country" [class.error]="country.invalid && country.touched"
+                                        [class.has-success]="country.valid" required [(ngModel)]="registerModel.country" #country="ngModel"
+                                        (change)="GetState($event.target.value)">
+                                        <option value="">Select Country*</option>
+                                        <option class="DDoption" *ngFor='let type of Country' [value]="type.CountryId">
+                                            {{type.CountryName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                                 <!-- state -->
+                            <div class="col-sm-6" *ngIf="registerModel.userType==='Consultant' || registerModel.userType==='Supplier' || registerModel.userType==='Contractor'">
+                                <div class="form-group">
+                                    <select type="text" class="form-control input-underline " id="State" name="State" [class.error]="State.invalid && State.touched"
+                                        [class.has-success]="State.valid" required [(ngModel)]="registerModel.State" #State="ngModel"
+                                        (change)="GetCity($event.target.value)">
+                                        <option value="">Select State*</option>
+                                        <option class="DDoption" *ngFor='let type of stateBind' [value]="type.StateId">
+                                            {{type.StateName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+    
+                            <!-- City -->
+                            <div class="col-sm-6" *ngIf="registerModel.userType==='Consultant' || registerModel.userType==='Supplier' || registerModel.userType==='Contractor'">
+                                <div class="form-group">
+                                    <select type="text" class="form-control input-underline " id="City" name="City" [class.error]="City.invalid && City.touched"
+                                        [class.has-success]="City.valid" required [(ngModel)]="registerModel.City" #City="ngModel">
+                                        <option value="">Select City*</option>
+                                        <option class="DDoption" *ngFor='let type of cityBind' [value]="type.CityId">
+                                            {{type.CityName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        <div class="col-sm-12" *ngIf="registerModel.userType==='Supplier' || registerModel.userType==='Consultant'|| registerModel.userType==='Contractor'">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <strong>Upload Profile</strong>
+                                </div>
+                                <div class="col-sm-2">
+                                    <tru-file-upload [accept]="'.png,.PNG,.jpeg,.JPEG,.jpg,.JPG,.tiff,.TIFF,.tif,.TIF,.pdf,.doc,.docx'" [(inputFiles)]="uploaddFileProfile">
+                                    </tru-file-upload>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 ">
+                            <div class="row">
+                                <div class="col-sm-1"></div>
+                                <div class="col-sm-10 captchastyle">
+                                    <div class="row justify-content-center">
+                                        <strong id="capchatitle">Enter Captcha : {{ code1 }} + {{ code2 }} &nbsp;
+                                        </strong>
+                                        <input type="text captchwidth" class="form-control input-underline captchaValid" id="code" name="code" [(ngModel)]="answer"
+                                            required> &nbsp;&nbsp;
+                                        <i class="fa fa-refresh refreshmargin" aria-hidden="true" (click)="getCaptcha()"></i>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-sm-12" align="center">
+                        <span class="text-danger">
+                            <b> {{error}} </b>
+                        </span>
+                        <br />
+                        <span class="text-danger" *ngIf="registerModel.userType==='ChannelPartner'">* Pancard and Rera Number is Mandatory for ChannelPartner Registration. </span>
+                        <br />
+                        <button class="btn rounded-btn" (click)="OnRegisterBtnClick(registerModel,uploadFileListAdharCard,uploadFilePanCard,signupForm)"
+                            *ngIf="registerModel.userType==='Customer' || registerModel.userType==='CRO'" [disabled]="!signupForm.form.valid|| !isEmailAvailable ||!isMobileAvailable || isPanAvailable===false||disableRegisterBtn">Register</button>
+                        <button class="btn rounded-btn" (click)="OnRegisterBtnClick(registerModel,uploadFileListAdharCard,uploadFilePanCard,signupForm)"
+                            [disabled]=" !signupForm.form.valid  || !isEmailAvailable  || !isMobileAvailable|| isPanAvailable===false ||disableRegisterBtn"
+                            *ngIf="registerModel.userType==='ChannelPartner'">Register</button>
+                        <button class="btn rounded-btn" (click)="registerPhasetwoEmp(registerModel,uploaddFileProfile,signupForm)" [disabled]=" !signupForm.form.valid  || !isEmailAvailable  || !isMobileAvailable || isPanAvailable===false ||disableRegisterBtn "
+                            *ngIf="registerModel.userType==='Contractor' || registerModel.userType==='Developer' || registerModel.userType==='Supplier' || registerModel.userType==='Consultant' || registerModel.userType===''">
+                            Register</button> &nbsp;
+                        <button *ngIf="isLogin" class="btn rounded-btn" [routerLink]="['/login']"> Log in </button>
+                    </div>
+                    <div [hidden]="!isLoading">
+                        <p class="text-center mt-4  text-center">
+                            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading Please Wait...
+                        </p>
+                    </div>
+                    <div class=" row justify-content-md-center msgmargin ">
+                        <div class="alert alert-success" role="alert" *ngIf="successfullySignup">
+                            <h5>
+                                <i class="fa fa-check"></i> {{registerModel.userType}} Registration Done. Please click on Login Button.</h5>
+                            <h5 class="badge badge-warning text-center">
+                                <i class="fa fa-key"></i> System generated password is sent to your registered email id.
+                            </h5>
+                        </div>
+                        <div class="alert alert-success " role="alert" *ngIf="successfullySignup2">
+                            <h5>
+                                <i class="fa fa-check"></i> {{registerModel.userType}} Registration Done.
+                                <a class="signup2" data-toggle="tooltip" data-placement="top" title="https://executiondevui.azurewebsites.net/login" href={{Phase2Url}}>Click here to login</a>
+                            </h5>
+                            <h5 class="badge badge-warning text-center">
+                                <i class="fa fa-key"></i> System generated password is sent to your registered email id.
+                            </h5>
+                        </div>
+                        <div class="alert alert-warning" role="alert" *ngIf="unsuccessfullySignup">
+                            <h5>
+                                <i class="fa fa-times-circle"></i> &nbsp;Registration Failed</h5>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+        <!-- </div> -->
+    </form>
+    <div>
+        <form #MessageForm="ngForm" class="form-group" *ngIf="isActive">
+            <div>
+                <br />
+                <i class="fa fa-warning size"></i>
+                <h4>{{message}}</h4>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- POPUP FOR passwordConfirmation UPDATE -->
+<div bsModal cdkDrag #alreadyRegisterModal="bs-modal" class="modal fade" role="dialog" data-backdrop="static" aria-labelledby="mylargeModalLabel"
+    s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-notify modal-info modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="../../../assets/images/error.png" class="img-responsive text-center animated rotateIn">
+                <div class="text-center">
+                    <br>
+                    <span *ngIf="showemail.check && (showemail.usertype==='Supplier'&& showemail.usertype!=='Contractor'&& showemail.usertype!=='Consultant')">Email Id already exists. You may have registered on TRU Portal.
+                        <a href='http://executiontestui.azurewebsites.net/'>Click here</a> to login with your credentials.</span>
+                    <span *ngIf="showemail.check && (showemail.usertype==='ChannelPartner'|| showemail.usertype==='CRO'|| showemail.usertype==='Customer' || showemail.usertype==='Referral' || showemail.usertype==='Employee')">Email Id already exists. You may have registered on TRU Portal.
+                        <a href='https://portal.trurealty.in/login'>Click here</a> to login with your credentials.</span>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <!-- <button class="btn btn-primary btn-sm" (click)="confirmation('yes')">Yes</button> -->
+                <button class="btn btn-danger btn-sm" (click)="alreadyRegisterModal.hide()">No Thanks</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- OTP chatbot  -->
+<form #BotForm="ngForm" *ngIf="HideBotRegistration">
+
+    <a>
+        <img src="https://s3.amazonaws.com/kommunicate.s3/profile_pic/15704290853581570429082646-image396.jpg" id="open" (click)="openForm()">
+    </a>
+    <a>
+        <img src="https://cdn5.vectorstock.com/i/thumb-large/47/69/x-cross-rounded-icon-iconic-design-vector-18314769.jpg" id="close"
+            (click)="closeForm()">
+    </a>
+    <div class="chat-popup" id="myForm">
+        <div class="card" *ngIf="ShowVerified">
+            <div class="row">
+                <div class="col-sm-12 btnmargin">
+                    <p class="title" style="padding: 20px;">Before starting, We just need to verify your Mobile number, So that we may Serve you better</p>
+                    <p class="noverified">Phone Number Verified</p>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10 colmargin">
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline" [class.error]="name.invalid && name.touched" [class.has-success]="name.valid"
+                            name="fname" required [(ngModel)]="chatbotModel.name" placeholder="Enter Name*" #name="ngModel" pattern="^[^-\s][a-zA-Z ]*">
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10 colmargin">
+                    <div class="form-group">
+                        <input type="text" class="form-control input-underline" [class.error]="EmailId.invalid && EmailId.touched" [class.has-success]="EmailId.valid"
+                            name="EmailId" required [(ngModel)]="chatbotModel.EmailId" placeholder="Enter Email Id*" #EmailId="ngModel"
+                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 colmargin">
+                    <div class="form-group">
+                        <input class="form-control input-underline" id="mobileNo" name="mobileNo" [class.error]="mobileNo.invalid && mobileNo.touched"
+                            required [(ngModel)]="chatbotModel.mobileNo" placeholder="Mobile No*" #mobileNo="ngModel" minlength=10
+                            maxlength=10 pattern="^\d{10}$">
+                    </div>
+                </div>
+                <div class="col-sm-12 btnmargin text-center">
+                    <button [disabled]=" !BotForm.form.valid" class="btn rounded-btn" (click)='mobile(chatbotModel.mobileNo)'>Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card" *ngIf="!ShowVerified">
+            <br>
+            <br>
+            <div class="col-sm-12 btnmargin">
+                <p class="title">Verifiy Mobile No</p>
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-10 colmargin">
+                <div class="form-group">
+                    <input class="form-control input-underline" id="otp" name="otp" [class.error]="otp.invalid && otp.touched" required [(ngModel)]="chatbotModel.otp"
+                        placeholder="Enter OTP*" #otp="ngModel" minlength=10 maxlength=10 pattern="^\d{10}$">
+                </div>
+            </div>
+            <div class="col-sm-12 btnmargin text-center">
+                <button class="btn rounded-btn" (click)='changenumber()'>Change Number
+                </button>
+                <button class="btn rounded-btn" (click)='otpverification(chatbotModel.otp)'>Verify</button>
+            </div>
+        </div>
+
+        <div class="text" style="padding-left: 30px;" id='p'>
+            <p id='demoopt2'></p>
+        </div>
+        <div class="text" style="padding-left: 30px;" id='q'>
+            <p id='demoopt3'></p>
+        </div>
+    </div>
+</form>
+<div id="speaker">
+    <a>
+        <img id="soundon" src="https://cdn4.iconfinder.com/data/icons/game-ui-pack-02/500/sound_on-512.png" (click)="speakerOn()">
+    </a>
+    <a>
+        <img id="soundoff" src="https://image.flaticon.com/icons/svg/1198/1198598.svg" (click)="speakerOff()">
+    </a>
+</div>
+
+
+<video id="avatar" loop src="https://www.botlibre.com/media/a13974711-0.webm" (mouseenter)="showcloseavatar()" (mouseleave)="hidecloseavatar()">
+
+</video>
+<video src="https://www.botlibre.com/media/a13974716-0.webm" id="avatarimg" (mouseenter)="showcloseavatar()" (mouseleave)="hidecloseavatar()"></video>
+<a>
+    <img id="closeavatar" src="https://image.flaticon.com/icons/svg/753/753345.svg" (click)="closeavatar()" (mouseenter)="showcloseavatar()"
+        (mouseleave)="hidecloseavatar()">
+</a>
+
+<a>
+    <img id="playavatar" src="https://image.flaticon.com/icons/svg/179/179401.svg" (click)="playavatar()" (mouseenter)="showcloseavatar()"
+        (mouseleave)="hidecloseavatar()">
+</a>
+
+<!-- end of otp chatbot -->

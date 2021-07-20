@@ -1,0 +1,109 @@
+.btn-pading {
+  padding-top: 27px;
+}
+
+.text-center {
+  color: green;
+  text-align: center;
+}
+
+.siteVisit {
+  color: white;
+  font-size: large;
+  background-color: #e90f4b;
+}
+
+.buttonLocation {
+  padding-left: 200px;
+}
+
+.fontsize {
+  font-size: large;
+}
+
+.fontsizecolor {
+  font-size: large;
+  color: #cc0000;
+}
+
+.btn-link {
+  padding-top: 0;
+}
+.modal-header {
+  padding: 1rem 1rem !important;
+}
+
+.modal-title {
+  color: white;
+  line-height: 0.5;
+}
+.badge {
+  font-size: 17px;
+}
+
+.tag-height {
+  height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.option {
+  height: 55px;
+  padding: 1px 20px;
+}
+
+#model-content {
+  width: 77em;
+}
+
+::ng-deep body .ui-dropdown-panel .ui-dropdown-items .ui-dropdown-item,
+body .ui-dropdown-panel .ui-dropdown-items .ui-dropdown-item-group {
+  margin: 0px;
+  padding: 0.429em 0.857em;
+  position: relative;
+  z-index: 999;
+  width: 100% !important;
+}
+
+::ng-deep .ui-select-choices {
+  position: fixed;
+  z-index: 1;
+  top: auto;
+  left: auto;
+  display: block;
+  position: relative;
+  background: rgb(255, 255, 255);
+}
+
+input[type="radio"] {
+  transform: scale(1.4);
+}
+
+/* styling the spans adjacent to the radio inputs: */
+input[type="radio"] + span {
+  display: inline-block;
+  margin: 0 0.5em;
+}
+/* styling the span following the checked radio: */
+input[type="radio"]:checked + span {
+  background-color: rgb(7, 133, 122);
+  color: white;
+}
+/* defining the height/width for the span-radio: */
+.radio1 {
+  padding-left: 1px;
+}
+.text-size {
+  font-size: 0.9rem;
+  font-weight: bolder;
+}
+.font-size {
+  font-size: medium;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: calc(2.5rem + -3px);
+}
+.callRating
+{
+  margin-top: 22px;
+}

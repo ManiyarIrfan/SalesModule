@@ -1,0 +1,30 @@
+table thead th {
+  width: 5% !important;
+}
+
+.modal-header {
+  background-color: #33b5e5;
+}
+
+.modal-title {
+  //margin-left: 29px;
+  line-height: 0.5;
+  color: white;
+}
+
+.text-center {
+  text-align: center;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 1500px;
+    max-height: 1500px;
+  }
+}
+
+.table-bordered td {
+  padding: 1px;
+  text-align: center;
+  vertical-align: middle;
+}

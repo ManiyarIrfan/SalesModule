@@ -1,0 +1,300 @@
+<p-tabView>
+    <div>
+        <div class="card-header">
+            <div class="row">
+                <strong>
+                    <h5>Leads By Status</h5>
+                </strong>
+                <div class="col-sm-3">
+                    Select Project
+                    <select type="text" class="form-control" id="preProject" name="preProject"
+                        [(ngModel)]="byStatusModel.ProjectId" placeholder="Select Project"
+                        (change)="getallLeadDetails($event.target.value);getLeadwiseBookingDetails($event.target.value)">
+                        <option value="">--select--</option>
+                        <option *ngFor="let item of PreferredProjectInfo;trackBy: trackByFn;"
+                            [hidden]="item.ProjectName === 'Common'" [value]="item.ProjectId">
+                            {{item.ProjectName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-11"></div>
+            <div class="col-sm-1" *ngIf="getLeadByStatus.length > 0">
+                <button type="button" class="btn btn-primary btn-sm" [hidden]="loggedInuserDetails.Role===21"
+                    [disabled]="this.loggedInuserDetails.Level ==='L3'" (click)="exportEvent()">
+                    <i class="fa fa-download"></i>&nbsp;Export</button>
+            </div>
+        </div>
+        <div *ngIf="isLoading">
+            <p class="loading">
+                <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+            </p>
+        </div>
+        <div class="table-responsive" *ngIf="!isLoading">
+            <span class="required" *ngIf="getLeadByStatus.length === 0">Data Not Available</span>
+            <div
+                *ngIf="getLeadByStatus.length > 0 && (this.loggedInuserDetails.Role !== 5 && this.loggedInuserDetails.Role !== 11)">
+                <table class="table table-bordered table-hover  table-sm text-nowrap  ">
+                    <thead class="thead-light">
+                        <tr class="text-center">
+                            <th>Employee <br> Name</th>
+                            <th>New</th>
+                            <th>Warm</th>
+                            <th>Hot</th>
+                            <th>Contact <br>Establish</th>
+                            <th>Site Visit <br>Scheduled</th>
+                            <th>Site Visit <br>Done</th>
+                            <th>Negotiation</th>
+                            <th>Booked</th>
+                            <th>Cold</th>
+                            <th>Unqualified</th>
+                            <th>Lost</th>
+                            <th>Assigned to <br>Presales</th>
+                            <th>Incoming</th>
+                            <th>Prospect</th>
+                            <th>Opportunity</th>
+                            <th>Approved</th>
+                            <th>Loan Document <br>Pending</th>
+                            <th>Closed</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center"
+                            *ngFor="let data of getLeadByStatus | paginate: { itemsPerPage: 10, currentPage: p } ;let i = index;trackBy: trackByFn;">
+                            <td>{{data.EmpName | titlecase }}</td>
+                            <td>{{data.New ? data.New : 0}}</td>
+                            <td>{{data.Warm ? data.Warm : 0}}</td>
+                            <td>{{data.Hot ? data.Hot : 0}}</td>
+                            <td>{{data.ContactEstablish ? data.ContactEstablish : 0}}</td>
+                            <td>{{data.SiteVisitScheduled ? data.SiteVisitScheduled : 0}}</td>
+                            <td>{{data.SiteVisitDone ? data.SiteVisitDone : 0}}</td>
+                            <td>{{data.Negotiation ? data.Negotiation : 0}}</td>
+                            <td>{{data.Booked ? data.Booked : 0}}</td>
+                            <td>{{data.Cold ? data.Cold : 0}}</td>
+                            <td>{{data.Unqualified ? data.Unqualified : 0}}</td>
+                            <td>{{data.Lost ? data.Lost : 0}}</td>
+                            <td>{{data.AssignedtoPresales ? data.AssignedtoPresales: 0}}</td>
+                            <td>{{data.Incoming ? data.Incoming : 0}}</td>
+                            <td>{{data.Prospect ? data.Prospect : 0}}</td>
+                            <td>{{data.Opportunity ? data.Opportunity : 0}}</td>
+                            <td>{{data.Approved ? data.Approved : 0}}</td>
+                            <td>{{data.LoanDocumentPending ? data.LoanDocumentPending : 0}}</td>
+                            <td>{{data.Closed ? data.Closed : 0}}</td>
+                            <td>{{data.Total}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div
+                *ngIf="getLeadByStatus.length > 0 && (this.loggedInuserDetails.Role === 5 || this.loggedInuserDetails.Role === 11)">
+                <table class="table table-bordered table-hover  table-sm text-nowrap  ">
+                    <thead class="thead-light">
+                        <tr class="text-center">
+                            <th>Employee Name</th>
+                            <th>Incoming</th>
+                            <th>Prospect</th>
+                            <th>Warm</th>
+                            <th>Hot</th>
+                            <th>Cold</th>
+                            <th>Unqualified</th>
+                            <th>Lost</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="pointer text-center"
+                            *ngFor="let data of getLeadByStatus;let i = index;trackBy: trackByFn;">
+                            <td>{{data.EmpName | titlecase}}</td>
+                            <td>
+                                <button class="btn btn-sm btn-link"
+                                    (click)="getReportDetails(data,data.Incoming,'Incoming',byStatusModel.ProjectId)">{{data.Incoming
+                                    ? data.Incoming :0}}</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-link"
+                                    (click)="getReportDetails(data,data.Prospect,'Prospect',byStatusModel.ProjectId)">{{data.Prospect
+                                    ? data.Prospect :0}}</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-link"
+                                    (click)="getReportDetails(data,data.Warm,'Warm',byStatusModel.ProjectId)">{{data.Warm
+                                    ? data.Warm :0}}</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-link"
+                                    (click)="getReportDetails(data,data.Hot,'Hot',byStatusModel.ProjectId)">{{data.Hot ?
+                                    data.Hot :0}}</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-link"
+                                    (click)="getReportDetails(data,data.Cold,'Cold',byStatusModel.ProjectId)">{{data.Cold
+                                    ? data.Cold :0}}</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-link"
+                                    (click)="getReportDetails(data,data.Unqualified,'Unqualified',byStatusModel.ProjectId)">{{data.Unqualified
+                                    ? data.Unqualified :0}}</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-link"
+                                    (click)="getReportDetails(data,data.Lost,'Lost',byStatusModel.ProjectId)">{{data.Lost
+                                    ? data.Lost :0}}</button>
+                            </td>
+                            <!-- <td class="btn btn-sm btn-link"
+                                (click)="getReportDetails(data,data.Total,'',byStatusModel.ProjectId)">
+                                {{data.Total}}</td> -->
+                            <td class="pointer" (click)="getReportDetails(data,data.Total,'',byStatusModel.ProjectId)">
+                                <h5> <span class="badge badge-dark px-2 py-1">{{data.Total}}</span></h5>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-11"></div>
+            <div class="col-sm-1" *ngIf="leadWiseBooking.length > 0">
+                <button type="button" class="btn btn-primary btn-sm" [disabled]="this.loggedInuserDetails.Level ==='L3'"
+                    [hidden]="loggedInuserDetails.Role===21" (click)="exportEvent()"
+                    [hidden]="loggedInuserDetails.Role===21">
+                    <i class="fa fa-download"></i>&nbsp;Export</button>
+            </div>
+        </div>
+        <div *ngIf="loading">
+            <p class="loading">
+                <i class="fa fa-spinner fa-pulse"></i>&nbsp;Loading...
+            </p>
+        </div>
+        <div
+            *ngIf="leadWiseBooking.length > 0 && (this.loggedInuserDetails.Role === 5 || this.loggedInuserDetails.Role === 11)">
+            <table class="table table-bordered table-hover  table-sm text-nowrap  ">
+                <thead class="thead-light">
+                    <tr class="text-center">
+                        <th>Employee Name</th>
+                        <th>SV Scheduled</th>
+                        <th>SV Done</th>
+                        <th>Booking</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let data of leadWiseBooking;let i = index;trackBy: trackByFn;">
+                        <td>{{data.Name | titlecase}}</td>
+                        <td><button class="btn btn-sm btn-link"
+                                (click)="SitevisitReportDetails(data,data.SiteVisitScheduled,'Site Visit Schedule')">{{data.SiteVisitScheduled?data.SiteVisitScheduled:0}}</button>
+                        </td>
+                        <td><button class="btn btn-sm btn-link"
+                                (click)="SitevisitReportDetails(data,data.SiteVisitConducted,'Site Visit Conducted')">{{data.SiteVisitConducted?data.SiteVisitConducted:0}}</button>
+                        </td>
+                        <td><button class="btn btn-sm btn-link"
+                                (click)="SitevisitReportDetails(data,data.Bookings,'Bookings')">{{data.Bookings?data.Bookings:0}}</button>
+                        </td>
+                        <td><strong>{{data.TotalCount}}</strong></td>
+                    </tr>
+                    <tr class="text-center">
+                        <td><strong>Total</strong></td>
+                        <td> <strong>{{testSiteVisitScheduled}}</strong> </td>
+                        <td> <strong>{{testSiteVisitConducted}}</strong></td>
+                        <td><strong> {{testBookings}} </strong></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</p-tabView>
+
+<!-- popup -->
+<div bsModal #showReportsDetailsModal="bs-modal" cdkDrag class="modal fade model" role="dialog" data-backdrop="static"
+    data-keyboard="false" aria-labelledby="mylargeModalLabel" s aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="col-sm-12">
+                    <h3 class="modal-title text-center">Lead Details</h3>
+                </div>
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="close()" />
+            </div>
+            <div class="modal-body">
+                <div *ngIf="isPopUpLoading">
+                    <p class="loading">
+                        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+                    </p>
+                </div>
+                <div class="row mb-2" *ngIf="!isPopUpLoading">
+                    <div class="col-sm-3">
+                        <h5 class="text-center"> Name:- <span class="required">{{empDetailModel.EmpName |
+                                titlecase}}</span> </h5>
+                    </div>
+                    <div class="col-sm-3">
+                        <h5 class="text-center"> From:- <span class="required">{{this.selectedDateRange.startDate |
+                                date:'dd MMM yyyy h:mm a'}}</span>
+                        </h5>
+                    </div>
+                    <div class="col-sm-3">
+                        <h5 class="text-center"> To:- <span class="required">{{this.selectedDateRange.endDate | date:'dd
+                                MMM yyyy h:mm a'}}</span>
+                        </h5>
+                    </div>
+                    <div class="col-sm-3 text-center" *ngIf="leadAnalysisDetailsReportList.length > 0">
+                        <button type="button" class="btn btn-primary btn-sm" [hidden]="loggedInuserDetails.Role===21"
+                            [disabled]="this.loggedInuserDetails.Level ==='L3'" (click)="exportPopEvent()">
+                            <i class="fa fa-download"></i>&nbsp;Export</button>
+                        <h5 class="pull-right" *ngIf="leadAnalysisDetailsReportList.length > 0"><span
+                                class="badge badge-dark px-3 py-2">Count :
+                                {{leadAnalysisDetailsReportList.length}}</span>
+                        </h5>
+                    </div>
+                </div>
+                <div class="table-responsive" *ngIf="leadAnalysisDetailsReportList.length>0">
+                    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+                        <thead class="thead-light">
+                            <tr class="text-center">
+                                <th>Name</th>
+                                <th>ID</th>
+                                <th>Received On</th>
+                                <th>Source</th>
+                                <th *ngIf="!sitevisitReport">First Contacted On</th>
+                                <th>Last Note</th>
+                                <th *ngIf="!sitevisitReport">Sales Name</th>
+                                <th *ngIf="!sitevisitReport">Last Contact</th>
+                                <th>FollowUp Scheduled</th>
+                                <th *ngIf="!sitevisitReport">Site Visit Scheduled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center"
+                                *ngFor="let detail of leadAnalysisDetailsReportList | paginate: {id:'lead-Details-pagination', itemsPerPage: 7, currentPage: j };trackBy: trackByFn;">
+                                <td class="text-left pl-2">{{detail.Name | titlecase}}</td>
+                                <td>{{detail.EnquiryId}}</td>
+                                <td>{{detail.CreatedOn | date:'dd MMM yyyy'}}</td>
+                                <td>{{detail.Source | titlecase}}</td>
+                                <td *ngIf="!sitevisitReport">{{detail.FirstContactedOn | date:'dd MMM yyyy'}}</td>
+                                <td class="note-width" *ngIf="!sitevisitReport">{{detail.LastNote | titlecase}}</td>
+                                <td class="note-width" *ngIf="sitevisitReport">{{detail.Details | titlecase}}</td>
+                                <td *ngIf="!sitevisitReport">{{detail.SalesName | titlecase}}</td>
+                                <td *ngIf="!sitevisitReport">{{detail.LastContactedOn | date:'dd MMM yyyy'}}</td>
+                                <td>{{detail.FollowUpDate | date:'dd MMM yyyy'}} {{detail.FollowUpTime}}</td>
+                                <td *ngIf="!sitevisitReport">{{detail.PreferredDate | date:'dd MMM yyyy'}}
+                                    {{detail.PreferredTime}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <tfoot class="pull-right" [hidden]="leadAnalysisDetailsReportList.length<=7">
+                        <pagination-controls id="lead-Details-pagination" (pageChange)="j = $event">
+                        </pagination-controls>
+                    </tfoot>
+                </div>
+                <div class="text-center" *ngIf="leadAnalysisDetailsReportList.length===0 && !isPopUpLoading">
+                    <br>
+                    <strong class="required"> Records Not Available </strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

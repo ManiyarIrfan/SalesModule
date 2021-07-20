@@ -1,0 +1,22 @@
+.icon {
+    margin-top: -41px;
+    float: right;
+}
+.displayHeading {
+    font-size: 30px;
+    text-decoration-color: darkgray;
+}
+#show {
+    height: 500px;
+}
+.ui-menubar .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link {
+    padding: 0.5em;
+}
+body .ui-menubar .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link {
+    padding: 0.714em 0.557em;
+}
+::ng-deep {
+    .md-drppicker.shown.drops-down-right {
+        zoom: 96% !important;
+    }
+}

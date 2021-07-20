@@ -1,0 +1,164 @@
+<br />
+<div class="row" *ngIf="loggedInuserDetails.Role === 3 || loggedInuserDetails.Role === 1">
+    <div class="col-sm-5 padding_Btn">
+        <button type="button" class="btn btn-success btn-md" (click)="onChangeReporting(reportingName,'MyTodaysWork'); termstatus=''" ngbTooltip="New Leads ">My Todays
+            Work</button>&nbsp;
+        <button type="button" class="btn btn-danger btn-md" (click)="onChangeReporting(reportingName,'Hot'); termstatus=''">Hot</button>&nbsp;
+        <button type="button" class="btn btn-warning btn-md" (click)="onChangeReporting(reportingName,'Warm'); termstatus=''">Warm</button>&nbsp;
+        <button type="button" class="btn btn-primary btn-md" (click)="onChangeReporting(reportingName,'NoActionPlanned'); termstatus=''">No Action Taken</button>&nbsp;
+        <button type="button" class="btn btn-info btn-md" (click)="collapsed = !collapsed;">All Lead</button>
+    </div>
+    <div class="col-sm-2 padding_Btn">
+        <select class="form-control" id="referralId" name="referralId" [(ngModel)]="termstatus" (change)="onChangeReporting(reportingName,$event.target.value)">
+            <option value=""> --- Filter Leads by Status --- </option>
+            <option class='option' *ngFor='let status of StatusInfo ;trackBy: trackByFn;' [value]="status.key">
+                {{status.value}}</option>
+        </select>
+    </div>
+    <div class="col-sm-2" *ngIf="!disableForPresales && this.loggedInuserDetails.Level !== 'L3'">
+        <strong>AssignedTo :</strong>
+        <select class="form-control" id="ReportingtoDDL" name="ReportingtoDDL" (change)="onChangeReporting($event.target.value,termstatus)" [(ngModel)]="reportingName">
+            <option class='option' *ngFor='let reportname of selectedReportingto ;trackBy: trackByFn;'
+                [value]="reportname.ID">
+                {{reportname.Name}}</option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <br>
+        <h4> Count: &nbsp;<span class="badge badge-info">{{countOnStatus}}</span></h4>
+    </div>
+</div>
+<div class="row" *ngIf="!collapsed">
+    <div class="col-sm-2 mt-2 text-right">
+        <strong>Select Date Range :</strong>
+    </div>
+    <div class="col-sm-5 mt-2">
+        <input type="text" autocomplete="off" [alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true" required ngxDaterangepickerMd id="date" name="Date" #date="ngModel" [(ngModel)]="selectedDateRange" class="form-control formstyle" placeholder="Select Dates"
+            [attr.disabled]="disabled?'':null" [class.error]="date.invalid && date.touched" (change)="onChangeDate(selectedDateRange)" [class.has-success]="date.valid" [showClearButton]="true" />
+    </div>
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-primary btn-md mt-2" (click)="onChangeReporting(null,'All')"><i
+                class="fa fa-search"></i>
+            Search</button>
+    </div>
+</div>
+<div class="col-sm-12 text-center mt-4" *ngIf="exception">
+    <strong class="text-danger">No Data Found</strong>
+</div>
+<div [hidden]="!isSpinnerActive">
+    <p class="loading">
+        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+    </p>
+</div>
+<div *ngIf="!isSpinnerActive">
+    <div class="table-responsive scrollbar" id="style-2" style="min-height: 265px;">
+        <table class="table table-striped table-bordered table-sm table-hover  mt-2">
+            <thead class="thead-light">
+                <tr class="text-center">
+                    <th>Enquiry Id</th>
+                    <th>Lead Id</th>
+                    <th>Lead Name</th>
+                    <!-- <th>Mobile No</th> -->
+                    <th>Refered By</th>
+                    <th>Created Date</th>
+                    <th>Status</th>
+                    <th>FollowUp</th>
+                    <th>SiteVisit</th>
+                    <th>Source</th>
+                    <th>BHK</th>
+                    <th>Budget</th>
+                    <!-- <th>CRM Assigned</th> -->
+                    <th>SalesAgent</th>
+                    <th>Broker</th>
+                    <th>Organization</th>
+                    <!-- <th>Incentive</th> -->
+                    <th>Preferred City, Location, Project</th>
+                    <th>Campaign</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="showReferral && showReferral.length>0">
+                    <td></td>
+                    <td>
+                        <input class="id-width" type="number" name="searchId" [(ngModel)]="filterDataModel.ReferralId" (keyup)="filterLeadData()">
+                    </td>
+                    <td>
+                        <input class="name-width" type="text" name="searchName" [(ngModel)]="filterDataModel.Name" (keyup)="filterLeadData()">
+                    </td>
+                    <td colspan="2"></td>
+                    <td>
+                        <input class="name-width" type="text" name="searchStatus" [(ngModel)]="filterDataModel.ReferralStatus" (keyup)="filterLeadData()">
+                    </td>
+                    <td colspan="2"></td>
+                    <td>
+                        <input class="name-width" type="text" name="searchStatus" [(ngModel)]="filterDataModel.Source" (keyup)="filterLeadData()">
+                    </td>
+                    <td colspan="8"></td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="!exception">
+                <tr class="pointer" (click)="emitUpdateReferral(Referral)" *ngFor="let Referral of showReferral | paginate: { itemsPerPage: 9, currentPage: CurrentPageId };trackBy: trackByFn;">
+                    <td>{{Referral.TEnquiryId}}</td>
+                    <td>{{Referral.TReferralId}}</td>
+                    <td>{{Referral.Name |titlecase}}</td>
+                    <!-- <td>{{Referral.MobileNo}}</td> -->
+                    <td>{{Referral.ReferralBy |titlecase}}</td>
+                    <td>{{Referral.CreatedOn |date:"d MMM y"}}</td>
+                    <td>
+                        <span [ngClass]="{
+                            'SVHOT': Referral.ReferralStatus==='Hot',
+                            'svs' :Referral.ReferralStatus==='Site Visit Scheduled',
+                            'svd' :Referral.ReferralStatus==='Site Visit Done'||Referral.ReferralStatus==='site Visit Done',
+                            'Lost':Referral.ReferralStatus==='Unqualified'||Referral.ReferralStatus==='Lost',
+                            'AssignedtoPresales':Referral.ReferralStatus==='Assigned to Presales',
+                            'New': Referral.ReferralStatus==='New',
+                            'Negotiation':Referral.ReferralStatus==='Negotiation',
+                            'Booked': Referral.ReferralStatus==='Booked'||Referral.ReferralStatus==='booked',
+                            'warm': Referral.ReferralStatus==='Warm',
+                            'cold': Referral.ReferralStatus==='Cold',
+                            'EOISubmitted':Referral.ReferralStatus==='EOI Submitted',
+                            'ContactEstablish':Referral.ReferralStatus=='Contact Establish'
+                            }"> </span> &nbsp;&nbsp; {{Referral.ReferralStatus}}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link btn-sm" ngbTooltip="Date: {{Referral.FollowUpDate|date:'d MMM y'}} || Time: {{Referral.FollowUPTime}}">
+                            <i class="far fa-calendar-alt"></i> </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link btn-sm" ngbTooltip="Project Name: {{Referral.ProjectVisited}} || Date: {{Referral.PreferredDate|date:'d MMM y'}} || Time: {{Referral.PreferredTime}}">
+                            <i class="fa fa-building-o"></i> </button>
+                    </td>
+                    <td>{{Referral.Source}}</td>
+                    <td>{{Referral.BHK}}</td>
+                    <td>{{Referral.Budget}}</td>
+                    <!-- <td>{{Referral.CrmAssinged |titlecase}}</td> -->
+                    <td>{{Referral.SalesAgentAssinged |titlecase}}</td>
+                    <td>{{Referral.ReferredBy |titlecase}}</td>
+                    <td>{{Referral.Organization |titlecase}}</td>
+                    <!-- <td>{{Referral.IncentivePraposed}}</td> -->
+                    <td>{{Referral.PreferredCity |titlecase}}, {{Referral.PreferredLocation |titlecase}}, {{Referral.PreferredProject |titlecase}}
+                    </td>
+                    <td>{{Referral.Campaign |titlecase}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <tfoot class="pull-right" *ngIf="showReferral.length>9">
+            <pagination-controls (pageChange)="CurrentPageId = $event;pageChangeEvent($event)"></pagination-controls>
+        </tfoot>
+    </div>
+</div>
+<!-- popup -->
+<div cdkDrag bsModal #showLeadDetailsModal="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <span class="modal-title text-center">{{leadDetailsModal.TReferralId}}
+                    {{leadDetailsModal.Name |titlecase}}</span>&nbsp;
+                <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="showLeadDetailsModal.hide()" />
+            </div>
+            <div class="modal-body">
+                <tru-leaddetails-popup [leadDetails]="leadDetailsModal" (emitClickLeadDetails)="receiveOpportunity($event)"></tru-leaddetails-popup>
+            </div>
+        </div>
+    </div>
+</div>

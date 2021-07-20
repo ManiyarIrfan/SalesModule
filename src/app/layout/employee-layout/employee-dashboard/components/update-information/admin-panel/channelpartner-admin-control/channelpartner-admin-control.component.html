@@ -1,0 +1,279 @@
+<div *ngIf="!showChannelPartnerInfo">
+  <br>
+  <button type="button" class="btn btn-primary pull-right" (click)="collapsed = !collapsed"><i
+      class="fa fa-envelope"></i>
+    Assign project to Channel Partner</button>
+  <br />
+  <div *ngIf="!collapsed">
+    <fieldset class="scheduler-border">
+      <br />
+      <form #AssignProjectToOrganisationForm="ngForm">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="form-group col-sm-2">
+              <strong for="Organization">Organization:</strong>
+              <select class="form-control" id="Organisation" #Organization="ngModel" required
+                [(ngModel)]="cpAdminPanelModel.Organisation" name="Organization"
+                (change)="onOrganisationChange($event.target.value)"
+                [class.error]="Organization.invalid && Organization.touched" [class.has-success]="Organization.valid">
+                <option value="">---Select---</option>
+                <option value="Individual">Individual</option>
+                <option *ngFor="let select of AllOrganisation;trackBy: trackByFn" [value]="select.OrganizationId">
+                  {{select.OrganizationName}}</option>
+              </select>
+            </div>
+            <div class="form-group col-sm-2" *ngIf="showBrokerName">
+              <strong for="BrokerId">Broker Name:</strong>
+              <select class="form-control" id="BrokerId" #BrokerId="ngModel" required
+                [(ngModel)]="cpAdminPanelModel.BrokerId" name="BrokerId"
+                [class.error]="BrokerId.invalid && BrokerId.touched" [class.has-success]="BrokerId.valid">
+                <option value="">---Select---</option>
+                <option *ngFor="let select of AllBroker;trackBy: trackByFn" [value]="select.BrokerId">{{select.BrokerName}}</option>
+              </select>
+            </div>
+            <div class="form-group col-sm-2">
+              <strong for="ProjectName">Project Name:</strong>
+              <select class="form-control" id="ProjectName" #ProjectName="ngModel" required
+                [(ngModel)]="cpAdminPanelModel.ProjectName" name="ProjectName"
+                [class.error]="ProjectName.invalid && ProjectName.touched" [class.has-success]="ProjectName.valid">
+                <option value="">---Select---</option>
+                <option *ngFor="let name of allProjectNames;trackBy: trackByFn" [hidden]="name.ProjectName === 'Common'"
+                  [value]="name.ProjectId">{{name.ProjectName}}</option>
+              </select>
+            </div>
+            <div class="col-sm-2" id="orgInsert">
+              <button type="button" class="btn btn-primary"
+                (click)="OnSubmitBtnClick(cpAdminPanelModel,AssignProjectToOrganisationForm)">
+                <i class="fa fa-paper-plane"></i> Assign Project</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </div>
+  <div *ngIf="Listlength==0">
+    <span class="testhead">No Record Available.</span>
+  </div>
+  <br />
+  <div *ngIf="!cpApprovalListNotFound">
+    <div class="card cardfortable scrollbar tbl-height">
+      <div class="title textweight text-center">
+        <span>Channel Partners Pending for Approvals</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+          <thead class="thead-light">
+            <tr>
+              <th>CP Id</th>
+              <th>Name </th>
+              <th>Organization</th>
+              <th>Type</th>
+              <th>RERA No </th>
+              <th>Pan No</th>
+              <th>Aadhar No</th>
+              <th>Approval</th>
+              <th>Decline</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let details of selectedChannelPartnerNames| paginate: { itemsPerPage: 7, currentPage: p1};trackBy: trackByFn ">
+              <td>{{details.BrokerId}} </td>
+              <td>{{details.Name}}</td>
+              <td>{{details.Organization}} </td>
+              <td>{{details.Type}}</td>
+              <td>{{details.ReraNo}}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-link"
+                  (click)="showImagePan(details)">{{details.PanNo}}</button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm btn-link"
+                  (click)="showImageAdhar(details)">{{details.AadharNo}}</button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm btn-link" (click)="getApproved(details)">Approve</button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm btn-link" (click)="getDecline(details)">Decline</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <tfoot class="pull-right" *ngIf="selectedChannelPartnerNames.length >7">
+          <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+        </tfoot>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="cpApprovalListNotFound">
+    <span class="required">No Approval Pending of Channel Partner. </span>
+  </div>
+</div>
+<br>
+<div class="card cardfortable scrollbar tbl-height">
+  <div class="title textweight text-center">
+    <span>Users pending for pancard varification</span>
+  </div>
+  <div class="col-sm-12" align="center">
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped table-sm text-nowrap">
+      <thead class="thead-light">
+        <tr>
+          <th>Full Name </th>
+          <th>Pancard No </th>
+          <th>Pancard Type </th>
+          <th>Date of birth </th>
+          <th>User Type</th>
+          <th>Varification Status</th>
+          <th>Action</th>
+        </tr>
+        <tr>
+          <td>
+            <input class="name-width" type="text" name="searchFullName" [(ngModel)]="filterDataModel.FullName"
+              (keyup)="filterLeadData()">
+          </td>
+          <td>
+            <input class="name-width" type="text" name="searchPanNo" [(ngModel)]="filterDataModel.PanNo"
+              (keyup)="filterLeadData()">
+          </td>
+          <td>
+            <input class="name-width" type="text" name="searchPANType" [(ngModel)]="filterDataModel.PANType"
+              (keyup)="filterLeadData()">
+          </td>
+          <td></td>
+          <td>
+            <input class="name-width" type="text" name="searchAccType" [(ngModel)]="filterDataModel.AccType"
+              (keyup)="filterLeadData()">
+          </td>
+          <td>
+            <input class="name-width" type="text" name="searchPANVerificationStatus"
+              [(ngModel)]="filterDataModel.PANVerificationStatus" (keyup)="filterLeadData()">
+          </td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let details of allusersDetails;trackBy: trackByFn">
+          <td>{{details.FullName}} </td>
+          <td>{{details.PanNo}}</td>
+          <td>{{details.PANType}} </td>
+          <td>{{details.DateOfBirth}}</td>
+          <td>{{details.AccType}}</td>
+          <td>
+            <span
+              [ngClass]="{'badge-danger': details.PANVerificationStatus==='Rejected','badge-warning': details.PANVerificationStatus==='Pending'}">{{details.PANVerificationStatus}}</span>
+          </td>
+          <td>
+            <button type="button" class="btn btn-sm btn-link" (click)="openPanPopup(details)">Update</button>&nbsp;
+            <!-- <button type="button" class="btn btn-sm btn-link">Varify</button> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div [hidden]="!isLoading">
+      <p class="loading">
+        <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+      </p>
+    </div>
+    <div class="col-sm-12 mt-2" *ngIf="allusersDetails.length === 0 && !isLoading">
+      <strong class="text-danger text-center">No Data Found</strong>
+    </div>
+  </div>
+</div>
+<div bsModal #ConfirmationModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+  aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-md">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-1">
+            <i class="fa fa-warning"></i>
+          </div>
+          <div class="col-sm-11" *ngIf="isOn">
+            <img id="cross" src="assets/images/cross.png" alt="X" (click)="close()" />
+            <h5 class="modal-title">Do You Want to Approve This Channel Partner?</h5>
+          </div>
+          <div class="col-sm-11" *ngIf="!isOn">
+            <img id="cross" src="assets/images/cross.png" alt="X" (click)="close()" />
+            <h5 class="modal-title" id="linestyle">Do You Want to Decline This Channel Partner Request?<br>This Record
+              will be
+              Deleted Permanently.
+            </h5>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" *ngIf="isOn" (click)="confirmApproval()" class="btn btn-success">
+          <i class="fa fa-check"></i> Yes</button>
+        <button type="button" *ngIf="!isOn" (click)="confirmDecline()" class="btn btn-success">
+          <i class="fa fa-check"></i> Yes</button>
+        <button class="btn btn-danger" (click)="close()"><i class="fa fa-times"></i> Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #PanConfirmationModel="bs-modal" class="modal fade" role="dialog" [config]="{backdrop: 'static'}"
+  aria-labelledby="myLargeModalLabel" s aria-hidden="true">
+  <form #importMigrationForm="ngForm">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h4 class="modal-title title text-center text-white">Update Pancard Status</h4>
+          <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="close()" />
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+              <strong for="source"><span class="required">*</span>Pancard Status:</strong>
+              <select class="form-control" id="source" name="source" [class.error]="source.invalid && source.touched"
+                [class.has-success]="source.valid" [(ngModel)]="cpAdminPanelModel.PanStatus" #source="ngModel">
+                <option value="">--select--</option>
+                <option class='option' *ngFor='let status of statusInfo;trackBy: trackByFn;' [value]="status.value">
+                  {{status.key}}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-3"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="col-sm-12 text-center">
+            <button type="button" class="btn btn-primary" (click)="confirmPanApproval(cpAdminPanelModel.PanStatus)"
+              [disabled]="!cpAdminPanelModel.PanStatus">
+              <i class="fa fa-edit"></i> Update </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div bsModal #showImageModel="bs-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"
+  aria-labelledby="mylargeModalLabel" s aria-hidden="true">
+  <div class="modal-dialog" style="cursor: pointer">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h4 class="modal-title text-center">Image</h4>
+        <img id="cross" src="assets/images/crossnew.png" alt="X" (click)="onCloseImage()" />
+      </div>
+      <div class="modal-body">
+        <div [hidden]="!isLoading">
+          <p class="loading">
+            <i class="fa fa-spinner fa-pulse"></i>&nbsp; Loading...
+          </p>
+        </div>
+        <div>
+          <div *ngIf="isShowImage">
+            <img [src]="images" class="img" alt="image slide">
+          </div>
+          <div *ngIf="!isShowImage">
+            <h4 class="notfoundmsg">{{imageNotAvailable}}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

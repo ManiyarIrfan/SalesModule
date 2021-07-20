@@ -1,0 +1,99 @@
+<div class="card bg-light mb-3">
+  <div class="card-header"><strong>Search Project Details</strong></div>
+  <div class="card-body">
+    <form #serchProjectForm="ngForm">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <strong for="preferredLocation">Preferred Location </strong>
+              <select class="form-control" id="preferredLocation" required
+                [(ngModel)]="custSearchModel.preferredLocation" name="preferredLocation" #preferredLocation="ngModel"
+                (change)="onChange($event.target.value)">
+                <option *ngFor="let item of preferredLocationLists;trackBy:trackByFn">{{item.Location}}</option>
+              </select>
+              <div *ngIf="preferredLocation.errors && (preferredLocation.dirty || preferredLocation.touched)"
+                class="alert alert-danger">
+                <div [hidden]="!preferredLocation.errors.required">
+                  Select preferred location!
+                </div>
+              </div>
+            </div>
+            <div class="form-group" *ngIf="preferredProjectLists.length > 0 ">
+              <strong for="preferredProjects">Selects Projects</strong>
+              <select class="form-control" id="preferredProjects" required
+                [(ngModel)]="custSearchModel.preferredProjects" name="preferredProjects" #preferredProjects="ngModel"
+                (change)="onProjectChange()">
+                <option *ngFor="let item of preferredProjectLists;trackBy:trackByFn">{{item.ProjectName}}</option>
+              </select>
+              <div *ngIf="preferredProjects.errors && (preferredProjects.dirty || preferredProjects.touched)"
+                class="alert alert-danger">
+                <div [hidden]="!preferredProjects.errors.required">
+                  Select atlest one project!
+                </div>
+              </div>
+            </div>
+            <div class="form-group" *ngIf="preferredBHKLists.length>0">
+              <strong for="preferredBHK">BHK/Plot No </strong>
+              <select class="form-control" id="preferredBHK" required [(ngModel)]="custSearchModel.preferredBHK"
+                name="preferredBHK" #preferredBHK="ngModel" (change)="onBHKChange($event.target.value)">
+                <option *ngFor="let item of preferredBHKLists;trackBy:trackByFn">{{item.BHK}}</option>
+              </select>
+              <div *ngIf="preferredBHK.errors && (preferredBHK.dirty || preferredBHK.touched)"
+                class="alert alert-danger">
+                <div [hidden]="!preferredBHK.errors.required">
+                  Select BHK!
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="text-center">
+                <button type="button" (click)="OnSerchBtnClick()" [disabled]="!serchProjectForm.form.valid"
+                  class="btn btn-primary"><i class="fa fa-search"></i> Search
+                  Project Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div [hidden]="!showProjectNotFoundMessage">
+  <div *ngIf="listedProjects && listedProjects.length>0">
+    <div class="table-responsive scrollbar tbl-height" id="style-2">
+      <table class="table table-bordered table-hover table-striped table-sm text-nowrap tableFixHead">
+        <thead class="thead-light">
+          <tr class="text-center">
+            <th>Building Name/Sector No</th>
+            <th>Floor No</th>
+            <th>Layout Type</th>
+            <th>Rera Area</th>
+            <th>Flat No/Plot No</th>
+            <th>Available</th>
+            <th>Bhk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detail of listedProjects;trackBy: trackByFn">
+            <td> {{detail.BuildingType}}</td>
+            <td> {{detail.Floor}}</td>
+            <td> {{detail.LayoutType}}</td>
+            <td> {{detail.ReraArea}}</td>
+            <td> {{detail.FlatNo}}</td>
+            <td> {{detail.Available}}</td>
+            <td> {{detail.BHK}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <tfoot>
+      <pagination-controls (pageChange)="p1 = $event"></pagination-controls>
+    </tfoot> -->
+  </div>
+</div>
+<div [hidden]="showProjectNotFoundMessage">
+  <div>
+    <span class="notfoundmsg">Project details are not availabe, please contact office.</span>
+  </div>
+</div>

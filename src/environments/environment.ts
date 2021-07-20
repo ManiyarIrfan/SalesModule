@@ -19,7 +19,7 @@ export const environment = {
   salesURL: `https://salesmoduleui.azurewebsites.net/`,
   apiUrl: 'https://salescustomerdevapi.azurewebsites.net/',
   // apiUrl: 'http://localhost:42001/',
-  empApiUrl: 'https://salesdevemployeeapi.azurewebsites.net/',
+  empApiUrl: 'https://salesdevemployeeapi.azurewebsites.net/',  
   // empApiUrl: 'http://localhost:42001/',
   channelApiUrl: 'https://salescpdevapi.azurewebsites.net/',
   executionApiUrl: 'https://executionsservices.azurewebsites.net/',
